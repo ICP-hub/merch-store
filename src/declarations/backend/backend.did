@@ -1,0 +1,478 @@
+type size = 
+ variant {
+   L;
+   M;
+   S;
+   XL;
+   XS;
+   XXL;
+ };
+type color = 
+ variant {
+   Black;
+   Blue;
+   Brown;
+   Cyan;
+   Gold;
+   Gray;
+   Green;
+   Lime;
+   Magenta;
+   Maroon;
+   Navy;
+   Olive;
+   Orange;
+   Pink;
+   Purple;
+   Red;
+   Silver;
+   Teal;
+   White;
+   Yellow;
+ };
+type WishlistItem = 
+ record {
+   id: WishlistId;
+   "principal": principal;
+   product_slug: text;
+   time_created: Time;
+   time_updated: Time;
+ };
+type WishlistId = text;
+type UserProduct = 
+ record {
+   active: bool;
+   category: SlugId;
+   color: color;
+   description: text;
+   inventory: nat;
+   price: float64;
+   size: size;
+   title: text;
+ };
+type UserContact = 
+ record {
+   email: text;
+   message: text;
+   name: text;
+   read: bool;
+ };
+type User = 
+ record {
+   FirstName: text;
+   LastName: text;
+   email: text;
+   id: principal;
+ };
+type UpdateWishlistItemError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+   WishlistItemNotFound;
+ };
+type UpdateUserError = 
+ variant {
+   EmptyEmail;
+   EmptyFirstName;
+   EmptyLastName;
+   UserNotAuthenticated;
+   UserNotFound;
+ };
+type UpdateProductError = 
+ variant {
+   EmptyTitle;
+   ProductNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type UpdateOrderError = 
+ variant {
+   OrderNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type UpdateContactError = 
+ variant {
+   ContactNotFound;
+   EmptyEmail;
+   EmptyMessage;
+   EmptyName;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type UpdateCategoryError = 
+ variant {
+   CategoryNotFound;
+   EmptyName;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type UpdateCartItemsError = 
+ variant {
+   CartItemNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type Time = int;
+type SlugId = text;
+type ShippingAddress = 
+ record {
+   city: text;
+   country: text;
+   county: text;
+   firstName: text;
+   lastName: text;
+   mail: text;
+   postCode: text;
+   street: text;
+ };
+type Result_9 = 
+ variant {
+   err: OrderError;
+   ok: Order;
+ };
+type Result_8 = 
+ variant {
+   err: GetProductError;
+   ok: Product;
+ };
+type Result_7 = 
+ variant {
+   err: GetUserError;
+   ok: User;
+ };
+type Result_6 = 
+ variant {
+   err: UpdateCartItemsError;
+   ok: CartItem;
+ };
+type Result_5 = 
+ variant {
+   err: UpdateCategoryError;
+   ok: Category;
+ };
+type Result_4 = 
+ variant {
+   err: UpdateContactError;
+   ok: Contact;
+ };
+type Result_3 = 
+ variant {
+   err: UpdateProductError;
+   ok: Product;
+ };
+type Result_22 = 
+ variant {
+   err: CreateCartItemsError;
+   ok: CartItem;
+ };
+type Result_21 = 
+ variant {
+   err: CreateWishlistItemError;
+   ok: WishlistItem;
+ };
+type Result_20 = 
+ variant {
+   err: CreateCategoryError;
+   ok: Category;
+ };
+type Result_2 = 
+ variant {
+   err: UpdateOrderError;
+   ok: Order;
+ };
+type Result_19 = 
+ variant {
+   err: CreateContactError;
+   ok: Contact;
+ };
+type Result_18 = 
+ variant {
+   err: CreateProductError;
+   ok: Product;
+ };
+type Result_17 = 
+ variant {
+   err: DeleteCartItemsError;
+   ok;
+ };
+type Result_16 = 
+ variant {
+   err: DeleteCategoryError;
+   ok;
+ };
+type Result_15 = 
+ variant {
+   err: DeleteContactError;
+   ok;
+ };
+type Result_14 = 
+ variant {
+   err: DeleteOrderError;
+   ok;
+ };
+type Result_13 = 
+ variant {
+   err: DeleteProductError;
+   ok;
+ };
+type Result_12 = 
+ variant {
+   err: DeleteWishlistItemError;
+   ok;
+ };
+type Result_11 = 
+ variant {
+   err: GetCategoryError;
+   ok: Category;
+ };
+type Result_10 = 
+ variant {
+   err: GetContactError;
+   ok: Contact;
+ };
+type Result_1 = 
+ variant {
+   err: UpdateUserError;
+   ok: User;
+ };
+type Result = 
+ variant {
+   err: UpdateWishlistItemError;
+   ok: WishlistItem;
+ };
+type ProductId = nat;
+type Product = 
+ record {
+   active: bool;
+   category: SlugId;
+   color: color;
+   description: text;
+   id: ProductId;
+   img: ImgId;
+   inventory: nat;
+   price: float64;
+   size: size;
+   slug: SlugId;
+   time_created: Time;
+   time_updated: Time;
+   title: text;
+ };
+type OrderProduct = 
+ record {
+   id: ProductId;
+   quantity: nat8;
+ };
+type OrderId = text;
+type OrderError = 
+ variant {
+   MissingData;
+   OrderNotFound;
+   PaymentAddressAlreadyUsed;
+   UnableToCreate;
+   UnableToUpdate;
+ };
+type Order = 
+ record {
+   awb: text;
+   id: OrderId;
+   orderStatus: text;
+   paymentAddress: text;
+   paymentMethod: text;
+   paymentStatus: text;
+   products: vec OrderProduct;
+   shippingAddress: ShippingAddress;
+   shippingAmount: float64;
+   subTotalAmount: float64;
+   timeCreated: Time;
+   timeUpdated: Time;
+   totalAmount: float64;
+   userid: principal;
+ };
+type NewOrder = 
+ record {
+   awb: text;
+   orderStatus: text;
+   paymentAddress: text;
+   paymentMethod: text;
+   paymentStatus: text;
+   products: vec OrderProduct;
+   shippingAddress: ShippingAddress;
+   shippingAmount: float64;
+   subTotalAmount: float64;
+   totalAmount: float64;
+   userid: principal;
+ };
+type ImgId = text;
+type GetUserError = variant {UserNotFound;};
+type GetProductError = variant {ProductNotFound;};
+type GetContactError = 
+ variant {
+   ContactNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type GetCategoryError = variant {CategoryNotFound;};
+type DeleteWishlistItemError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteProductError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteOrderError = 
+ variant {
+   OrderNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteContactError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteCategoryError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteCartItemsError = 
+ variant {
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type CreateWishlistItemError = 
+ variant {
+   EmptyProductSlug;
+   UserNotAdmin;
+   UserNotAuthenticated;
+   WishlistItemAlreadyExists;
+ };
+type CreateProductError = 
+ variant {
+   EmptyTitle;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type CreateContactError = 
+ variant {
+   EmptyEmail;
+   EmptyMessage;
+   EmptyName;
+ };
+type CreateCategoryError = 
+ variant {
+   CategoryAlreadyExists;
+   EmptyName;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type CreateCartItemsError = 
+ variant {
+   EmptyColor;
+   EmptyProductSlug;
+   EmptySize;
+   ProductSlugAlreadyExists;
+   UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type ContactId = text;
+type Contact = 
+ record {
+   email: text;
+   id: ContactId;
+   message: text;
+   name: text;
+   read: bool;
+   time_created: Time;
+   time_updated: Time;
+ };
+type Category = 
+ record {
+   category_img: ImgId;
+   name: text;
+   slug: SlugId;
+ };
+type CartItem = 
+ record {
+   color: color;
+   id: CartId;
+   "principal": principal;
+   product_slug: text;
+   quantity: nat8;
+   size: size;
+   time_created: Time;
+   time_updated: Time;
+ };
+type CartId = text;
+service : {
+  addtoCartItems: (text, nat8, size, color) -> (Result_22);
+  addtoWishlist: (text) -> (Result_21);
+  createCategory: (text, ImgId) -> (Result_20);
+  createContact: (UserContact) -> (Result_19);
+  createOrder: (NewOrder) -> (Result_9);
+  createProduct: (UserProduct, opt blob) -> (Result_18);
+  deleteCartItems: (CartId) -> (Result_17);
+  deleteCategory: (SlugId) -> (Result_16);
+  deleteContact: (ContactId) -> (Result_15);
+  deleteOrder: (OrderId) -> (Result_14);
+  deleteProduct: (SlugId) -> (Result_13);
+  deleteWishlistItems: (WishlistId) -> (Result_12);
+  getCallerCartItems: () -> (vec record {
+                                   CartId;
+                                   CartItem;
+                                 }) query;
+  getCategory: (SlugId) -> (Result_11) query;
+  getContact: (ContactId) -> (Result_10) query;
+  getOrder: (text) -> (Result_9) query;
+  getProduct: (SlugId) -> (Result_8) query;
+  getUserdetailsbycaller: () -> (Result_7) query;
+  getUserdetailsbyid: (principal) -> (Result_7) query;
+  listCategories: () -> (vec record {
+                               SlugId;
+                               Category;
+                             }) query;
+  listContacts: () -> (vec record {
+                             ContactId;
+                             Contact;
+                           }) query;
+  listUserOrders: () -> (vec record {
+                               OrderId;
+                               Order;
+                             }) query;
+  listUsers: () -> (vec record {
+                          principal;
+                          User;
+                        }) query;
+  listWishlistItems: () -> (vec record {
+                                  WishlistId;
+                                  WishlistItem;
+                                }) query;
+  listallOrders: () -> (vec record {
+                              OrderId;
+                              Order;
+                            }) query;
+  listallProducts: () -> (vec record {
+                                SlugId;
+                                Product;
+                              }) query;
+  searchproductsbycategory: (SlugId) -> (vec record {
+                                               SlugId;
+                                               Product;
+                                             }) query;
+  searchproductsbytitle: (text) -> (vec record {
+                                          SlugId;
+                                          Product;
+                                        }) query;
+  updateCartItems: (CartId, nat8, size, color) -> (Result_6);
+  updateCategory: (SlugId, text, ImgId) -> (Result_5);
+  updateContact: (ContactId, bool) -> (Result_4);
+  updateOrderStatus: (OrderId, text) -> (Result_2);
+  updateProduct: (SlugId, UserProduct, opt blob) -> (Result_3);
+  updateTrackingUrl: (OrderId, text) -> (Result_2);
+  updateUser: (text, text, text) -> (Result_1);
+  updateWishlistItems: (WishlistId) -> (Result);
+}
