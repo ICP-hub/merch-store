@@ -12,6 +12,8 @@ import "react-alice-carousel/lib/alice-carousel.css";
 import { IoHeartOutline, IoHeart } from "react-icons/io5";
 import Button from "../components/common/Button.jsx";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   ConnectButton,
   ConnectDialog,
@@ -96,6 +98,31 @@ const ProductDetail = () => {
   const [data, setData] = useState("");
 
   const { slug } = useParams();
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color === selectedColor ? null : color);
+  };
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  const handleSizeChange = (size) => {
+    setSelectedSize(size === selectedSize ? null : size);
+  };
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const colors = [
+    "RED",
+    "GREEN",
+    "BLUE",
+    "YELLOW",
+    "PURPLE",
+    "ORANGE",
+    "PINK",
+    "TEAL",
+    "INDIGO",
+    "CYAN",
+    "LIME",
+    "GRAY",
+  ];
 
   const useBackend = () => {
     return useCanister("backend");
@@ -122,6 +149,51 @@ const ProductDetail = () => {
 
     return () => clearTimeout(timeoutId);
   }, [backend]);
+
+  const AddToCart = async () => {
+    try {
+      const res = await backend.addtoCartItems(
+        slug,
+        data.inventory,
+        { title: data.title, slug: slug, short: "someShort" },
+        { title: data.title, color: "red", slug: slug }
+      );
+
+      if ("ok" in res) {
+        toast.success("item added to cart Successfully");
+        console.log("     Item added successfully     ", res);
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
+      }
+    } catch (error) {
+      // Log the error for debugging
+      console.error("An error occurred adding items to cart:", error);
+    } finally {
+      setLoading(false);
+      console.log("hello");
+    }
+  };
+
+  const AddToWishlist = async () => {
+    try {
+      const res = await backend.addtoWishlist(slug);
+
+      if ("ok" in res) {
+        toast.success("item added to wishlist Successfully");
+        console.log("     Item added  to wishlist successfully     ", res);
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
+      }
+    } catch (error) {
+      // Log the error for debugging
+      console.error("An error occurred adding items to wishlist:", error);
+    } finally {
+      setLoading(false);
+      console.log("hello");
+    }
+  };
   return (
     <>
       <div className="container mx-auto xl:mt-12 mt-6 px-6 flex items-center md:items-start justify-between md:flex-col flex-col">
@@ -134,11 +206,12 @@ const ProductDetail = () => {
               className="w-full  rounded-md"
             />
             <div className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold">
-              Shirts
+              {data.category}
             </div>
 
             <button
               className={`absolute top-2  right-2 xl:right-8 bg-white p-2 rounded-full shadow-sm w-[40px] h-[40px]`}
+              onClick={AddToWishlist}
             >
               {<IoHeartOutline size="1.5em" />}
             </button>
@@ -162,10 +235,17 @@ const ProductDetail = () => {
             </div>
             {/* Buy Now and Add to Cart Buttons */}
             <div className="flex mt-4">
-              <Button className="bg-black text-white py-2 px-4 rounded-full w-full mb-2 lg:w-1/2 mr-2">
+              <Button
+                className="bg-black text-white py-2 px-4 rounded-full w-full mb-2 lg:w-1/2 mr-2"
+                onClick={AddToWishlist}
+              >
                 Buy Now
               </Button>
-              <Button className="bg-black text-white py-2 px-4 rounded-full w-full  mb-2 lg:w-1/2">
+
+              <Button
+                className="bg-black text-white py-2 px-4 rounded-full w-full  mb-2 lg:w-1/2"
+                onClick={AddToCart}
+              >
                 Add to Cart
               </Button>
             </div>
@@ -176,7 +256,7 @@ const ProductDetail = () => {
             <h2 className="xl:text-2xl  font-bold mb-4">{data.slug}</h2>
             {/* Description */}
             <div className="mb-4">
-              <p className="text-gray-700">{data.description}</p>
+              <p className="text-gray-700">{data.inventory}</p>
             </div>
 
             {/* Ratings */}
@@ -199,7 +279,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Prices */}
-            <div className="mb-4 flex items-center">
+            <div className="mb-4 flex items-center  text-gray-700">
               Price:
               <p className="text-green-600 mr-2">${data.price}</p>
               <p className="text-gray-600">
@@ -208,30 +288,66 @@ const ProductDetail = () => {
             </div>
 
             {/* Color and Size Options */}
-            <div className="mb-4">
-              <p className="text-gray-800">Color Options:</p>
-              <div className="flex flex-wrap">
-                {shirtList[0].colorOptions.map((color, index) => (
-                  <div
-                    key={index}
-                    className={`bg-gray-200 text-black text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2`}
-                  >
-                    {color}
-                  </div>
-                ))}
+            <div className="mb-4 space-y-3">
+              <div>
+                <h2 className="text-sm text-gray-700   mb-2">
+                  COLOR OPTIONS :{selectedColor}
+                </h2>
+                <div className="flex  flex-wrap">
+                  {colors.map((color) => (
+                    <div
+                      key={color}
+                      className={`w-10 h-10 m-1 rounded-full bg-${color} cursor-pointer ${
+                        selectedColor === color
+                          ? "border-[2px] border-gray-300 shadow-md   scale-125  "
+                          : ""
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => handleColorChange(color)}
+                    />
+                  ))}
+                </div>
+                <div></div>
+              </div>
+              <div>
+                <h2 className="text-sm text-gray-700 mb-4">
+                  SELECT SIZE:{selectedSize}
+                </h2>
+                <div className="flex flex-wrap  ">
+                  {sizes.map((size) => (
+                    <div
+                      key={size}
+                      className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2 ${
+                        selectedSize === size
+                          ? "border-black scale-125"
+                          : "border-gray-300"
+                      }`}
+                      onClick={() => handleSizeChange(size)}
+                    >
+                      <span
+                        className={`text-${
+                          selectedSize === size ? "black" : "gray-500"
+                        }`}
+                      >
+                        {size}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div></div>
               </div>
 
-              <p className="text-gray-800 mt-4">Size Options:</p>
-              <div className="flex flex-wrap">
-                {shirtList[0].sizeOptions.map((size, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2"
-                  >
-                    {size}
-                  </div>
-                ))}
-              </div>
+              {/* {<p className="text-gray-800 mt-4">Size Options:</p>
+            <div className="flex flex-wrap">
+              {shirtList[0].sizeOptions.map((size, index) => (
+                <div
+                  key={index}
+                  className=""
+                >
+                  {size}
+                </div>
+              ))}
+            </div>} */}
             </div>
 
             {/* Available Offers */}

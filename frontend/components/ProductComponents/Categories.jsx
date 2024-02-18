@@ -1,13 +1,115 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import Button from "../common/Button";
 import SmoothList from "react-smooth-list";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 
-const fakecategories = ["All", "Home", "Music", "Phone", "Storage", "Other"];
+// const categories = ["All", "Home", "Music", "Phone", "Storage", "Other"];
+
+const CategoryList = () => {};
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ CategoriesVertical : Product Page.
+/* ----------------------------------------------------------------------------------------------------- */
+const CategoriesVertical = ({ searchProductByCategory }) => {
+  const { categoryList, getCategoryList } = ProductApiHandler();
+
+  // Extract categories using a loop
+  const categories = ["all"];
+  if (categoryList !== null) {
+    for (const [category] of categoryList) {
+      categories.push(category);
+    }
+  }
+
+  // ApplyFilter based on category
+  const handleCategoryFilter = (category) => {
+    searchProductByCategory(category);
+  };
+
+  // Call getCategoryList at page reload
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  return (
+    <SmoothList
+      delay={200}
+      className="flex flex-col min-w-40 gap-1 max-md:w-full max-md:items-center nax-md:justify-center"
+    >
+      <h1 className="text-lg font-bold">Categories</h1>
+      {categories.map((category, index) => (
+        <Button
+          key={index}
+          className="focus:outline-none py-2 px-4 rounded-full focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full  max-md:justify-center capitalize"
+          autoFocus={index === 0}
+          onClick={() => handleCategoryFilter(category)}
+        >
+          {category}
+        </Button>
+      ))}
+    </SmoothList>
+  );
+};
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ CategoriesVertical : Home Page.
+/* ----------------------------------------------------------------------------------------------------- */
+const CategoriesHorizontal = ({ searchProductByCategory }) => {
+  const { categoryList, getCategoryList } = ProductApiHandler();
+
+  // Extract categories using a loop
+  const categories = ["all"];
+  if (categoryList !== null) {
+    for (const [category] of categoryList) {
+      categories.push(category);
+    }
+  }
+
+  // ApplyFilter based on category
+  const handleCategoryFilter = (category) => {
+    searchProductByCategory(category);
+  };
+
+  // Call getCategoryList at page reload
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  const navigate = useNavigate();
+  return (
+    <SmoothList
+      delay={200}
+      className="flex justify-between  max-md:flex-col gap-2"
+    >
+      <SmoothList
+        delay={200}
+        className="flex gap-2 max-md:overflow-x-auto snap-proximity snap-x scroll-container"
+        style={scrollStyle}
+      >
+        {categories.map((category, index) => (
+          <Button
+            key={index}
+            className="px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm focus:outline-none"
+            autoFocus={index === 0}
+            onClick={() => handleCategoryFilter(category)}
+          >
+            {category}
+          </Button>
+        ))}
+      </SmoothList>
+      <Button
+        onClick={() => navigate("/products")}
+        className="hidden md:block px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm max-w-max"
+      >
+        See All Products
+      </Button>
+    </SmoothList>
+  );
+};
 
 // Hide Scrollbar : https://stackoverflow.com/a/68111307/18721948
 export const scrollStyle = {
@@ -20,114 +122,4 @@ export const scrollStyle = {
   WebkitOverflowScrolling: "touch", // Optional: Enables smooth scrolling on iOS devices
 };
 
-/* ----------------------------------------------------------------------------------------------------- */
-/*  @ CategoryList 
-/* ----------------------------------------------------------------------------------------------------- */
-const CategoryList = () => {
-  // const { categoryList, getCategoryList } = ProductApiHandler();
-
-  // useEffect(() => {
-  //   getCategoryList();
-  // }, []);
-
-  // console.log(categoryList);
-  // Categories Vertical Product Page
-  const CategoriesVertical = () => {
-    const [filterSize, setFilterSize] = useState(true);
-    const [filterColor, setFiterColor] = useState(false);
-
-    return (
-      <SmoothList
-        delay={200}
-        className="flex flex-col min-w-40 gap-1 max-md:w-full"
-      >
-        <h1 className="text-lg font-bold">Categories</h1>
-        <div>
-          <Button
-            className="focus:outline-none py-2 px-4 rounded-full focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full"
-            onClick={() => setFilterSize(!filterSize)}
-          >
-            Size
-          </Button>
-          {filterSize ? (
-            <div className="flex flex-col px-4 py-1">
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>size one</span>
-              </span>
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>size two</span>
-              </span>
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>size three</span>
-              </span>
-            </div>
-          ) : null}
-        </div>
-        <div>
-          <Button
-            className="focus:outline-none py-2 px-4 rounded-full focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full"
-            onClick={() => setFiterColor(!filterColor)}
-          >
-            Colors
-          </Button>
-          {filterColor ? (
-            <div className="flex flex-col px-4 py-1">
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>Color one</span>
-              </span>
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>Color two</span>
-              </span>
-              <span className="flex gap-1">
-                <input type="checkbox" />
-                <span>Color three</span>
-              </span>
-            </div>
-          ) : null}
-        </div>
-      </SmoothList>
-    );
-  };
-
-  // Categories Horizontal HomePage
-  const CategoriesHorizontal = () => {
-    const navigate = useNavigate();
-    return (
-      <SmoothList
-        delay={200}
-        className="flex justify-between  max-md:flex-col gap-2"
-      >
-        <SmoothList
-          delay={200}
-          className="flex gap-2 max-md:overflow-x-auto snap-proximity snap-x scroll-container"
-          style={scrollStyle}
-        >
-          {fakecategories.map((category, index) => (
-            <Button
-              key={index}
-              className="px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm focus:outline-none"
-              autoFocus={index === 0}
-            >
-              {category}
-            </Button>
-          ))}
-        </SmoothList>
-        <Button
-          onClick={() => navigate("/products")}
-          className="md:block px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm max-w-max"
-        >
-          See All Products
-        </Button>
-      </SmoothList>
-    );
-  };
-
-  return { CategoriesHorizontal, CategoriesVertical };
-};
-
-export default CategoryList;
+export { CategoriesHorizontal, CategoriesVertical };

@@ -38,6 +38,15 @@ actor {
     private var products = Map.HashMap<Types.SlugId, Types.Product>(0, Text.equal, Text.hash);
     private stable var stableproducts : [(Types.SlugId, Types.Product)] = [];
 
+    // -----------------For keeping track of the size and color of the products-------------------
+
+    private var size = Map.HashMap<Types.SlugId, Types.Size>(0, Text.equal, Text.hash);
+    private stable var stablesizes : [(Types.SlugId, Types.Size)] = [];
+
+    private var color = Map.HashMap<Types.SlugId, Types.Color>(0, Text.equal, Text.hash);
+    private stable var stablecolors : [(Types.SlugId, Types.Color)] = [];
+
+    // --------------------------------------------------------------------------------------------------------------------------
     private var categories = Map.HashMap<Types.SlugId, Types.Category>(0, Text.equal, Text.hash);
     private stable var stablecategories : [(Types.SlugId, Types.Category)] = [];
 
@@ -47,7 +56,7 @@ actor {
     private var addressToOrder = Map.HashMap<Text, Types.OrderId>(0, Text.equal, Text.hash);
     private stable var stableaddresstoorder : [(Text, Types.OrderId)] = [];
 
-    private var ratingandreviews = Map.HashMap<Types.SlugId,List.List<Types.ReviewRatings>>(0, Text.equal, Text.hash);
+    private var ratingandreviews = Map.HashMap<Types.SlugId, List.List<Types.ReviewRatings>>(0, Text.equal, Text.hash);
     private stable var stableratingandreviews : [(Types.SlugId, [Types.ReviewRatings])] = [];
 
     //For processing and storing images
@@ -71,24 +80,23 @@ actor {
 
     //  ------------------------   Users_Functions -------------------------
 
-
     public shared ({ caller }) func updateUser(email : Text, firstName : Text, lastName : Text) : async Result.Result<(Types.User), Types.UpdateUserError> {
-       /*  if (Principal.isAnonymous(msg.caller)) {
+        /*  if (Principal.isAnonymous(msg.caller)) {
       return #err(#UserNotAuthenticated); // We require the user to be authenticated,
     }; */
-    if (email == "") { return #err(#EmptyEmail) };
-    if (firstName == "") { return #err(#EmptyFirstName) };
-    if (lastName == "") { return #err(#EmptyLastName) };
+        if (email == "") { return #err(#EmptyEmail) };
+        if (firstName == "") { return #err(#EmptyFirstName) };
+        if (lastName == "") { return #err(#EmptyLastName) };
 
-    let user = {
-      id = caller;
-      email = email;
-      FirstName = firstName;
-      LastName = lastName;
-    };
+        let user = {
+            id = caller;
+            email = email;
+            FirstName = firstName;
+            LastName = lastName;
+        };
 
-    Users.put(caller, user);
-    return #ok(user);
+        Users.put(caller, user);
+        return #ok(user);
 
     };
 
@@ -137,8 +145,8 @@ actor {
             inventory = p.inventory;
             description = p.description;
             active = p.active;
-            size = p.size;
-            color = p.color;
+            newArrival = p.newArrival;
+            trending = p.trending;
             // ratingandreview = p.ratingandreview;
             img = "";
             slug = newSlug;
@@ -155,9 +163,9 @@ actor {
         p : Types.UserProduct,
         img : ?Blob,
     ) : async Result.Result<(Types.Product), Types.UpdateProductError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
         if (Utils.isAdmin(msg.caller)) {
             return #err(#UserNotAdmin); // We require the user to be admin
         };
@@ -193,8 +201,8 @@ actor {
                     inventory = p.inventory;
                     description = p.description;
                     active = p.active;
-                    size = p.size;
-                    color = p.color;
+                    trending = p.trending;
+                    newArrival = p.newArrival;
                     img = imgSlug;
                     // keep persistent URLS
                     slug = v.slug;
@@ -212,9 +220,9 @@ actor {
         if (Utils.isAdmin(msg.caller)) {
             return #err(#UserNotAdmin); // We require the user to be admin
         };
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         products.delete(id);
         return #ok(());
     };
@@ -334,9 +342,9 @@ actor {
         if (Utils.isAdmin(msg.caller)) {
             return #err(#UserNotAdmin); // We require the user to be admin
         };
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
 
         if (name == "") {
             return #err(#EmptyName);
@@ -386,9 +394,9 @@ actor {
 
     public shared (msg) func addtoWishlist(product_slug : Text) : async Result.Result<(Types.WishlistItem), Types.CreateWishlistItemError> {
 
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
 
         if (product_slug == "") { return #err(#EmptyProductSlug) };
 
@@ -413,9 +421,9 @@ actor {
         id : Types.WishlistId
     ) : async Result.Result<(Types.WishlistItem), Types.UpdateWishlistItemError> {
         // commented for local development
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
 
         let result = wishlistItems.get(id);
         switch (result) {
@@ -439,9 +447,9 @@ actor {
     };
 
     public shared (msg) func deleteWishlistItems(id : Types.WishlistId) : async Result.Result<(), Types.DeleteWishlistItemError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         wishlistItems.delete(id);
         return #ok(());
     };
@@ -453,11 +461,11 @@ actor {
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
 
-    public shared (msg) func addtoCartItems(product_slug : Text, qty : Nat8 , size : Types.size , color : Types.color ) : async Result.Result<(Types.CartItem), Types.CreateCartItemsError> {
+    public shared (msg) func addtoCartItems(product_slug : Text, qty : Nat8, size : Types.Size, color : Types.Color) : async Result.Result<(Types.CartItem), Types.CreateCartItemsError> {
 
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
 
         if (product_slug == "") { return #err(#EmptyProductSlug) };
 
@@ -484,13 +492,13 @@ actor {
     public shared (msg) func updateCartItems(
         id : Types.CartId,
         qty : Nat8,
-        size : Types.size,
-        color : Types.color
+        size : Types.Size,
+        color : Types.Color,
     ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
         // commented for local development
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
 
         let result = cartItems.get(id);
         switch (result) {
@@ -518,9 +526,9 @@ actor {
 
     public shared (msg) func deleteCartItems(id : Types.CartId) : async Result.Result<(), Types.DeleteCartItemsError> {
 
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         cartItems.delete(id);
         return #ok(());
     };
@@ -579,9 +587,9 @@ actor {
     };
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
@@ -626,9 +634,9 @@ actor {
     };
 
     public shared (msg) func updateOrderStatus(id : Types.OrderId, orderStatus : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
@@ -705,9 +713,9 @@ actor {
     };
 
     public shared (msg) func deleteOrder(id : Types.OrderId) : async Result.Result<(), Types.DeleteOrderError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
@@ -754,9 +762,9 @@ actor {
         id : Types.ContactId,
         read : Bool,
     ) : async Result.Result<(Types.Contact), Types.UpdateContactError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
@@ -801,9 +809,9 @@ actor {
     };
 
     public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
         let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
@@ -827,8 +835,6 @@ actor {
     };
 
     // ----------------------------------------Rivew & Ratings functions-------------------------------------------------------------
-
-    
 
     // public shared ({ caller }) func addReviewRating(product_slug : Text, review : Text, rating : ?Types.Rating) : async Result.Result<(Types.ReviewRatings), Types.CreateReviewError> {
     //     let userP : Principal = caller;
@@ -873,7 +879,7 @@ actor {
     //             };
     //         };
     //     };
-    // };    
+    // };
     // --------------------------  Stablising functions to store data   --------------------------------------------------------------
 
     // Stablising the data

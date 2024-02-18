@@ -6,8 +6,8 @@ export interface CartItem {
   'id' : CartId,
   'time_created' : Time,
   'principal' : Principal,
-  'color' : color,
-  'size' : size,
+  'color' : Color,
+  'size' : Size,
   'product_slug' : string,
   'time_updated' : Time,
   'quantity' : number,
@@ -17,6 +17,7 @@ export interface Category {
   'name' : string,
   'slug' : SlugId,
 }
+export interface Color { 'title' : string, 'color' : string, 'slug' : SlugId }
 export interface Contact {
   'id' : ContactId,
   'time_created' : Time,
@@ -110,10 +111,10 @@ export interface Product {
   'title' : string,
   'active' : boolean,
   'inventory' : bigint,
-  'color' : color,
-  'size' : size,
   'slug' : SlugId,
   'description' : string,
+  'trending' : boolean,
+  'newArrival' : boolean,
   'time_updated' : Time,
   'category' : SlugId,
   'price' : number,
@@ -175,6 +176,7 @@ export interface ShippingAddress {
   'lastName' : string,
   'firstName' : string,
 }
+export interface Size { 'title' : string, 'slug' : SlugId, 'short' : string }
 export type SlugId = string;
 export type Time = bigint;
 export type UpdateCartItemsError = { 'UserNotAdmin' : null } |
@@ -221,9 +223,9 @@ export interface UserProduct {
   'title' : string,
   'active' : boolean,
   'inventory' : bigint,
-  'color' : color,
-  'size' : size,
   'description' : string,
+  'trending' : boolean,
+  'newArrival' : boolean,
   'category' : SlugId,
   'price' : number,
 }
@@ -235,34 +237,8 @@ export interface WishlistItem {
   'product_slug' : string,
   'time_updated' : Time,
 }
-export type color = { 'Red' : null } |
-  { 'Yellow' : null } |
-  { 'Blue' : null } |
-  { 'Cyan' : null } |
-  { 'Green' : null } |
-  { 'Gold' : null } |
-  { 'Gray' : null } |
-  { 'Lime' : null } |
-  { 'Navy' : null } |
-  { 'Pink' : null } |
-  { 'Teal' : null } |
-  { 'Black' : null } |
-  { 'Brown' : null } |
-  { 'White' : null } |
-  { 'Orange' : null } |
-  { 'Purple' : null } |
-  { 'Olive' : null } |
-  { 'Magenta' : null } |
-  { 'Silver' : null } |
-  { 'Maroon' : null };
-export type size = { 'L' : null } |
-  { 'M' : null } |
-  { 'S' : null } |
-  { 'XL' : null } |
-  { 'XS' : null } |
-  { 'XXL' : null };
 export interface _SERVICE {
-  'addtoCartItems' : ActorMethod<[string, number, size, color], Result_22>,
+  'addtoCartItems' : ActorMethod<[string, number, Size, Color], Result_22>,
   'addtoWishlist' : ActorMethod<[string], Result_21>,
   'createCategory' : ActorMethod<[string, ImgId], Result_20>,
   'createContact' : ActorMethod<[UserContact], Result_19>,
@@ -293,7 +269,7 @@ export interface _SERVICE {
   'listallProducts' : ActorMethod<[], Array<[SlugId, Product]>>,
   'searchproductsbycategory' : ActorMethod<[SlugId], Array<[SlugId, Product]>>,
   'searchproductsbytitle' : ActorMethod<[string], Array<[SlugId, Product]>>,
-  'updateCartItems' : ActorMethod<[CartId, number, size, color], Result_6>,
+  'updateCartItems' : ActorMethod<[CartId, number, Size, Color], Result_6>,
   'updateCategory' : ActorMethod<[SlugId, string, ImgId], Result_5>,
   'updateContact' : ActorMethod<[ContactId, boolean], Result_4>,
   'updateOrderStatus' : ActorMethod<[OrderId, string], Result_2>,

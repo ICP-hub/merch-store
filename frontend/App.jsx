@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+
 /*
  * Connect2ic provides essential utilities for IC app development
  */
@@ -200,6 +201,9 @@ const client = createClient({
 
 export default () => (
   <Connect2ICProvider client={client}>
+  
     <App />
+    
   </Connect2ICProvider>
+
 );

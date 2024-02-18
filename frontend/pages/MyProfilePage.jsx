@@ -57,8 +57,7 @@ const MyProAccount = () => {
 
   const [backend] = useCanister("backend")
   const [loading, setLoading] = useState(false)
-  const [loading2, setLoading2] = useState(false)
-  const [data, setData] = useState("")
+  const [loading2, setLoading2] = useState(true)
   const [email, setEmail] = useState("") // Add state for email
   const [firstName, setFirstName] = useState("") // Add state for FirstName
   const [lastName, setLastName] = useState("") // Add state for LastName

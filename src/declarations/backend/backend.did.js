@@ -1,33 +1,14 @@
 export const idlFactory = ({ IDL }) => {
-  const size = IDL.Variant({
-    'L' : IDL.Null,
-    'M' : IDL.Null,
-    'S' : IDL.Null,
-    'XL' : IDL.Null,
-    'XS' : IDL.Null,
-    'XXL' : IDL.Null,
+  const SlugId = IDL.Text;
+  const Size = IDL.Record({
+    'title' : IDL.Text,
+    'slug' : SlugId,
+    'short' : IDL.Text,
   });
-  const color = IDL.Variant({
-    'Red' : IDL.Null,
-    'Yellow' : IDL.Null,
-    'Blue' : IDL.Null,
-    'Cyan' : IDL.Null,
-    'Green' : IDL.Null,
-    'Gold' : IDL.Null,
-    'Gray' : IDL.Null,
-    'Lime' : IDL.Null,
-    'Navy' : IDL.Null,
-    'Pink' : IDL.Null,
-    'Teal' : IDL.Null,
-    'Black' : IDL.Null,
-    'Brown' : IDL.Null,
-    'White' : IDL.Null,
-    'Orange' : IDL.Null,
-    'Purple' : IDL.Null,
-    'Olive' : IDL.Null,
-    'Magenta' : IDL.Null,
-    'Silver' : IDL.Null,
-    'Maroon' : IDL.Null,
+  const Color = IDL.Record({
+    'title' : IDL.Text,
+    'color' : IDL.Text,
+    'slug' : SlugId,
   });
   const CartId = IDL.Text;
   const Time = IDL.Int;
@@ -35,8 +16,8 @@ export const idlFactory = ({ IDL }) => {
     'id' : CartId,
     'time_created' : Time,
     'principal' : IDL.Principal,
-    'color' : color,
-    'size' : size,
+    'color' : Color,
+    'size' : Size,
     'product_slug' : IDL.Text,
     'time_updated' : Time,
     'quantity' : IDL.Nat8,
@@ -72,7 +53,6 @@ export const idlFactory = ({ IDL }) => {
     'err' : CreateWishlistItemError,
   });
   const ImgId = IDL.Text;
-  const SlugId = IDL.Text;
   const Category = IDL.Record({
     'category_img' : ImgId,
     'name' : IDL.Text,
@@ -164,9 +144,9 @@ export const idlFactory = ({ IDL }) => {
     'title' : IDL.Text,
     'active' : IDL.Bool,
     'inventory' : IDL.Nat,
-    'color' : color,
-    'size' : size,
     'description' : IDL.Text,
+    'trending' : IDL.Bool,
+    'newArrival' : IDL.Bool,
     'category' : SlugId,
     'price' : IDL.Float64,
   });
@@ -177,10 +157,10 @@ export const idlFactory = ({ IDL }) => {
     'title' : IDL.Text,
     'active' : IDL.Bool,
     'inventory' : IDL.Nat,
-    'color' : color,
-    'size' : size,
     'slug' : SlugId,
     'description' : IDL.Text,
+    'trending' : IDL.Bool,
+    'newArrival' : IDL.Bool,
     'time_updated' : Time,
     'category' : SlugId,
     'price' : IDL.Float64,
@@ -315,7 +295,7 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'addtoCartItems' : IDL.Func(
-        [IDL.Text, IDL.Nat8, size, color],
+        [IDL.Text, IDL.Nat8, Size, Color],
         [Result_22],
         [],
       ),
@@ -391,7 +371,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'updateCartItems' : IDL.Func(
-        [CartId, IDL.Nat8, size, color],
+        [CartId, IDL.Nat8, Size, Color],
         [Result_6],
         [],
       ),

@@ -1,6 +1,6 @@
 # Merch Store 
 
-Ecommerce Project on icp
+Ecommerce Project on ic
 
 ## Run Locally
 

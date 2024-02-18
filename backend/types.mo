@@ -9,37 +9,6 @@ module {
     public type WishlistId = Text;
     public type CartId = Text;
     public type RId = Text;
-    public type size = {
-        #XS;
-        #S;
-        #M;
-        #L;
-        #XL;
-        #XXL;
-    };
-
-    public type color = {
-        #Red;
-        #Blue;
-        #Green;
-        #Yellow;
-        #Black;
-        #White;
-        #Purple;
-        #Orange;
-        #Pink;
-        #Gray;
-        #Brown;
-        #Cyan;
-        #Magenta;
-        #Teal;
-        #Lime;
-        #Olive;
-        #Navy;
-        #Maroon;
-        #Silver;
-        #Gold;
-    };
 
     public type User = {
         id : Principal;
@@ -162,8 +131,8 @@ module {
         description : Text;
         category : SlugId;
         active : Bool;
-        size : size;
-        color : color;
+        newArrival : Bool;
+        trending : Bool;
     };
 
     // Backend data for products
@@ -267,13 +236,24 @@ module {
         // accountBalance : BitcoinApiTypes.Satoshi;
     };
 
+    public type Size = {
+        title : Text;
+        slug : SlugId;
+        short : Text;
+    };
+
+    public type Color = {
+        title : Text;
+        slug : SlugId;
+        color : Text;
+    };
     // Cart Items
 
     public type CartItem = {
         id : CartId;
         product_slug : Text;
-        size : size;
-        color : color;
+        size : Size;
+        color : Color;
         quantity : Nat8;
         principal : Principal;
         time_created : Time.Time;
