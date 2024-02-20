@@ -7,31 +7,23 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import NoDataFound from "./NoDataFound";
 import TrendingProductCardLoader from "./TrendingProductCardLoader";
+import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 
 const TrendingProducts = () => {
   const { scrollYProgress } = useScroll();
   const x = useTransform(scrollYProgress, [0, 1], [0, 800]); // Adjust the range as needed
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  const { isLoading, productList, getProductList } = ProductApiHandler();
+
+  // Filter trending products from productList
+  const trendingProducts = productList?.filter(([prodSlug, { trending }]) => {
+    if (trending) {
+      return productList;
+    }
+  });
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const productsData = await backend.listallProducts();
-        setProducts(productsData);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (backend) {
-      fetchProducts();
-    }
-  }, [backend]); // Only run the effect when `backend` changes
+    getProductList();
+  }, []);
 
   const maxInitialDisplay = 6;
 
@@ -79,7 +71,7 @@ const TrendingProducts = () => {
         </h1>
       </div>
       <motion.div style={{ x: x }} className="w-full md:w-5/6">
-        {loading ? (
+        {isLoading ? (
           <Slider {...settings}>
             {[...Array(4)].map((_, index) => (
               <TrendingProductCardLoader key={index} />
@@ -87,14 +79,20 @@ const TrendingProducts = () => {
           </Slider>
         ) : (
           <>
-            {products.length > 0 ? (
+            {trendingProducts.length > 0 ? (
               <Slider {...settings}>
-                {products.slice(0, maxInitialDisplay).map((product) => (
-                  <TrendingProductCard key={product[1].id} product={product[1]} />
-                ))}
+                {/* {console.log(trendingProducts)} */}
+                {trendingProducts
+                  .slice(0, maxInitialDisplay)
+                  .map(([prodSlug, prodDetails], index) => (
+                    <TrendingProductCard key={index} product={prodDetails} />
+                  ))}
               </Slider>
             ) : (
-              <NoDataFound title={"No Product Found"} bgcolor={"bg-white/50 backdrop-blur-sm"} />
+              <NoDataFound
+                title={"No Product Found"}
+                bgcolor={"bg-white/50 backdrop-blur-sm"}
+              />
             )}
           </>
         )}

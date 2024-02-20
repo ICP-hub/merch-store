@@ -16,6 +16,7 @@ const ProductApiHandler = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryList, setCategoryList] = useState(null);
   const [initialProductList, setInitialProductList] = useState([]); // For 'all' filter in category tab
+  const [searchResults, setSearchResults] = useState(null);
   /* ----------------------------------------------------------------------------------------------------- */
   /*  @ Product related
   /* ----------------------------------------------------------------------------------------------------- */
@@ -36,22 +37,23 @@ const ProductApiHandler = () => {
   // Search product by name in searchInput
   const searchProductByName = async (searchInput) => {
     try {
-      // SerchInput less than || equal 3 : don't perform the search
-      if (!searchInput || searchInput.length <= 3) {
-        // Show all products : in this condition
+      // SerchInput less than or equal to 3: don't perform the search
+      if (!searchInput || searchInput.length <= 2) {
+        // Show all products in this condition
+        setSearchResults(null);
         setProductList(initialProductList);
         return;
       }
 
       // Enable case-insensitive search .toLowerCase()
       const searchTerm = searchInput.toLowerCase();
-
-      // Filter products that contain the searchTerm in their name
-      const filteredProducts = initialProductList.filter(
-        ([prodName, prodDetails]) => prodName.toLowerCase().includes(searchTerm)
+      // Filter products that contain the searchTerm in their name across all pages
+      const filteredProducts = initialProductList.filter(([prod, { title }]) =>
+        title.toLowerCase().includes(searchTerm)
       );
 
-      // Update the productList with the filtered products
+      // Update the search results and productList
+      setSearchResults(filteredProducts);
       setProductList(filteredProducts);
     } catch (err) {
       console.error("Error searching by name:", err);
@@ -71,7 +73,9 @@ const ProductApiHandler = () => {
     }
     try {
       setIsLoading(true);
-      const productsFound = await backend.searchproductsbycategory(searchInput);
+      const productsFound = await backend.searchproductsbycategory(
+        searchInput.toLowerCase()
+      );
       setProductList(productsFound);
     } catch (err) {
       console.error("Error searching by category:", err);
@@ -102,6 +106,7 @@ const ProductApiHandler = () => {
     searchProductByCategory,
     getCategoryList,
     searchProductByName,
+    searchResults,
   };
 };
 

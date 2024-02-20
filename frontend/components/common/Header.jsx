@@ -11,13 +11,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
 import { motion, useScroll, useTransform } from "framer-motion"
 import WAVES from "vanta/dist/vanta.waves.min"
 import { Menu, Transition } from "@headlessui/react"
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react"
+import { useCanister, useConnect, useDialog } from "@connect2ic/react"
 import toast from "react-hot-toast"
 import {
   RiContactsFill,
@@ -46,6 +40,9 @@ import {
 import { PiUsersFourFill, PiUsersFour } from "react-icons/pi"
 import CartItemsSmall from "../cart/CartItemsSmall"
 import Avatar from "boring-avatars"
+import NoDataFound from "./NoDataFound"
+import TrendingProducts from "./TrendingProducts"
+import CartItemsSmallLoader from "../cart/CartItemsSmallLoader"
 
 const getRandomColor = () => {
   const minDarkness = 20 // Minimum darkness level (0-255)
@@ -74,10 +71,29 @@ const Header = ({ title }) => {
   const [vantaEffect, setVantaEffect] = useState(null)
   const myRef = useRef(null)
   const { isConnected, disconnect, principal } = useConnect()
+  const [carts, setCarts] = useState([])
+  const [backend] = useCanister("backend")
+  const [loading, setLoading] = useState(true)
+  const maxInitialDisplay = 3
+  const { open } = useDialog()
 
-  /*   const getRandomColor = () => {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-  }; */
+  useEffect(() => {
+    const listCarts = async () => {
+      try {
+        setLoading(true)
+        const cart = await backend.getCallerCartItems()
+        setCarts(cart)
+      } catch (error) {
+        console.error("Error listing carts:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (backend) {
+      listCarts()
+    }
+  }, [backend])
 
   useEffect(() => {
     let intervalId
@@ -112,10 +128,14 @@ const Header = ({ title }) => {
     }
   }, [vantaEffect])
 
+  console.log(carts, "carts2")
+
   return (
     <div
       ref={myRef}
-      className="w-full h-[250px] md:h-[350px] relative z-10 bg-gray-200 bg-cover bg-center bg-no-repeat overflow-hidden"
+      className={`w-full ${
+        isHomePage ? `h-[650px] md:h-[650px]` : `h-[250px] md:h-[350px]`
+      } relative z-10 bg-gray-200 bg-cover bg-center bg-no-repeat overflow-hidden`}
     >
       <nav className="w-full z-20 bg-transparent fixed top-0">
         <div className="md:container md:mx-auto">
@@ -501,7 +521,10 @@ const Header = ({ title }) => {
                     </div>
                   ) : (
                     <button
-                      onClick={() => navigate("/login")}
+                      onClick={() => {
+                        navigate("/login")
+                        toast.error("Please connect your wallet first!")
+                      }}
                       className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full flex justify-center items-center"
                     >
                       <HiOutlineUser className="w-7 h-7 text-gray-700" />
@@ -509,66 +532,100 @@ const Header = ({ title }) => {
                   )}
                 </div>
 
-                {/* <button
-                  onClick={() => navigate("/cart")}
-                  className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full relative  flex justify-center items-center"
-                >
-                  <HiOutlineShoppingCart className="w-7 h-7 text-gray-700" />
-                  <span className="bg-red-500 absolute top-2 right-2 rounded-full text-[9px] w-3 h-3 flex justify-center items-center text-white p-1/2">
-                    12
-                  </span>
-                </button> */}
-                <div>
-                  <Menu as="div" className="relative inline-block text-left">
-                    <div className="mb-0">
-                      <Menu.Button className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full relative  flex justify-center items-center">
-                        <HiOutlineShoppingCart className="w-7 h-7 text-gray-700" />
-                        <span className="bg-red-500 absolute top-2 right-2 rounded-full text-[9px] w-3 h-3 flex justify-center items-center text-white p-1/2">
-                          12
-                        </span>
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="mt-2 absolute right-0 w-80 md:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
-                        <div className="border-b-[1px] border-gray-200 px-3 py-3 mb-1">
-                          <h2 className="text-lg text-gray-900 font-semibold">
-                            My Cart (12)
-                          </h2>
-                        </div>
-                        <div className="p-3">
-                          <div className="border-[1px] border-gray-200 p-3 rounded-xl mb-3 grid grid-cols-1 gap-3">
-                            <CartItemsSmall />
-                            <CartItemsSmall />
-                            <CartItemsSmall />
+                {isConnected ? (
+                  <div>
+                    <Menu as="div" className="relative inline-block text-left">
+                      <div className="mb-0">
+                        <Menu.Button className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full relative  flex justify-center items-center">
+                          <HiOutlineShoppingCart className="w-7 h-7 text-gray-700" />
+                          <span className="bg-red-500 absolute top-2 right-2 rounded-full text-[9px] w-3 h-3 flex justify-center items-center text-white p-1/2">
+                            {carts?.length}
+                          </span>
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="mt-2 absolute right-0 w-80 md:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
+                          <div className="border-b-[1px] border-gray-200 px-3 py-3 mb-1">
+                            <h2 className="text-lg text-gray-900 font-semibold">
+                              My Cart ({carts?.length})
+                            </h2>
                           </div>
-                          <button
-                            onClick={() => navigate("/cart")}
-                            className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
-                          >
-                            view all
-                          </button>
-                        </div>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
+                          <div className="p-3">
+                            {loading ? (
+                              <div className="border-[1px] border-gray-200 p-3 rounded-xl mb-3 grid grid-cols-1 gap-3">
+                                {[...Array(3)].map((_, index) => (
+                                  <CartItemsSmallLoader key={index} />
+                                ))}
+                              </div>
+                            ) : (
+                              <>
+                                {carts.length > 0 ? (
+                                  <div className="border-[1px] border-gray-200 p-3 rounded-xl mb-3 grid grid-cols-1 gap-3">
+                                    {carts
+                                      .slice(0, maxInitialDisplay)
+                                      .map((item, index) => (
+                                        <CartItemsSmall
+                                          key={index}
+                                          cart={item}
+                                          setCarts={setCarts}
+                                        />
+                                      ))}
+                                  </div>
+                                ) : (
+                                  <NoDataFound
+                                    title={"No Items Available Yet"}
+                                  />
+                                )}
+                              </>
+                            )}
+                            {carts.length > maxInitialDisplay && (
+                              <button
+                                onClick={() => navigate("/cart")}
+                                className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
+                              >
+                                view all
+                              </button>
+                            )}
+                          </div>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      toast.error("Please connect your wallet first")
+                      open()
+                    }}
+                    className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full relative  flex justify-center items-center"
+                  >
+                    <HiOutlineShoppingCart className="w-7 h-7 text-gray-700" />
+                    <span className="bg-red-500 absolute top-2 right-2 rounded-full text-[9px] w-3 h-3 flex justify-center items-center text-white p-1/2">
+                      0
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
       </nav>
-      {/* {isHomePage && <WelcomeText />} */}
+      {isHomePage && <TrendingProducts />}
       <motion.div
         style={{ x: x }}
-        className=" text-[50px] md:text-[100px] font-black tracking-widest text-white absolute -bottom-[22px] md:-bottom-[40px] flex justify-center w-full"
+        className={` text-[50px] ${
+          isHomePage ? `md:text-[200px]` : `md:text-[100px]`
+        } font-black tracking-widest text-white absolute -bottom-[22px] ${
+          isHomePage ? `md:-bottom-[90px]` : `md:-bottom-[40px]`
+        } flex justify-center w-full`}
       >
         {title}
       </motion.div>

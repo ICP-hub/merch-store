@@ -1,14 +1,16 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React from "react"
-import { BsArrowLeft, BsArrowRight, BsCart3 } from "react-icons/bs"
-import Button from "../common/Button"
-import fakeProd from "../../assets/fakeprod.png"
-import Carousel from "react-multi-carousel"
-import "react-multi-carousel/lib/styles.css"
-import SmoothList from "react-smooth-list"
-import { Tilt } from "react-tilt"
+import React, { useEffect } from "react";
+import { BsArrowLeft, BsArrowRight, BsCart3 } from "react-icons/bs";
+import Button from "../common/Button";
+import fakeProd from "../../assets/fakeprod.png";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import SmoothList from "react-smooth-list";
+import { Tilt } from "react-tilt";
+import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
+import { Link, useNavigate } from "react-router-dom";
 const defaultOptions = {
   reverse: false, // reverse the tilt direction
   max: 35, // max tilt rotation (degrees)
@@ -19,26 +21,42 @@ const defaultOptions = {
   axis: null, // What axis should be disabled. Can be X or Y.
   reset: true, // If the tilt effect has to be reset on exit.
   easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
-}
+};
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main : HomePage Bottom Component.
 /* ----------------------------------------------------------------------------------------------------- */
-const HomePageBottom = () => {
+const HomePageBottom = ({ productList }) => {
+  // Filter new Arrival from productList : last index will be the latest
+  const newArrivalList = productList?.filter(([prodSlug, { newArrival }]) => {
+    if (newArrival) {
+      return productList;
+    }
+  });
+  // Last Product of the newArrival : newArrivalList.slice(-1);
+  // console.log(newArrivalList.slice(-1));
+  const newArrivalProd = newArrivalList?.slice(-1);
   return (
     <div className="flex flex-col py-8  rounded-2xl gap-8 tracking-wider">
-      <NewArrival />
+      <NewArrival newArrivalProd={newArrivalProd} />
       <ExpCategories />
-      {/*       <ExploreCategories />
-       */}{" "}
     </div>
-  )
-}
+  );
+};
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ First Div: HomeBottom : New Arrival Div.
 /* ----------------------------------------------------------------------------------------------------- */
 
-const NewArrival = () => {
+const NewArrival = ({ newArrivalProd }) => {
+  // Extract title, description and required fields
+  const prodDetails = newArrivalProd?.map(
+    ([prodSlug, prodDetails]) => prodDetails
+  )[0];
+  // console.log("prodDetails:", prodDetails);
+
+  const { title, description } = prodDetails || {};
+  // console.log("title:", title);
+  // console.log("description:", description);
   return (
     <div className="px-6 md:container md:mx-auto mb-10">
       <div
@@ -48,13 +66,10 @@ const NewArrival = () => {
         <div data-aos="fade-up" className="order-2 sm:order-1 flex flex-col">
           <div className="flex-1 overflow-auto">
             <p className="text-sm text-slate-600">NEW ARRIVAL</p>
-            <h1 className="text-4xl max-md:text-3xl font-semibold pb-4">
-              Sangkalala Sound
+            <h1 className="text-4xl max-md:text-3xl font-semibold pb-4 capitalize">
+              {title}
             </h1>
-            <p className="text-slate-600">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis
-              architecto tempore fugiat, temporibus fugit repellendus ipsa!
-            </p>
+            <p className="text-slate-600">{description}</p>
           </div>
           <Features />
         </div>
@@ -70,8 +85,8 @@ const NewArrival = () => {
         </Tilt>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Second Div: HomeBottom : ExploreCategories component.
@@ -126,6 +141,12 @@ const NewArrival = () => {
 
 //category new
 const ExpCategories = () => {
+  const { categoryList, getCategoryList } = ProductApiHandler();
+  // Call CategoryList
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
   return (
     <div className="md:container md:mx-auto px-6 my-8 ">
       <h1
@@ -143,31 +164,34 @@ const ExpCategories = () => {
       </p>
       <SmoothList delay={200}>
         <div className="grid-category">
-          <CategoryCard />
-          <CategoryCard />
-          <CategoryCard />
-          <CategoryCard />
-          <CategoryCard />
-          <CategoryCard />
+          {/* render 6 category card at max */}
+          {categoryList?.slice(0, 6).map(([cateSlug, { name }], index) => (
+            <CategoryCard key={index} name={name} />
+          ))}
         </div>
       </SmoothList>
     </div>
-  )
-}
+  );
+};
 
 //category card
-const CategoryCard = () => {
+const CategoryCard = ({ name }) => {
+  // Link from react-router-dom breaking css
+  const navigate = useNavigate();
   return (
     <div
       data-aos="fade-up"
       className="item-category rounded-2xl bg-[url('https://picsum.photos/1000')] bg-cover bg-center bg-no-repeat grayscale hover:grayscale-0 transition duration-300 ease-in-out cursor-pointer"
+      onClick={() => navigate("/products", { state: name })}
     >
       <div className="h-full w-full bg-black/50 rounded-2xl flex flex-col justify-center items-center">
-        <h4 className="font-semibold text-white text-4xl ">Category</h4>
+        <h4 className="font-semibold text-white text-4xl capitalize ">
+          {name}
+        </h4>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Features
 const FeatureItem = ({ title, quality }) => (
@@ -180,14 +204,14 @@ const FeatureItem = ({ title, quality }) => (
       <p className="text-xs text-slate-600 font-semibold">{quality}</p>
     </div>
   </div>
-)
+);
 
 export const Features = () => {
   const featureData = [
     { title: "Feature Name 1", quality: "Feature Quality 1" },
     { title: "Feature Name 2", quality: "Feature Quality 2" },
     { title: "Feature Name 3", quality: "Feature Quality 3" },
-  ]
+  ];
 
   return (
     <div className="features flex flex-col gap-4 mt-4">
@@ -195,7 +219,7 @@ export const Features = () => {
         <FeatureItem key={index} {...feature} />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default HomePageBottom
+export default HomePageBottom;

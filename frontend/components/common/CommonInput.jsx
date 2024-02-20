@@ -13,6 +13,7 @@ const CommonInput = ({
   value,
   onChange,
   disabled,
+  divClass,
 }) => {
   return (
     <div className=" flex flex-col gap-1 w-full items-center">
@@ -23,7 +24,7 @@ const CommonInput = ({
         <input
           type={type}
           placeholder={placeholder}
-          className="focus:outline-none flex-1 px-3 py-2 border border-gray-300 h-full rounded-full text-black w-full placeholder:capitalize placeholder:font-light"
+          className={`focus:outline-none flex-1 px-3 py-2 border border-gray-300 h-full rounded-full text-black w-full placeholder:capitalize placeholder:font-light ${divClass}`}
           value={value}
           onChange={onChange}
           disabled={disabled}

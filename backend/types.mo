@@ -2,6 +2,7 @@
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
+import Nat32 "mo:base/Nat32";
 module {
     public type ProductId = Nat;
     // Slug is a unique identifier for a product
@@ -127,7 +128,7 @@ module {
     public type UserProduct = {
         title : Text;
         price : Float;
-        inventory : Nat;
+        sellingPrice : Float;
         description : Text;
         category : SlugId;
         active : Bool;
@@ -142,6 +143,46 @@ module {
         slug : SlugId;
         time_created : Time.Time;
         time_updated : Time.Time;
+    };
+
+    public type Variants = {
+        variant_slug : SlugId;
+        product_slug : SlugId;
+        size : Text;
+        color : Text;
+        variant_price : Float;
+        variant_sale_price : Float;
+        inventory : Nat;
+    };
+
+    public type DeleteVariantError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #VariantNotFound;
+    };
+
+    public type UpdateVariantError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #EmptySize;
+        #EmptyColor;
+        #EmptyProductSlug;
+        #ProductSlugNotFound;
+        #VariantNotFound;
+    };
+
+    public type GetVariantError = {
+        #VariantNotFound;
+    };
+
+    public type CreateVariantError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #EmptySize;
+        #EmptyColor;
+        #EmptyProductSlug;
+        #ProductSlugNotFound;
+        #VariantSlugAlreadyExists;
     };
 
     public type ImgId = Text;
@@ -236,24 +277,28 @@ module {
         // accountBalance : BitcoinApiTypes.Satoshi;
     };
 
-    public type Size = {
-        title : Text;
-        slug : SlugId;
-        short : Text;
-    };
+    // public type Size = {
+    //     title : Text;
+    //     slug : SlugId;
+    //     short : Text;
+    // };
 
-    public type Color = {
-        title : Text;
-        slug : SlugId;
-        color : Text;
-    };
+    // public type Color = {
+    //     title : Text;
+    //     slug : SlugId;
+    //     color : Text;
+    // };
     // Cart Items
+
+    // User input data for products
+
+    // Backend data for products
 
     public type CartItem = {
         id : CartId;
         product_slug : Text;
-        size : Size;
-        color : Color;
+        // size : Size;
+        // color : Color;
         quantity : Nat8;
         principal : Principal;
         time_created : Time.Time;
@@ -331,7 +376,7 @@ module {
         name : Text;
         email : Text;
         message : Text;
-        read : Bool;
+        contact_number : Nat32;
     };
 
     public type Contact = UserContact and {

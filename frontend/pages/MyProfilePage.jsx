@@ -127,16 +127,18 @@ const MyProAccount = () => {
       console.log("Response from backend:", res)
 
       if ("ok" in res) {
-        toast.success("User Profile Updated Successfully")
+        toast.success("Profile Successfully Updated.")
         setInputsDisabled(true)
         // getUser()
       } else {
-        // Log an error if the response does not have "ok" property
+        // Display error message
+        toast.error("Profile update failed. Please try again.")
         console.error("Unexpected response from backend:", res)
       }
     } catch (error) {
-      // Log the error for debugging
+      // Log and display error message
       console.error("An error occurred while updating profile:", error)
+      toast.error("An error occurred while updating profile. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -164,16 +166,16 @@ const MyProAccount = () => {
             />
           </div>
           <h4 className="text-center font-semibold text-gray-900 text-lg">
-            {loading2 ? "please wait..." : `${firstName} ${lastName}`}
+            {loading2 ? (<span className="animate-pulse bg-gray-300 h-[20px] w-[150px] rounded-full"></span>) : `${firstName} ${lastName}`}
           </h4>
         </div>
-
         <div className="w-full md:w-3/4 flex flex-col gap-3">
           <div className="flex gap-4">
             <CommonInput
               type="text"
               label="first name"
               placeholder="first name"
+              divClass={loading2 && ` animate-pulse` }
               value={loading2 ? "please wait..." : firstName}
               onChange={(e) => setFirstName(e.target.value)}
               disabled={inputsDisabled}
@@ -182,6 +184,7 @@ const MyProAccount = () => {
               label="Last Name"
               type="text"
               placeholder="last name"
+              divClass={loading2 && ` animate-pulse` }
               value={loading2 ? "please wait..." : lastName}
               onChange={(e) => setLastName(e.target.value)}
               disabled={inputsDisabled}
@@ -191,6 +194,7 @@ const MyProAccount = () => {
             label="Email"
             type="text"
             placeholder="email"
+            divClass={loading2 && ` animate-pulse` }
             value={loading2 ? "please wait..." : email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={inputsDisabled}

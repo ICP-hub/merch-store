@@ -29,12 +29,14 @@ const SearchBar = ({
         value={value}
         onChange={onChange}
       />
-      <Button
-        className="bg-black text-white px-4 py-1 rounded-full"
-        onClick={onSearchClick}
-      >
-        {buttonText}
-      </Button>
+      {buttonText?.length > 0 ? (
+        <Button
+          className="bg-black text-white px-4 py-1 rounded-full"
+          onClick={onSearchClick}
+        >
+          {buttonText}
+        </Button>
+      ) : null}
     </div>
   );
 };

@@ -13,6 +13,7 @@ import { CategoriesHorizontal } from "../ProductComponents/Categories";
 import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 import LoadingScreen from "../common/LoadingScreen";
 import NoDataFound from "../common/NoDataFound";
+import TrendingProductCardLoader from "../common/TrendingProductCardLoader";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main : HomePageContainerMain.
@@ -35,7 +36,7 @@ const HomePageContainerMain = () => {
   return (
     <div>
       {/* Homepage Top Div */}
-      <div className="flex flex-col container mx-auto p-6 rounded-2xl gap-2 tracking-wider">
+      <div className="flex flex-col container mx-auto md:p-6 max-md:px-2 rounded-2xl gap-2 tracking-wider">
         <ProductPageContainerTop searchProductByName={searchProductByName} />
         <CategoriesHorizontal
           searchProductByCategory={searchProductByCategory}
@@ -47,7 +48,7 @@ const HomePageContainerMain = () => {
         />
       </div>
       {/*Homepage Bot Div */}
-      <HomePageBottom />
+      <HomePageBottom productList={productList} />
     </div>
   );
 };
@@ -58,7 +59,13 @@ const HomeProductList = ({ isLoading, productList, initialProductList }) => {
 
   // If loading, display loading screen
   if (isLoading) {
-    return <LoadingScreen />;
+    return (
+      <div className="product-6 grid xl:grid-cols-4 lg:grid-cols-3 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1 py-8">
+        {Array.from({ length: 8 }, (_, index) => (
+          <TrendingProductCardLoader key={index} />
+        ))}
+      </div>
+    );
   }
 
   // Slice the first 8 products for display

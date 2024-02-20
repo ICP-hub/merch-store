@@ -26,7 +26,7 @@ actor {
     let g = Source.Source();
     //Products
 
-    private let adminPrincipals : [Text] = [];
+    private let adminPrincipals : [Text] = ["7yywi-leri6-n33rr-vskr6-yb4nd-dvj6j-xg2b4-reiw6-dljs7-slclz-2ae"];
 
     // ---------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -40,11 +40,14 @@ actor {
 
     // -----------------For keeping track of the size and color of the products-------------------
 
-    private var size = Map.HashMap<Types.SlugId, Types.Size>(0, Text.equal, Text.hash);
-    private stable var stablesizes : [(Types.SlugId, Types.Size)] = [];
+    // private var size = Map.HashMap<Types.SlugId, Types.Size>(0, Text.equal, Text.hash);
+    // private stable var stablesizes : [(Types.SlugId, Types.Size)] = [];
 
-    private var color = Map.HashMap<Types.SlugId, Types.Color>(0, Text.equal, Text.hash);
-    private stable var stablecolors : [(Types.SlugId, Types.Color)] = [];
+    // private var color = Map.HashMap<Types.SlugId, Types.Color>(0, Text.equal, Text.hash);
+    // private stable var stablecolors : [(Types.SlugId, Types.Color)] = [];
+
+    private var variants = Map.HashMap<Types.SlugId, Types.Variants>(0, Text.equal, Text.hash); //! Here Variant Slug will be the key
+    private stable var stablevariants : [(Types.SlugId, Types.Variants)] = [];
 
     // --------------------------------------------------------------------------------------------------------------------------
     private var categories = Map.HashMap<Types.SlugId, Types.Category>(0, Text.equal, Text.hash);
@@ -94,10 +97,8 @@ actor {
             FirstName = firstName;
             LastName = lastName;
         };
-
         Users.put(caller, user);
         return #ok(user);
-
     };
 
     public query ({ caller }) func getUserdetailsbycaller() : async Result.Result<Types.User, Types.GetUserError> {
@@ -112,6 +113,100 @@ actor {
 
     public query ({ caller }) func listUsers() : async [(Principal, Types.User)] {
         return Iter.toArray(Users.entries());
+    };
+
+    // **************************** Variant Functions **********************************
+
+    public shared (msg) func createVariant(
+        product_slug : Types.SlugId,
+        size : Text,
+        color : Text,
+        inventory : Nat,
+        variant_price : Float,
+        variant_sale_price : Float
+
+    ) : async Result.Result<(Types.Variants), Types.CreateVariantError> {
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
+        if (Utils.isAdmin(msg.caller)) {
+            return #err(#UserNotAdmin); // We require the user to be admin
+        };
+
+        if (size == "") {
+            return #err(#EmptySize);
+        };
+        if (color == "") {
+            return #err(#EmptyColor);
+        };
+
+        let variantId = Utils.slugify(color) # "-" # (size);
+
+        let variant : Types.Variants = {
+            variant_slug = variantId;
+            product_slug = product_slug;
+            size = size;
+            color = color;
+            variant_price = variant_price;
+            variant_sale_price = variant_sale_price;
+            inventory = inventory;
+        };
+
+        variants.put(variantId, variant);
+        return #ok(variant);
+    };
+
+    public shared ({ caller }) func deletevariant(variant_slug : Types.SlugId) : async Result.Result<(), Types.DeleteVariantError> {
+        if (Utils.isAdmin(caller)) {
+            return #err(#UserNotAdmin); // We require the user to be admin
+        };
+        variants.delete(variant_slug);
+        return #ok(());
+    };
+
+    public shared ({ caller }) func updatevariant(
+        variant_slug : Types.SlugId,
+        size : Text,
+        color : Text,
+        inventory : Nat,
+        variant_price : Float,
+        variant_sale_price : Float,
+    ) : async Result.Result<(Types.Variants), Types.UpdateVariantError> {
+        if (Utils.isAdmin(caller)) {
+            return #err(#UserNotAdmin); // We require the user to be admin
+        };
+
+        if (size == "") {
+            return #err(#EmptySize);
+        };
+        if (color == "") {
+            return #err(#EmptyColor);
+        };
+
+        let result = variants.get(variant_slug);
+        switch (result) {
+            case null {
+                return #err(#VariantNotFound);
+            };
+            case (?v) {
+                let variant : Types.Variants = {
+                    variant_slug = v.variant_slug;
+                    product_slug = v.product_slug;
+                    size = size;
+                    color = color;
+                    variant_price = variant_price;
+                    variant_sale_price = variant_sale_price;
+                    inventory = inventory;
+                };
+                variants.put(variant_slug, variant);
+                return #ok(variant);
+            };
+        };
+    };
+
+    public shared ({ caller }) func getvariant(variant_slug : Types.SlugId) : async Result.Result<Types.Variants, Types.GetVariantError> {
+        let variant = variants.get(variant_slug);
+        return Result.fromOption(variant, #VariantNotFound);
     };
 
     //  ------------------   Products_Functions ----------------
@@ -141,14 +236,13 @@ actor {
             title = p.title;
             id = productId;
             price = p.price;
+            sellingPrice = p.sellingPrice;
             category = p.category;
-            inventory = p.inventory;
             description = p.description;
             active = p.active;
             newArrival = p.newArrival;
             trending = p.trending;
-            // ratingandreview = p.ratingandreview;
-            img = "";
+            img = imgSlug;
             slug = newSlug;
             time_created = Time.now();
             time_updated = Time.now();
@@ -197,8 +291,8 @@ actor {
                     title = p.title;
                     id = v.id;
                     price = p.price;
+                    sellingPrice = p.sellingPrice;
                     category = p.category;
-                    inventory = p.inventory;
                     description = p.description;
                     active = p.active;
                     trending = p.trending;
@@ -215,6 +309,7 @@ actor {
             };
         };
     };
+
     // Delete the Products
     public shared (msg) func deleteProduct(id : Types.SlugId) : async Result.Result<(), Types.DeleteProductError> {
         if (Utils.isAdmin(msg.caller)) {
@@ -273,7 +368,7 @@ actor {
         return Iter.toArray(result.entries());
     };
 
-    //--------------------------------  Image_processionf as blobs    --------------------------------------------------------------------------------------//
+    //--------------------------------  Image_procession as blobs    --------------------------------------------------------------------------------------//
 
     private func storeBlobImg(imgId : Types.ImgId, value : Blob) {
         var size : Nat = Nat32.toNat(Nat32.fromIntWrap(value.size()));
@@ -461,7 +556,7 @@ actor {
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
 
-    public shared (msg) func addtoCartItems(product_slug : Text, qty : Nat8, size : Types.Size, color : Types.Color) : async Result.Result<(Types.CartItem), Types.CreateCartItemsError> {
+    public shared (msg) func addtoCartItems(product_slug : Text, qty : Nat8) : async Result.Result<(Types.CartItem), Types.CreateCartItemsError> {
 
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated);
@@ -477,8 +572,8 @@ actor {
             id = cartId;
             product_slug = product_slug;
             principal = userP;
-            size = size;
-            color = color;
+            // size = size;
+            // color = color;
             quantity = qty;
             time_created = Time.now();
             time_updated = Time.now();
@@ -492,8 +587,8 @@ actor {
     public shared (msg) func updateCartItems(
         id : Types.CartId,
         qty : Nat8,
-        size : Types.Size,
-        color : Types.Color,
+        // size : Types.Size,
+        // color : Types.Color,
     ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
         // commented for local development
         // if (Principal.isAnonymous(msg.caller)) {
@@ -512,8 +607,8 @@ actor {
                     id = v.id;
                     product_slug = v.product_slug;
                     principal = v.principal;
-                    size = size;
-                    color = color;
+                    // size = size;
+                    // color = color;
                     quantity = qty;
                     time_created = v.time_created;
                     time_updated = Time.now();
@@ -748,8 +843,8 @@ actor {
             id = contactId;
             name = co.name;
             email = co.email;
+            contact_number = co.contact_number;
             message = co.message;
-            read = co.read;
             time_created = Time.now();
             time_updated = Time.now();
         };
@@ -790,6 +885,7 @@ actor {
                     id = id;
                     email = v.email;
                     name = v.name;
+                    contact_number = v.contact_number;
                     message = v.message;
                     read = read;
                     time_created = v.time_created;
@@ -847,26 +943,25 @@ actor {
     //                 case (?rating) {
     //                     switch (ratingandreviews.get(product_slug)) {
     //                         case null {
-    //                             if (List.isNil<Types.ReviewRatings>() == true ){
-
+    //                             if () {
     //                             };
     //                             let reviewRating : Types.ReviewRatings = {
     //                                 product_slug = product_slug;
     //                                 review = review;
     //                                 rating = rating;
-    //                                 principal = userP;
+    //                                 created_by = userP;
     //                                 time_created = Time.now();
     //                                 time_updated = Time.now();
     //                             };
-    //                             ratingandreviews.put(product_slug, [reviewRating]);
+    //                             ratingandreviews.put(product_slug, );
     //                             return #ok(reviewRating);
     //                         };
     //                         case (?v) {
     //                             let reviewRating : Types.ReviewRatings = {
     //                                 product_slug = product_slug;
     //                                 review = review;
+    //                                 created_by = userP;
     //                                 rating = rating;
-    //                                 principal = userP;
     //                                 time_created = Time.now();
     //                                 time_updated = Time.now();
     //                             };
@@ -880,7 +975,7 @@ actor {
     //         };
     //     };
     // };
-    // --------------------------  Stablising functions to store data   --------------------------------------------------------------
+    // -------------------------- Stablising functions to store data --------------------------------------------------------------
 
     // Stablising the data
     // Preupgrade function to store the data in stable variables

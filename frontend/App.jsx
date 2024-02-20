@@ -6,7 +6,6 @@ import React, { useEffect } from "react";
 import { createClient } from "@connect2ic/core";
 import { PlugWallet, StoicWallet, defaultProviders } from "@connect2ic/core/providers";
 import {
-  ConnectButton,
   ConnectDialog,
   Connect2ICProvider,
 } from "@connect2ic/react";
@@ -63,7 +62,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    element: <CartPage></CartPage>,
+    element:  <Protected><CartPage></CartPage></Protected>,
   },
   {
     path: "/checkout",
@@ -181,6 +180,7 @@ const App = () => {
         reverseOrder={true}
       />
       <BackToTop />
+      <ConnectDialog />
       <AnimatePresence mode="wait" initial={true}>
         <RouterProvider router={router} />
       </AnimatePresence>

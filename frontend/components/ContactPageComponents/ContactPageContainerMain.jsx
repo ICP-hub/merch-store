@@ -1,17 +1,63 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React from "react";
+import React, { useState } from "react";
 import Button from "../common/Button";
 import { BsEnvelopeAt } from "react-icons/bs";
 import { TelephoneInput } from "../common/CommonInput";
+import UserApiHanlder from "../../apiHandlers/UserApiHandler";
+import toast from "react-hot-toast";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ ContactPage Components.
 /* ----------------------------------------------------------------------------------------------------- */
 const ContactPageContainerMain = () => {
+  const { createContact } = UserApiHanlder();
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Form Validation
+  const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isNotEmpty = (value) => value.trim() !== "";
+
+  const validateForm = ({ username, phone, email, message }) => ({
+    username: isNotEmpty(username) ? undefined : "Name is required",
+    // Required For Phone ?
+    // phone: isNotEmpty(phone) ? undefined : "Phone is required",
+    email: isEmailValid(email)
+      ? undefined
+      : "Please enter a valid email address",
+    // Required for message ?
+    // message: isNotEmpty(message) ? undefined : "Message is required",
+  });
+
+  // Hanlde Form Submit
+  const handleCreateContact = (e) => {
+    e.preventDefault();
+
+    const formData = { username, phone, email, message };
+    const errors = validateForm(formData);
+
+    if (Object.values(errors).every((error) => error === undefined)) {
+      // Call createcontact and pass the form createContact()
+      console.log("Form is valid!", formData);
+    } else {
+      // Display each error individually
+      Object.values(errors).forEach((error) => {
+        if (error) {
+          toast.error(error);
+        }
+      });
+    }
+  };
+
   return (
-    <div data-aos="fade-up" className="md:container md:mx-auto flex flex-col items-center sm:justify-center tracking-wider p-6 my-10">
+    <div
+      data-aos="fade-up"
+      className="md:container md:mx-auto flex flex-col items-center sm:justify-center tracking-wider p-6 my-10"
+    >
       <div className="w-full bg-white border-[1px] border-dashed shadow-sm rounded-2xl p-3 flex md:flex-row flex-col justify-end gap-3">
         <div className="w-full md:w-3/5 rounded-xl">
           <iframe
@@ -31,17 +77,17 @@ const ContactPageContainerMain = () => {
             <h1 className="md:text-4xl text-3xl font-bold">Get In Touch</h1>
             <p className="text-slate-600">You can reach us anytime</p>
           </div>
-          <form className="inputs flex flex-col gap-4">
+          <form
+            className="inputs flex flex-col gap-4"
+            onSubmit={handleCreateContact}
+          >
             <div className="flex max-sm:flex-col gap-4">
               <input
                 type="text"
-                placeholder="First Name"
+                placeholder="Enter you name"
                 className="px-4 py-4 border border-slate-500 rounded-full focus:outline-none w-full"
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                className="p-4 border border-slate-500 rounded-full focus:outline-none w-full"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -49,20 +95,26 @@ const ContactPageContainerMain = () => {
                 <BsEnvelopeAt size={24} />
                 <input
                   type="text"
-                  placeholder="Your Email"
+                  placeholder="johndoe@mail.com"
                   className=" focus:outline-none w-full"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
             <TelephoneInput
               divClass="border border-slate-500 rounded-full flex w-full gap-2 items-center"
               inputClass="focus:outline-none border-none p-4"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
             <div className="flex flex-col gap-4 border border-slate-500 rounded-2xl p-4">
               <textarea
                 placeholder="Tell us how can we help you..."
                 className="focus:outline-none w-full resize-none"
                 rows={4} // Adjust the number of rows as needed
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               ></textarea>
             </div>
             <Button className="flex w-full bg-black text-white justify-center rounded-full p-4">

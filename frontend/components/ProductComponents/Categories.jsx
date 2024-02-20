@@ -8,25 +8,23 @@ import { useNavigate } from "react-router-dom";
 import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 
 // const categories = ["All", "Home", "Music", "Phone", "Storage", "Other"];
-
-const CategoryList = () => {};
-
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ CategoriesVertical : Product Page.
 /* ----------------------------------------------------------------------------------------------------- */
-const CategoriesVertical = ({ searchProductByCategory }) => {
+const CategoriesVertical = ({ searchProductByCategory, state }) => {
   const { categoryList, getCategoryList } = ProductApiHandler();
 
   // Extract categories using a loop
   const categories = ["all"];
+
+  // Show category name from category list:
   if (categoryList !== null) {
-    for (const [category] of categoryList) {
-      categories.push(category);
-    }
+    categoryList.map(([cateSlug, { name }]) => categories.push(name));
   }
 
   // ApplyFilter based on category
   const handleCategoryFilter = (category) => {
+    // If navigating from the HomePage
     searchProductByCategory(category);
   };
 
@@ -45,7 +43,7 @@ const CategoriesVertical = ({ searchProductByCategory }) => {
         <Button
           key={index}
           className="focus:outline-none py-2 px-4 rounded-full focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full  max-md:justify-center capitalize"
-          autoFocus={index === 0}
+          autoFocus={state !== null ? state === category : index === 0}
           onClick={() => handleCategoryFilter(category)}
         >
           {category}
@@ -63,10 +61,9 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
 
   // Extract categories using a loop
   const categories = ["all"];
+  // Show category name from category list:
   if (categoryList !== null) {
-    for (const [category] of categoryList) {
-      categories.push(category);
-    }
+    categoryList.map(([cateSlug, { name }]) => categories.push(name));
   }
 
   // ApplyFilter based on category
@@ -83,7 +80,7 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
   return (
     <SmoothList
       delay={200}
-      className="flex justify-between  max-md:flex-col gap-2"
+      className="flex justify-between  max-lg:flex-col gap-2"
     >
       <SmoothList
         delay={200}
@@ -93,7 +90,7 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
         {categories.map((category, index) => (
           <Button
             key={index}
-            className="px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm focus:outline-none"
+            className="px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm focus:outline-none min-w-max"
             autoFocus={index === 0}
             onClick={() => handleCategoryFilter(category)}
           >
@@ -101,12 +98,12 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
           </Button>
         ))}
       </SmoothList>
-      <Button
+      {/* <Button
         onClick={() => navigate("/products")}
         className="hidden md:block px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm max-w-max"
       >
         See All Products
-      </Button>
+      </Button> */}
     </SmoothList>
   );
 };

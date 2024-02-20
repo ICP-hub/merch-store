@@ -6,7 +6,7 @@ import React from "react";
 import Fakeprod from "../../assets/fakeprod.png";
 import { BsFillStarFill } from "react-icons/bs";
 import Button from "../common/Button";
-import { IoHeartOutline, IoHeart } from "react-icons/io5";
+import { IoHeartOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -16,8 +16,8 @@ const ProductCard = ({ product }) => {
   if (product !== undefined) {
     // Product structure :  ['product-four-7', {…}]
     // Destructure the array to extract the product name and details
-    const [productName, productDetails] = product;
-    const { category, price, slug } = productDetails; // Add more properties as required
+    const [productSlug, productDetails] = product;
+    const { category, price, slug, title } = productDetails; // Add more properties as required
 
     return (
       <div className="rounded-xl  flex flex-col overflow-hidden gap-2">
@@ -42,7 +42,7 @@ const ProductCard = ({ product }) => {
             to={`/product/${slug}`}
             className="text-lg font-semibold line-clamp-2"
           >
-            {productName}
+            {title}
           </Link>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

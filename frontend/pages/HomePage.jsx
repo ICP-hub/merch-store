@@ -4,11 +4,10 @@ import React from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 import AnimationView from "../components/common/AnimationView";
 import ScrollToTop from "../components/common/ScrollToTop";
-import HeaderMain from "../components/common/HeaderMain";
-import Hero from "../components/common/Hero";
 import Contact from "../components/common/Contact";
 import Footer from "../components/common/Footer";
 import HomePageContainerMain from "../components/HomeComponents/HomePageContainerMain";
+import Header from "../components/common/Header";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -16,7 +15,7 @@ const HomePage = () => {
   return (
     <AnimationView>
       <ScrollToTop />
-      <HeaderMain title={'MerchStore'}></HeaderMain>
+      <Header title={'MerchStore'}></Header>
       <HomePageContainerMain />
       <Contact></Contact>
       <Footer></Footer>

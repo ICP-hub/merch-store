@@ -12,6 +12,14 @@ import FakeProdImg from "../assets/fakeprod.png";
 import { formatDate } from "./MyOrderPage";
 import Button from "../components/common/Button";
 import { BsArrowRightCircle, BsTrash3 } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import {
+  ConnectButton,
+  ConnectDialog,
+  useCanister,
+  useConnect,
+  useDialog,
+} from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -45,6 +53,11 @@ const MyWishListContainerMain = () => {
 /*  @ MyWishlist Page : <MyWishlistContainerMain /> : <MyWishlist Component />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyWishList = () => {
+  const { principal, isConnected } = useConnect();
+
+  const [backend] = useCanister("backend");
+  const [wishlists, setWishlists] = useState([]);
+
   const wishlist = [
     {
       prodname: "Headphone xyz ",
@@ -61,6 +74,23 @@ const MyWishList = () => {
       addedOn: formatDate(new Date()),
     },
   ];
+  const getWishlist = async () => {
+    console.log("Hello");
+    try {
+      const item = await backend.listWishlistItems();
+      setWishlists(item[1]);
+      console.log(item[0][1].product_slug);
+      if (item.ok) {
+        console.log(item);
+      }
+    } catch (error) {
+      console.error("Error listing user:", error);
+    } finally {
+    }
+  };
+  useEffect(() => {
+    getWishlist();
+  }, [backend]);
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
