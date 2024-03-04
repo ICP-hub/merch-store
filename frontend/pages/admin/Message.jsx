@@ -39,7 +39,7 @@ const Message = () => {
 
   const [backend] = useCanister("backend");
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     listAllMessage();
@@ -47,7 +47,7 @@ const Message = () => {
 
   const listAllMessage = async () => {
     try {
-      setLoading(true);
+      //setLoading(true);
       const message = await backend.listContacts();
       setMessages(message);
     } catch (error) {
@@ -63,10 +63,10 @@ const Message = () => {
   console.log(extractedData);
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white dark:bg-slate-800 rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
       <div className="">
         <div className="mb-6 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Messages
           </h1>
           <div></div>

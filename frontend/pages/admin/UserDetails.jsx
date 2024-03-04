@@ -6,8 +6,11 @@ import Table, {
   StatusPill,
 } from "./utils/Table";
 import { InfinitySpin } from "react-loader-spinner";
+import { Principal } from "@dfinity/principal";
 
 const UserDetails = () => {
+  const textDecoder = new TextDecoder("utf-8"); // Specify the appropriate encoding
+
   const columns = React.useMemo(
     () => [
       {
@@ -19,12 +22,12 @@ const UserDetails = () => {
         accessor: "id",
       },
       {
-        Header: "ETH NFT",
-        accessor: "discord",
+        Header: "FIRST NAME",
+        accessor: "firstName",
       },
       {
-        Header: "XRP NFT",
-        accessor: "twitter",
+        Header: "LAST NAME",
+        accessor: "lastName",
       },
     ],
     []
@@ -39,7 +42,7 @@ const UserDetails = () => {
 
   const listusers = async () => {
     try {
-      setLoading(true);
+      setLoading(false);
       const userData = await backend.listUsers();
       setUser(userData);
     } catch (error) {
@@ -51,14 +54,20 @@ const UserDetails = () => {
 
   const data = useMemo(() => user, [user]);
 
-  const extractedData = data.map(([key, data]) => data);
+  const extractedData = data.map(([key, data]) => ({
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    id: data.id.toText(),
+    id2: data.id,
+  }));
   console.log(extractedData);
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white dark:bg-slate-800 rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
       <div className="">
         <div className="mb-6 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Users List
           </h1>
         </div>

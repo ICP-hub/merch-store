@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
 import { useCanister } from "@connect2ic/react";
@@ -10,11 +10,9 @@ const CreateCategory = () => {
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
 
-  ;
-
   const [formData, setFormData] = useState({
     name: "",
-    status: "active",
+    status: true,
   });
 
   const validateForm = () => {
@@ -41,7 +39,11 @@ const CreateCategory = () => {
       }
       setLoading(true);
 
-      const res = await backend.createCategory(formData.name, formData.status);
+      const res = await backend.createCategory(
+        formData.name,
+        "",
+        formData.status
+      );
 
       console.log(res);
       if ("ok" in res) {
@@ -60,14 +62,14 @@ const CreateCategory = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Create a Category
           </h1>
           <div>
             <Link
-              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
               to="/admin/categories"
             >
               <CiCircleChevLeft className="w-5 h-5" /> Go back
@@ -89,7 +91,18 @@ const CreateCategory = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
+                placeholder="Enter Category Title"
+                disabled={loading}
+              />
+            </div>
+            <div className="my-2">
+              <label className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                Upload Image
+              </label>
+              <input
+                type="file"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 placeholder="Enter Category Title"
                 disabled={loading}
               />
@@ -99,7 +112,7 @@ const CreateCategory = () => {
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                   loading && "opacity-50"
                 }`}
                 disabled={loading}

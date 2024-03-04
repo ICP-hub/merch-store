@@ -9,10 +9,13 @@ import Hero from "../components/common/Hero";
 import Footer from "../components/common/Footer";
 import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import FakeProdImg from "../assets/fakeprod.png";
+import placeholderImg from "../assets/placeholderImg-Small.jpeg";
 import { formatDate } from "./MyOrderPage";
 import Button from "../components/common/Button";
 import { BsArrowRightCircle, BsTrash3 } from "react-icons/bs";
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import NoDataFound from "../components/common/NoDataFound";
 import {
   ConnectButton,
   ConnectDialog,
@@ -29,7 +32,6 @@ const MyWishlistPage = () => {
     <AnimationView>
       <ScrollToTop />
       <Header title={"Wishlist"}></Header>
-      <Hero />
       <MyWishListContainerMain />
       <Footer></Footer>
     </AnimationView>
@@ -56,7 +58,9 @@ const MyWishList = () => {
   const { principal, isConnected } = useConnect();
 
   const [backend] = useCanister("backend");
-  const [wishlists, setWishlists] = useState([]);
+  const [wishlists, setWishlists] = useState("");
+  const [product, getProduct] = useState([]);
+  const [id, setId] = useState("");
 
   const wishlist = [
     {
@@ -75,11 +79,16 @@ const MyWishList = () => {
     },
   ];
   const getWishlist = async () => {
-    console.log("Hello");
     try {
       const item = await backend.listWishlistItems();
-      setWishlists(item[1]);
-      console.log(item[0][1].product_slug);
+      console.log(item[0][0], "hello ji");
+      setId(item);
+
+      const productSlugs = item.map((innerArray) => innerArray[1].product_slug);
+
+      // Set the state with all product_slugs as an array
+      setWishlists(productSlugs);
+
       if (item.ok) {
         console.log(item);
       }
@@ -88,22 +97,93 @@ const MyWishList = () => {
     } finally {
     }
   };
+
   useEffect(() => {
     getWishlist();
   }, [backend]);
+  const deleteWishlist = async (id) => {
+    try {
+      const remove = await backend.deleteWishlistItems(id);
+
+      if ("ok" in remove) {
+        getWishlist();
+        getProduct((prevItems) => prevItems.filter((item) => item.id !== id));
+        toast.success("item removed successfully");
+      }
+      console.log(remove);
+    } catch (error) {
+      console.error("deletion cannot be performed", error);
+    }
+  };
+
+  const getProductWishlist = async () => {
+    try {
+      {
+        const productPromises = wishlists.map(async (productId) => {
+          const productResponse = await backend.getProduct(productId);
+          return productResponse.ok; // Assuming `ok` property contains the product details
+        });
+
+        // Wait for all promises to resolve
+        const products = await Promise.all(productPromises);
+
+        getProduct(products);
+        getWishlist();
+
+        // Access and log the title property for each product
+      }
+    } catch (error) {
+      console.error("Error while getting wishlist ", error);
+    }
+  };
+  useEffect(() => {
+    // Call getProductWishlist only when wishlists have been updated
+    if (wishlists !== "") {
+      const timeoutId = setTimeout(() => {
+        getProductWishlist();
+      }, 3000);
+
+      return () => clearTimeout(timeoutId); // Cleanup the timeout on component unmount
+    }
+  }, [backend, wishlists]);
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
       <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2 ">
-        My Wishlist({wishlist.length})
+        My Wishlist({product.length})
       </h1>
-      {wishlist.length === 0 ? (
-        <div className="p-8 capitalize font-medium">
-          Wishlist is empty..Check out our latest products...
+
+      {product.length === 0 ? (
+        <div className="  rounded-xl mb-3   grid grid-cols-1 gap-3">
+          {[...Array(2)].map((_, index) => (
+            <div
+              className="  md:flex justify-between border-t-[1px]   items-center gap-2"
+              key={index}
+            >
+              <div className="flex justify-start items-start gap-2 mt-3">
+                <div className="w-24  h-24 mb-2  bg-gray-100 rounded-lg ml-2 animated-pulse"></div>
+                <div className="flex flex-col mt-2">
+                  <h4 className="w-[75px] h-[20px] rounded-full bg-gray-100 animated-pulse mb-1"></h4>
+                  <h4 className="w-[150px] h-[25px] rounded-full bg-gray-100 animated-pulse mb-2"></h4>
+                  <div className="flex gap-2">
+                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
+                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col justify-between xl:items-end h-full mt-12 mr-2 ml-2 mb-2">
+                <div className="flex flex-row xl:justify-end items-center gap-1 mt-6">
+                  <h4 className="w-[80px] h-[30px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  <h4 className="w-[40px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  <div className="w-[20px] h-[20px] rounded-full bg-gray-100 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className=" flex flex-col">
-          {wishlist.map((wishlist, index) => (
+          {product.map((wishlists, index) => (
             <div
               key={index}
               className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
@@ -113,33 +193,36 @@ const MyWishList = () => {
                   <img
                     draggable="false"
                     className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
-                    src={wishlist.image}
-                    alt={wishlist.prodname}
+                    src={wishlist[0].image || placeholderImg}
+                    alt={wishlists.title}
                   />
                 </div>
                 <div className="flex flex-col lg:justify-center">
                   <p className="text-lg capitalize font-medium">
-                    {wishlist.prodname}
+                    {wishlists.title}
                   </p>
                   <p className="text-xs uppercase">
                     {" "}
-                    Categgory: {wishlist.category}
+                    Categgory: {wishlists.category}
                   </p>
                   <p className="uppercase text-xs">
-                    Added On : {wishlist.addedOn}
+                    Added On : {wishlist[0].addedOn}
                   </p>
                 </div>
               </div>
               <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
                 <div className="flex flex-col justify-center">
                   <span className="text-[12px] uppercase">Price</span>
-                  <p className="text-lg font-medium">{wishlist.price}</p>
+                  <p className="text-lg font-medium">${wishlists.price}</p>
                 </div>
                 <div className="flex justify-center flex-col">
                   {/*keeping empty div for better alignment */}
                   <div className="h-4 w-4"></div>
                   <div className="flex gap-6">
-                    <Button className=" hover:text-red-500">
+                    <Button
+                      className=" hover:text-red-500"
+                      onClick={() => deleteWishlist(id[index][0])}
+                    >
                       <BsTrash3 size={20} />
                     </Button>
                     <Button>

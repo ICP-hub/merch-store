@@ -1,5 +1,6 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom hook : initialize the backend Canister
 const useBackend = () => {
@@ -10,12 +11,21 @@ const UserApiHanlder = () => {
   // Init backend
   const [backend] = useBackend();
   const [isLoading, setIsLoading] = useState("");
-
-  const createContact = async (username, phone, email, message) => {
-    console.log(username, email, message);
+  const [successfulSubmit, setSuccessfulSubmit] = useState(false);
+  // Create Contact
+  const createContact = async ({ name, email, contact_number, message }) => {
+    // Temporary for contact component
+    name = name || "testing";
+    contact_number = contact_number || "No number";
+    message = message || "testing";
     try {
       setIsLoading(true);
+      // console.log(name, email, contact_number, message);
+      await backend.createContact({ name, email, message, contact_number });
+      toast.success("Details sent successfully");
+      setSuccessfulSubmit(true);
     } catch (err) {
+      toast.error("Failed to send contact");
       console.error("Error creating contact : ", err);
     } finally {
       setIsLoading(false);
@@ -23,7 +33,7 @@ const UserApiHanlder = () => {
   };
 
   // Returns
-  return { createContact };
+  return { createContact, isLoading, successfulSubmit };
 };
 
 export default UserApiHanlder;

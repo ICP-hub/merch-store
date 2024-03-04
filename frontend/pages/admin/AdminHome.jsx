@@ -55,14 +55,14 @@ const AdminHome = () => {
     }
   };
   return (
-    <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+    <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
-        <h4 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+        <h4 className="uppercase text-xl font-semibold text-gray-900 ">
           DashBoard
         </h4>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 gap-5">
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <PiUserThin className="w-24 h-24 mr-2 font-normal absolute -right-6 -top-4 opacity-20" />
 
           <div className="">
@@ -71,7 +71,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -85,7 +85,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiHashtag className="w-24 h-24 mr-2 absolute -right-6 -top-4 opacity-20" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Categories</h1>
@@ -93,7 +93,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -107,7 +107,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiShop className="w-24 h-24 mr-2 absolute -right-7 -top-4 opacity-20" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Products</h1>
@@ -115,7 +115,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -129,7 +129,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiViewBoard className="w-24 h-24 mr-2 absolute -right-6 -top-4 opacity-20" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Courses</h1>
@@ -137,7 +137,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -151,7 +151,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiVideoOn className="w-24 h-24 mr-2 absolute -right-5 -top-5 opacity-20 rotate-180" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Videos</h1>
@@ -159,7 +159,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -173,7 +173,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiReceipt className="w-24 h-24 mr-2 absolute -right-8 -top-4 opacity-20" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Orders</h1>
@@ -181,7 +181,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -195,7 +195,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiMail className="w-24 h-24 mr-2 absolute -right-5 -top-5 opacity-20" />
           <div className="">
             <h1 className="text-thin text-sm mb-1">Total Messages</h1>
@@ -203,7 +203,7 @@ const AdminHome = () => {
               <TailSpin
                 height="24"
                 width="24"
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 visible={true}
@@ -217,7 +217,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
+        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <PiImagesSquareThin className="w-24 h-24 mr-2 absolute -right-5 -top-5 opacity-20" />
           <div>
             <h1 className="text-thin text-sm mb-1">Total NFT</h1>
@@ -225,7 +225,7 @@ const AdminHome = () => {
               <TailSpin
                 height={24}
                 width={24}
-                color="#330000"
+                color="#512E5F"
                 ariaLabel="tail-spin-loading"
                 radius={1}
                 visible={true}

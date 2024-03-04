@@ -1,3 +1,4 @@
+type shippingAmount = record {shipping_amount: float64;};
 type WishlistItem = 
  record {
    id: WishlistId;
@@ -17,30 +18,59 @@ type Variants =
    variant_sale_price: float64;
    variant_slug: SlugId;
  };
+type VariantSize = record {size: text;};
+type VariantColor = 
+ record {
+   color: text;
+   img1: text;
+   img2: text;
+   img3: text;
+   inventory: nat;
+   variant_price: float64;
+   variant_sale_price: float64;
+ };
 type UserProduct = 
  record {
    active: bool;
    category: SlugId;
    description: text;
    newArrival: bool;
-   price: float64;
-   sellingPrice: float64;
    title: text;
    trending: bool;
  };
 type UserContact = 
  record {
-   contact_number: nat32;
+   contact_number: text;
    email: text;
    message: text;
    name: text;
  };
+type UserAddress = 
+ record {
+   address_type: text;
+   addressline1: text;
+   addressline2: text;
+   city: text;
+   country: text;
+   email: text;
+   firstname: text;
+   lastname: text;
+   phone_number: text;
+   pincode: text;
+   state: text;
+ };
 type User = 
  record {
-   FirstName: text;
-   LastName: text;
    email: text;
+   firstName: text;
    id: principal;
+   lastName: text;
+ };
+type UpdatepaymentStatusError = 
+ variant {
+   OrderNotFound;
+   UserNotAdmin;
+   UserNotAuthenticated;
  };
 type UpdateWishlistItemError = 
  variant {
@@ -101,87 +131,120 @@ type UpdateCartItemsError =
    UserNotAdmin;
    UserNotAuthenticated;
  };
+type UpdateAddressError = 
+ variant {
+   AddressNotFound;
+   EmptyAddressLine1;
+   EmptyCity;
+   EmptyCountry;
+   EmptyEmail;
+   EmptyFirstName;
+   EmptyLastName;
+   EmptyPhoneNumber;
+   EmptyPincode;
+   EmptyState;
+   UserNotAuthenticated;
+ };
 type Time = int;
 type SlugId = text;
-type ShippingAddress = 
- record {
-   city: text;
-   country: text;
-   county: text;
-   firstName: text;
-   lastName: text;
-   mail: text;
-   postCode: text;
-   street: text;
- };
 type Result_9 = 
  variant {
-   err: GetUserError;
-   ok: User;
+   err: UpdateAddressError;
+   ok: Address;
  };
 type Result_8 = 
- variant {
-   err: GetVariantError;
-   ok: Variants;
- };
-type Result_7 = 
  variant {
    err: UpdateCartItemsError;
    ok: CartItem;
  };
-type Result_6 = 
+type Result_7 = 
  variant {
    err: UpdateCategoryError;
    ok: Category;
  };
-type Result_5 = 
+type Result_6 = 
  variant {
    err: UpdateContactError;
    ok: Contact;
+ };
+type Result_5 = 
+ variant {
+   err: UpdatepaymentStatusError;
+   ok: Order;
  };
 type Result_4 = 
  variant {
    err: UpdateProductError;
    ok: Product;
  };
+type Result_32 = 
+ variant {
+   err: CreateCartItemsError;
+   ok: CartItem;
+ };
+type Result_31 = 
+ variant {
+   err: CreateWishlistItemError;
+   ok: WishlistItem;
+ };
+type Result_30 = 
+ variant {
+   err: CreateAddressError;
+   ok: Address;
+ };
 type Result_3 = 
  variant {
    err: UpdateOrderError;
    ok: Order;
  };
-type Result_26 = 
- variant {
-   err: CreateCartItemsError;
-   ok: CartItem;
- };
-type Result_25 = 
- variant {
-   err: CreateWishlistItemError;
-   ok: WishlistItem;
- };
-type Result_24 = 
+type Result_29 = 
  variant {
    err: CreateCategoryError;
    ok: Category;
  };
-type Result_23 = 
+type Result_28 = 
  variant {
    err: CreateContactError;
    ok: Contact;
  };
-type Result_22 = 
+type Result_27 = 
  variant {
    err: CreateProductError;
    ok: Product;
  };
-type Result_21 = 
+type Result_26 = 
  variant {
    err: CreateVariantError;
    ok: Variants;
  };
-type Result_20 = 
+type Result_25 = 
  variant {
    err: DeleteCartItemsError;
+   ok;
+ };
+type Result_24 = 
+ variant {
+   err: DeleteCategoryError;
+   ok;
+ };
+type Result_23 = 
+ variant {
+   err: DeleteContactError;
+   ok;
+ };
+type Result_22 = 
+ variant {
+   err: DeleteOrderError;
+   ok;
+ };
+type Result_21 = 
+ variant {
+   err: DeleteProductError;
+   ok;
+ };
+type Result_20 = 
+ variant {
+   err: DeleteWishlistItemError;
    ok;
  };
 type Result_2 = 
@@ -191,53 +254,53 @@ type Result_2 =
  };
 type Result_19 = 
  variant {
-   err: DeleteCategoryError;
+   err: DeleteAddressError;
    ok;
  };
 type Result_18 = 
  variant {
-   err: DeleteContactError;
+   err: DeleteVariantError;
    ok;
  };
 type Result_17 = 
  variant {
-   err: DeleteOrderError;
-   ok;
+   err: GetAddressError;
+   ok: Address;
  };
 type Result_16 = 
- variant {
-   err: DeleteProductError;
-   ok;
- };
-type Result_15 = 
- variant {
-   err: DeleteWishlistItemError;
-   ok;
- };
-type Result_14 = 
- variant {
-   err: DeleteVariantError;
-   ok;
- };
-type Result_13 = 
  variant {
    err: GetCategoryError;
    ok: Category;
  };
-type Result_12 = 
+type Result_15 = 
  variant {
    err: GetContactError;
    ok: Contact;
  };
-type Result_11 = 
+type Result_14 = 
  variant {
    err: OrderError;
    ok: Order;
  };
-type Result_10 = 
+type Result_13 = 
  variant {
    err: GetProductError;
    ok: Product;
+ };
+type Result_12 = 
+ variant {
+   err: GetUserError;
+   ok: User;
+ };
+type Result_11 = 
+ variant {
+   err: GetPaymentStatusError;
+   ok: text;
+ };
+type Result_10 = 
+ variant {
+   err: GetVariantError;
+   ok: Variants;
  };
 type Result_1 = 
  variant {
@@ -256,20 +319,24 @@ type Product =
    category: SlugId;
    description: text;
    id: ProductId;
-   img: ImgId;
    newArrival: bool;
-   price: float64;
-   sellingPrice: float64;
    slug: SlugId;
    time_created: Time;
    time_updated: Time;
    title: text;
    trending: bool;
+   variantColor: vec VariantColor;
+   variantSize: vec VariantSize;
  };
 type OrderProduct = 
  record {
-   id: ProductId;
+   color: text;
+   id: text;
+   img: text;
    quantity: nat8;
+   sale_price: float64;
+   size: text;
+   title: text;
  };
 type OrderId = text;
 type OrderError = 
@@ -289,8 +356,8 @@ type Order =
    paymentMethod: text;
    paymentStatus: text;
    products: vec OrderProduct;
-   shippingAddress: ShippingAddress;
-   shippingAmount: float64;
+   shippingAddress: Address;
+   shippingAmount: shippingAmount;
    subTotalAmount: float64;
    timeCreated: Time;
    timeUpdated: Time;
@@ -305,16 +372,16 @@ type NewOrder =
    paymentMethod: text;
    paymentStatus: text;
    products: vec OrderProduct;
-   shippingAddress: ShippingAddress;
-   shippingAmount: float64;
+   shippingAddress: Address;
+   shippingAmount: shippingAmount;
    subTotalAmount: float64;
    totalAmount: float64;
    userid: principal;
  };
-type ImgId = text;
 type GetVariantError = variant {VariantNotFound;};
 type GetUserError = variant {UserNotFound;};
 type GetProductError = variant {ProductNotFound;};
+type GetPaymentStatusError = variant {OrderNotFound;};
 type GetContactError = 
  variant {
    ContactNotFound;
@@ -322,6 +389,7 @@ type GetContactError =
    UserNotAuthenticated;
  };
 type GetCategoryError = variant {CategoryNotFound;};
+type GetAddressError = variant {AddressNotFound;};
 type DeleteWishlistItemError = 
  variant {
    UserNotAdmin;
@@ -357,6 +425,11 @@ type DeleteCategoryError =
 type DeleteCartItemsError = 
  variant {
    UserNotAdmin;
+   UserNotAuthenticated;
+ };
+type DeleteAddressError = 
+ variant {
+   AddressNotFound;
    UserNotAuthenticated;
  };
 type CreateWishlistItemError = 
@@ -404,10 +477,23 @@ type CreateCartItemsError =
    UserNotAdmin;
    UserNotAuthenticated;
  };
+type CreateAddressError = 
+ variant {
+   EmptyAddressLine1;
+   EmptyCity;
+   EmptyCountry;
+   EmptyEmail;
+   EmptyFirstName;
+   EmptyLastName;
+   EmptyPhoneNumber;
+   EmptyPincode;
+   EmptyState;
+   UserNotAuthenticated;
+ };
 type ContactId = text;
 type Contact = 
  record {
-   contact_number: nat32;
+   contact_number: text;
    email: text;
    id: ContactId;
    message: text;
@@ -417,46 +503,71 @@ type Contact =
  };
 type Category = 
  record {
-   category_img: ImgId;
+   category_img: text;
+   featured: bool;
    name: text;
    slug: SlugId;
  };
 type CartItem = 
  record {
+   color: text;
    id: CartId;
    "principal": principal;
    product_slug: text;
    quantity: nat8;
+   size: text;
    time_created: Time;
    time_updated: Time;
  };
 type CartId = text;
+type Address = 
+ record {
+   address_type: text;
+   addressline1: text;
+   addressline2: text;
+   city: text;
+   country: text;
+   email: text;
+   firstname: text;
+   id: text;
+   lastname: text;
+   phone_number: text;
+   pincode: text;
+   state: text;
+ };
 service : {
-  addtoCartItems: (text, nat8) -> (Result_26);
-  addtoWishlist: (text) -> (Result_25);
-  createCategory: (text, ImgId) -> (Result_24);
-  createContact: (UserContact) -> (Result_23);
-  createOrder: (NewOrder) -> (Result_11);
-  createProduct: (UserProduct, opt blob) -> (Result_22);
-  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_21);
-  deleteCartItems: (CartId) -> (Result_20);
-  deleteCategory: (SlugId) -> (Result_19);
-  deleteContact: (ContactId) -> (Result_18);
-  deleteOrder: (OrderId) -> (Result_17);
-  deleteProduct: (SlugId) -> (Result_16);
-  deleteWishlistItems: (WishlistId) -> (Result_15);
-  deletevariant: (SlugId) -> (Result_14);
+  addtoCartItems: (text, text, text, nat8) -> (Result_32);
+  addtoWishlist: (text) -> (Result_31);
+  clearallcartitmesbyprincipal: () -> (Result_25);
+  createAddress: (UserAddress) -> (Result_30);
+  createCategory: (text, text, bool) -> (Result_29);
+  createContact: (UserContact) -> (Result_28);
+  createOrder: (NewOrder) -> (Result_14);
+  createProduct: (UserProduct, vec VariantSize, vec VariantColor) ->
+   (Result_27);
+  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_26);
+  deleteCartItems: (CartId) -> (Result_25);
+  deleteCategory: (SlugId) -> (Result_24);
+  deleteContact: (ContactId) -> (Result_23);
+  deleteOrder: (OrderId) -> (Result_22);
+  deleteProduct: (SlugId) -> (Result_21);
+  deleteWishlistItems: (WishlistId) -> (Result_20);
+  deleteaddress: (text) -> (Result_19);
+  deletevariant: (SlugId) -> (Result_18);
+  getAddress: (text) -> (Result_17);
   getCallerCartItems: () -> (vec record {
                                    CartId;
                                    CartItem;
                                  }) query;
-  getCategory: (SlugId) -> (Result_13) query;
-  getContact: (ContactId) -> (Result_12) query;
-  getOrder: (text) -> (Result_11) query;
-  getProduct: (SlugId) -> (Result_10) query;
-  getUserdetailsbycaller: () -> (Result_9) query;
-  getUserdetailsbyid: (principal) -> (Result_9) query;
-  getvariant: (SlugId) -> (Result_8);
+  getCategory: (SlugId) -> (Result_16) query;
+  getContact: (ContactId) -> (Result_15) query;
+  getOrder: (text) -> (Result_14) query;
+  getProduct: (SlugId) -> (Result_13) query;
+  getUserdetailsbycaller: () -> (Result_12) query;
+  getUserdetailsbyid: (principal) -> (Result_12) query;
+  getpaymentstatus: () -> (Result_11);
+  getvariant: (SlugId) -> (Result_10);
+  isAdmin: (principal) -> (bool);
   listCategories: () -> (vec record {
                                SlugId;
                                Category;
@@ -465,6 +576,10 @@ service : {
                              ContactId;
                              Contact;
                            }) query;
+  listUserAddresses: () -> (vec record {
+                                  principal;
+                                  vec Address;
+                                }) query;
   listUserOrders: () -> (vec record {
                                OrderId;
                                Order;
@@ -493,11 +608,14 @@ service : {
                                           SlugId;
                                           Product;
                                         }) query;
-  updateCartItems: (CartId, nat8) -> (Result_7);
-  updateCategory: (SlugId, text, ImgId) -> (Result_6);
-  updateContact: (ContactId, bool) -> (Result_5);
+  updateAddress: (Address, text, principal) -> (Result_9);
+  updateCartItems: (CartId, nat8, text, text) -> (Result_8);
+  updateCategory: (SlugId, text, text, bool) -> (Result_7);
+  updateContact: (ContactId, bool) -> (Result_6);
   updateOrderStatus: (OrderId, text) -> (Result_3);
-  updateProduct: (SlugId, UserProduct, opt blob) -> (Result_4);
+  updatePaymentstatus: (OrderId, text) -> (Result_5);
+  updateProduct: (SlugId, UserProduct, vec VariantSize, vec VariantColor) ->
+   (Result_4);
   updateTrackingUrl: (OrderId, text) -> (Result_3);
   updateUser: (text, text, text) -> (Result_2);
   updateWishlistItems: (WishlistId) -> (Result_1);

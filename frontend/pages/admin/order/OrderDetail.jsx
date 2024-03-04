@@ -14,12 +14,11 @@ import { FiDollarSign } from "react-icons/fi";
 import moment from "moment";
 import { Dialog, Transition } from "@headlessui/react";
 import { TailSpin } from "react-loader-spinner";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Invoice from "../invoice";
 const OrderDetail = () => {
   const param = useParams();
-  ;
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
@@ -45,7 +44,6 @@ const OrderDetail = () => {
   }
   const getOrder = async () => {
     try {
-      setLoading2(true);
       const item = await backend.getOrder(param.id);
       console.log(item);
       console.log(item.ok);
@@ -98,7 +96,7 @@ const OrderDetail = () => {
     try {
       setLoading(true);
 
-      const res = await backend.updatePaymentStatus(order.id, paymentStatus);
+      const res = await backend.updatePaymentstatus(order.id, paymentStatus);
       console.log(res);
       if ("ok" in res) {
         setIsOpenPS(false);
@@ -133,9 +131,9 @@ const OrderDetail = () => {
   return (
     <>
       <div className="w-full">
-        <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+        <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
           <div className="mb-5 flex justify-between items-center gap-2">
-            <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white flex justify-start items-center gap-2">
+            <h1 className="uppercase text-xl font-semibold text-gray-900  flex justify-start items-center gap-2">
               Order Id :{" "}
               {loading2 ? (
                 <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
@@ -173,7 +171,7 @@ const OrderDetail = () => {
                       handlePrint();
                     }
                   }}
-                  className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+                  className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
                 >
                   Print
                 </button>
@@ -181,7 +179,7 @@ const OrderDetail = () => {
 
               <Link
                 to="/admin/orders"
-                className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+                className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
               >
                 <CiCircleChevLeft className="w-5 h-5" /> Go back
               </Link>
@@ -190,11 +188,11 @@ const OrderDetail = () => {
 
           <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="border-2 border-[#330000]/20 rounded-xl p-4">
+              <div className="border-2 border-[#512E5F]/20 rounded-xl p-4">
                 <h1 className="uppercase text-black font-semibold text-xl mb-2 tracking-wide">
                   General
                 </h1>
-                <div className="border-b-2 border-[#330000]/20 mb-3"></div>
+                <div className="border-b-2 border-[#512E5F]/20 mb-3"></div>
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-1">
                     <div className="flex flex-col gap-0 leading-tight">
@@ -361,11 +359,11 @@ const OrderDetail = () => {
                   </div>
                 </div>
               </div>
-              <div className="border-2 border-[#330000]/20 rounded-xl p-4">
+              <div className="border-2 border-[#512E5F]/20 rounded-xl p-4">
                 <h1 className="uppercase text-black font-semibold text-xl mb-2 tracking-wide">
                   Payment
                 </h1>
-                <div className="border-b-2 border-[#330000]/20 mb-3"></div>
+                <div className="border-b-2 border-[#512E5F]/20 mb-3"></div>
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col gap-0 leading-tight">
@@ -393,7 +391,7 @@ const OrderDetail = () => {
                         ) : (
                           <span className="flex items-center gap-1">
                             <FiDollarSign className="w-5 h-5" />{" "}
-                            {order?.shippingAmount.toFixed(2)}
+                            {order?.shippingAmount.shipping_amount}
                           </span>
                         )}
                       </h6>
@@ -418,11 +416,11 @@ const OrderDetail = () => {
                   </div>
                 </div>
               </div>
-              <div className="border-2 border-[#330000]/20 rounded-xl p-4">
+              <div className="border-2 border-[#512E5F]/20 rounded-xl p-4">
                 <h1 className="uppercase text-black font-semibold text-xl mb-2 tracking-wide">
                   Shipping
                 </h1>
-                <div className="border-b-2 border-[#330000]/20 mb-3"></div>
+                <div className="border-b-2 border-[#512E5F]/20 mb-3"></div>
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col gap-0 leading-tight">
@@ -433,7 +431,7 @@ const OrderDetail = () => {
                         {loading2 ? (
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
-                          order?.shippingAddress?.firstName
+                          order?.shippingAddress?.firstname
                         )}
                       </h6>
                     </div>
@@ -445,33 +443,7 @@ const OrderDetail = () => {
                         {loading2 ? (
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
-                          order?.shippingAddress?.lastName
-                        )}
-                      </h6>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2">
-                    <div className="flex flex-col gap-0 leading-tight">
-                      <h6 className="text-sm font-light text-black uppercase tracking-wide">
-                        Email Address
-                      </h6>
-                      <h6 className="text-lg font-semibold text-black">
-                        {loading2 ? (
-                          <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
-                        ) : (
-                          order?.shippingAddress?.mail
-                        )}
-                      </h6>
-                    </div>
-                    <div className="flex flex-col gap-0 leading-tight">
-                      <h6 className="text-sm font-light text-black uppercase tracking-wide">
-                        Mobile Number
-                      </h6>
-                      <h6 className="text-lg font-semibold text-black">
-                        {loading2 ? (
-                          <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
-                        ) : (
-                          order?.shippingAddress?.mobile
+                          order?.shippingAddress?.lastname
                         )}
                       </h6>
                     </div>
@@ -485,7 +457,34 @@ const OrderDetail = () => {
                         {loading2 ? (
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
-                          order?.shippingAddress?.street
+                          order?.shippingAddress?.addressline1
+                        )}
+                      </h6>
+                    </div>
+
+                    <div className="flex flex-col gap-0 leading-tight">
+                      <h6 className="text-sm font-light text-black uppercase tracking-wide">
+                        Mobile Number
+                      </h6>
+                      <h6 className="text-lg font-semibold text-black">
+                        {loading2 ? (
+                          <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
+                        ) : (
+                          order?.shippingAddress?.phone_number
+                        )}
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2">
+                    <div className="flex flex-col gap-0 leading-tight">
+                      <h6 className="text-sm font-light text-black uppercase tracking-wide">
+                        Email Address
+                      </h6>
+                      <h6 className="text-lg font-semibold text-black">
+                        {loading2 ? (
+                          <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
+                        ) : (
+                          order?.shippingAddress?.email
                         )}
                       </h6>
                     </div>
@@ -537,7 +536,7 @@ const OrderDetail = () => {
                         {loading2 ? (
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
-                          order?.shippingAddress?.postCode
+                          order?.shippingAddress?.pincode
                         )}
                       </h6>
                     </div>
@@ -546,11 +545,11 @@ const OrderDetail = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-              <div className="border-2 border-[#330000]/20 rounded-xl p-4">
+              <div className="border-2 border-[#512E5F]/20 rounded-xl p-4">
                 <h1 className="uppercase text-black font-semibold text-xl mb-2 tracking-wide">
                   Product
                 </h1>
-                <div className="border-b-2 border-[#330000]/20 mb-3"></div>
+                <div className="border-b-2 border-[#512E5F]/20 mb-3"></div>
                 <div className="flex flex-col gap-4">
                   {order?.products?.map((product, i) => (
                     <ProductCard key={i} product={product} loading={loading2} />
@@ -607,7 +606,7 @@ const OrderDetail = () => {
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         type="text"
-                        className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                        className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                         placeholder="Tracking Url"
                         disabled={loading}
                       />
@@ -619,7 +618,7 @@ const OrderDetail = () => {
                       <button
                         onClick={handleSubmitAwb}
                         type="submit"
-                        className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}
@@ -640,7 +639,7 @@ const OrderDetail = () => {
                       </button>
                       <button
                         onClick={closeModal}
-                        className={`bg-[#330000]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}
@@ -698,7 +697,7 @@ const OrderDetail = () => {
                         Payment Status
                       </label>
                       <select
-                        className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                        className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                         disabled={loading}
                         value={paymentStatus}
                         onChange={(e) => setPaymentStatus(e.target.value)}
@@ -731,7 +730,7 @@ const OrderDetail = () => {
                       <button
                         onClick={handleSubmitPS}
                         type="submit"
-                        className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}
@@ -752,7 +751,7 @@ const OrderDetail = () => {
                       </button>
                       <button
                         onClick={() => setIsOpenPS(false)}
-                        className={`bg-[#330000]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}
@@ -810,7 +809,7 @@ const OrderDetail = () => {
                         Order Status
                       </label>
                       <select
-                        className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                        className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                         disabled={loading}
                         value={orderStatus}
                         onChange={(e) => setOrderStatus(e.target.value)}
@@ -855,7 +854,7 @@ const OrderDetail = () => {
                       <button
                         onClick={handleSubmitOS}
                         type="submit"
-                        className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}
@@ -876,7 +875,7 @@ const OrderDetail = () => {
                       </button>
                       <button
                         onClick={() => setIsOpenOS(false)}
-                        className={`bg-[#330000]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                        className={`bg-[#512E5F]/50 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                           loading && "opacity-50"
                         }`}
                         disabled={loading}

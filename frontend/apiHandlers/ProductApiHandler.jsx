@@ -73,9 +73,7 @@ const ProductApiHandler = () => {
     }
     try {
       setIsLoading(true);
-      const productsFound = await backend.searchproductsbycategory(
-        searchInput.toLowerCase()
-      );
+      const productsFound = await backend.searchproductsbycategory(searchInput);
       setProductList(productsFound);
     } catch (err) {
       console.error("Error searching by category:", err);

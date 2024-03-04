@@ -14,7 +14,7 @@ import {
   CiViewBoard,
 } from "react-icons/ci";
 import { Link, NavLink } from "react-router-dom";
-//import useModal from "../../modal/useModal";
+import useModal from "../../modal/useModal";
 import Modal from "../../modal/Modal";
 
 const LeftSidebar = ({ sidebar, setSidebar }) => {
@@ -26,7 +26,7 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
 
       {sidebar && (
         <div className="lg:col-span-1 col-span-5 w-full">
-          <div className="h-full bg-white dark:bg-slate-800 rounded-2xl p-3 flex flex-col justify-between ">
+          <div className="h-full bg-white  rounded-2xl p-3 flex flex-col justify-between ">
             <div className="flex flex-col">
               <div className="flex justify-center items-center mb-10">
                 <Link to="/admin">
@@ -44,8 +44,8 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   end
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiGrid32 className="w-5 h-5 mr-2" />
@@ -56,8 +56,8 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   end
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiHashtag className="w-5 h-5 mr-2" />
@@ -68,68 +68,35 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   end
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiShop className="w-5 h-5 mr-2" />
                   Products
                 </NavLink>
-                <NavLink
-                  to="/admin/nft"
-                  end
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                  }
-                >
-                  <CiViewBoard className="w-5 h-5 mr-2" />
-                  nft
-                </NavLink>
+           
                 <NavLink
                   to="/admin/orders"
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiReceipt className="w-5 h-5 mr-2" />
                   Orders
                 </NavLink>
-                <NavLink
-                  to="/admin/courses"
-                  end
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                  }
-                >
-                  <CiViewBoard className="w-5 h-5 mr-2" />
-                  Courses Categories
-                </NavLink>
+              
 
-                <NavLink
-                  to="/admin/videos"
-                  end
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                  }
-                >
-                  <CiVideoOn className="w-5 h-5 mr-2" />
-                  Courses Videos
-                </NavLink>
+               
                 <NavLink
                   to="/admin/messages"
                   end
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiMail className="w-5 h-5 mr-2" />
@@ -140,8 +107,8 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   end
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiMail className="w-5 h-5 mr-2" />
@@ -151,8 +118,8 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   to="/admin/settings"
                   className={({ isActive }) =>
                     isActive
-                      ? "flex justify-start items-center text-lg bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
-                      : "flex justify-start items-center text-lg bg-transparent dark:bg-transparent hover:bg-[#330000]/20 dark:hover:bg-[#330000]/30 text-gray-900 dark:text-white hover:text-[#330000] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
                   <CiSettings className="w-5 h-5 mr-2" />
@@ -163,7 +130,7 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
             <div className="flex justify-center">
               <Link
                 to="/"
-                className="font-light text-black uppercase hover:text-[#330000] text-sm tracking-widest"
+                className="font-light text-black uppercase hover:text-[#512E5F] text-sm tracking-widest"
               >
                 Switch to main site
               </Link>

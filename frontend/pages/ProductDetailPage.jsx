@@ -7,80 +7,21 @@ import ScrollToTop from "../components/common/ScrollToTop.jsx";
 import AnimationView from "../components/common/AnimationView.jsx";
 import Footer from "../components/common/Footer.jsx";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import AliceCarousel from "react-alice-carousel";
-import "react-alice-carousel/lib/alice-carousel.css";
+
 import { IoHeartOutline, IoHeart } from "react-icons/io5";
 import Button from "../components/common/Button.jsx";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
+import { HiOutlinePlus } from "react-icons/hi2";
+import { HiOutlineMinus } from "react-icons/hi2";
+import placeholderImg from "../assets/product/p1-front.jpg";
+import img1 from "../assets/product/p2-front.jpeg";
+import img2 from "../assets/product/p1-back.jpg";
+import img3 from "../assets/product/p2-back.jpeg";
 
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
-
-const shirtList = [
-  {
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-    category: "Clothing and Accessories",
-    subCategory: "Topwear",
-    type: "T-shirts",
-    gender: "Men's",
-    brand: "BLIVE",
-    name: "Typography Men Round Neck Brown,Black T-Shirt",
-    description:
-      "Pack of 2 Men Typography Round Neck Cotton Blend Brown, Black T-Shirt",
-    specialPrice: 389,
-    originalPrice: 1999,
-    discountPercentage: 80,
-    ratings: 3.5,
-    numRatings: 22896,
-    numReviews: 1514,
-
-    sizeOptions: ["XS", "S", "M", "L", "XL", "XXL"],
-    availableOffers: [
-      "10% off on HSBC Bank Credit Card and EMI Transactions, up to ₹1,500 on orders of ₹5,000 and above",
-      "Extra ₹500 off on HSBC Bank Credit Card EMI Transactions on products priced ₹24,990 and above",
-      "5% Cashback on Flipkart Axis Bank Card",
-      "Get at flat ₹389",
-      // add more offers if available
-    ],
-    colorOptions: ["Brown", "Black", "Blue", "Orange", "Green", "Red"],
-  },
-  {
-    name: "Red Graphic Tee",
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Green Polo Shirt",
-    image: " https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Yellow Striped Shirt",
-    image: " https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Blue Casual Shirt",
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Red Graphic Tee",
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Green Polo Shirt",
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-  {
-    name: "Yellow Striped Shirt",
-    image: "https://dummyimage.com/500x500/EF9A9A/fff",
-  },
-];
+import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 
 const ProductDetailPage = () => {
   return (
@@ -98,7 +39,7 @@ const ProductDetail = () => {
 
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
-  const [loading2, setLoading2] = useState(false);
+
   const [loading3, setLoading3] = useState(false);
   const [loading4, setLoading4] = useState(false);
   const [data, setData] = useState("");
@@ -106,37 +47,27 @@ const ProductDetail = () => {
   const [wishlist, setWishlist] = useState([]);
   const [isProductInLocalCart, setProductInLocalCart] = useState(false);
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState();
   const { open } = useDialog();
-
+  const [sellingPrice, setSellingPrice] = useState();
   const { slug } = useParams();
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedColor, setSelectedColor] = useState();
+  const [inventory, setInventory] = useState();
 
   const handleColorChange = (color) => {
-    setSelectedColor(color === selectedColor ? null : color);
+    setSelectedColor(color.color === selectedColor ? null : color.color);
+    if (color.inventory < 5) {
+      toast(` !!! Hurry up only ${color.inventory} piece left !!!`);
+    }
+    setPrice(color.variant_sale_price);
+    setSellingPrice(color.variant_price);
+    setInventory(color.inventory);
   };
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState();
 
   const handleSizeChange = (size) => {
     setSelectedSize(size === selectedSize ? null : size);
-  };
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const colors = [
-    "RED",
-    "GREEN",
-    "BLUE",
-    "YELLOW",
-    "PURPLE",
-    "ORANGE",
-    "PINK",
-    "TEAL",
-    "INDIGO",
-    "CYAN",
-    "LIME",
-    "GRAY",
-  ];
-
-  const useBackend = () => {
-    return useCanister("backend");
   };
 
   // get product detail function
@@ -146,12 +77,16 @@ const ProductDetail = () => {
       const item = await backend.getProduct(slug);
 
       setData(item.ok);
+      setSelectedColor(item.ok.variantColor[0].color);
+      setSelectedSize(item.ok.variantSize[0].size);
+      setSellingPrice(item.ok.variantColor[0].variant_price);
+      setPrice(item.ok.variantColor[0].variant_sale_price);
 
       if (item.ok) {
         console.log(item.ok);
       }
     } catch (error) {
-      console.error("Error listing user:", error);
+      console.error("Error listing product details:", error);
     } finally {
       setLoading(true);
     }
@@ -163,64 +98,59 @@ const ProductDetail = () => {
 
     return () => clearTimeout(timeoutId);
   }, [backend]);
+  const listCarts = async () => {
+    try {
+      setLoading4(false);
+
+      const cart = await backend.getCallerCartItems();
+      setCarts(cart);
+    } catch (error) {
+      console.error("Error listing carts:", error);
+    } finally {
+      setLoading4(false);
+    }
+  };
 
   useEffect(() => {
-    const listCarts = async () => {
-      try {
-        setLoading4(false);
-
-        const cart = await backend.getCallerCartItems();
-        setCarts(cart);
-        console.log(cart);
-      } catch (error) {
-        console.error("Error listing carts:", error);
-      } finally {
-        setLoading4(false);
-      }
-    };
-
     listCarts();
   }, [backend]);
+
   useEffect(() => {
     // Check if the product is in the local cart
     const isProductInCart = carts.some(
       (item) =>
         item[1]?.product_slug === data?.slug &&
-        item[1]?.principal.toText() === principal
+        item[1]?.principal.toText() === principal &&
+        data.variantColor.some((variant) => variant.color === item[1]?.color)
     );
     setProductInLocalCart(isProductInCart);
   }, [carts, data, principal]);
 
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
-    if (isConnected) {
-      try {
-        setLoading4(true);
-        const res = await backend.addtoCartItems(
-          slug,
-          data.inventory,
-          { title: data.title, slug: slug, short: "someShort" },
-          { title: data.title, color: "red", slug: slug }
-        );
+    try {
+      setLoading4(true);
+      const res = await backend.addtoCartItems(
+        slug,
+        selectedSize,
+        selectedColor,
+        quantity
+      );
+      listCarts();
 
-        if ("ok" in res) {
-          setProductInLocalCart(true);
-          toast.success("item added to cart Successfully");
-          console.log("     Item added successfully     ", res);
-        } else {
-          // Log an error if the response does not have "ok" property
-          console.error("Unexpected response from backend:", res);
-        }
-      } catch (error) {
-        // Log the error for debugging
-        console.error("An error occurred adding items to cart:", error);
-      } finally {
-        console.log("hello");
-        setLoading4(false);
+      if ("ok" in res) {
+        setProductInLocalCart(true);
+        toast.success("item added to cart Successfully");
+        console.log("     Item added successfully     ", res);
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
       }
-    } else {
-      toast.success("please login first");
-      open();
+    } catch (error) {
+      // Log the error for debugging
+      console.error("An error occurred adding items to cart:", error);
+    } finally {
+      setLoading4(false);
     }
   };
 
@@ -234,14 +164,13 @@ const ProductDetail = () => {
 
       const wishlist2 = await backend.listWishlistItems();
       setWishlist(wishlist2);
-
-      console.log(wishlist2);
     } catch (error) {
-      console.error("Error listing carts:", error);
+      console.error("Error listing wishlist:", error);
     } finally {
       // setLoading4(false)
     }
   };
+  console.log(data, "hello");
 
   useEffect(() => {
     // Check if the product is in the local cart
@@ -273,11 +202,9 @@ const ProductDetail = () => {
         console.error("An error occurred adding items to wishlist:", error);
       } finally {
         setLoading3(false);
-
-        console.log("hello");
       }
     } else {
-      toast.success("please login first");
+      toast.error("please login first");
       open();
     }
   };
@@ -289,10 +216,10 @@ const ProductDetail = () => {
           item[1].product_slug === data.slug &&
           item[1].principal.toText() === principal
       );
-      console.log(wishlistItem[0][1].id);
+
       setLoading3(true);
       const res = await backend.deleteWishlistItems(wishlistItem[0][1].id);
-      console.log(res);
+
       if ("ok" in res) {
         toast.success("The product has been removed to your wishlist.");
         listWishlists();
@@ -305,21 +232,38 @@ const ProductDetail = () => {
     }
   };
   // Image gallery function for selection of better product details
-  const [mainImage, setMainImage] = useState(
-    "https://dummyimage.com/600x600/EF9A9A/fff"
-  );
+  const [mainImage, setMainImage] = useState(placeholderImg);
 
   const handleImageClick1 = () => {
-    setMainImage("https://dummyimage.com/300x300/EF9A9A/fff");
+    setMainImage(img1);
   };
 
   const handleImageClick2 = () => {
-    setMainImage("https://dummyimage.com/400x400/EF9A9A/fff");
+    setMainImage(img2);
   };
 
   const handleImageClick3 = () => {
-    setMainImage("https://dummyimage.com/500x500/EF9A9A/fff");
+    setMainImage(img3);
   };
+
+  const increment = async (item) => {
+    setQuantity(quantity + 1);
+  };
+  const decrement = (item) => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const calculateDiscountPercentage = () => {
+    if (price === 0) {
+      return 0;
+    }
+    const discountPercentage = ((sellingPrice - price) / sellingPrice) * 100;
+
+    return Math.round(discountPercentage);
+  };
+  const discount = calculateDiscountPercentage();
   return (
     <>
       <div className="container mx-auto xl:mt-12 mt-6 px-6 flex items-center md:items-start justify-between md:flex-col flex-col">
@@ -382,11 +326,11 @@ const ProductDetail = () => {
 
             <div className="w-full flex mt-4 pr-4  gap-2">
               <img
-                src="https://dummyimage.com/300x300/EF9A9A/fff"
+                src={img1}
                 alt="img1"
                 className={`w-1/3 rounded-md cursor-pointer
                 ${
-                  mainImage === "https://dummyimage.com/300x300/EF9A9A/fff"
+                  mainImage === img1
                     ? "border-[2px] border-gray-400 shadow-lg"
                     : ""
                 }`}
@@ -394,11 +338,11 @@ const ProductDetail = () => {
               />
 
               <img
-                src="https://dummyimage.com/400x400/EF9A9A/fff"
+                src={img2}
                 alt="img1"
                 className={`w-1/3 rounded-md cursor-pointer
                 ${
-                  mainImage === "https://dummyimage.com/400x400/EF9A9A/fff"
+                  mainImage === img2
                     ? "border-[2px] border-gray-400 shadow-lg     "
                     : ""
                 }`}
@@ -406,11 +350,11 @@ const ProductDetail = () => {
               />
 
               <img
-                src="https://dummyimage.com/500x500/EF9A9A/fff"
+                src={img3}
                 alt="img1"
                 className={`w-1/3 rounded-md cursor-pointer
                 ${
-                  mainImage === "https://dummyimage.com/500x500/EF9A9A/fff"
+                  mainImage === img3
                     ? "border-[2px] border-gray-400 shadow-lg     "
                     : ""
                 }`}
@@ -428,7 +372,7 @@ const ProductDetail = () => {
               <h2 className="xl:text-2xl  font-bold mb-4">{data.title}</h2>
             )}
 
-            {/* Ratings */}
+            {/* Ratings
             {!loading ? (
               <div className=" w-1/3 h-8 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
@@ -449,7 +393,7 @@ const ProductDetail = () => {
                   ({shirtList[0].numReviews} reviews)
                 </p>
               </div>
-            )}
+            )} */}
 
             {/* Prices */}
             {!loading ? (
@@ -457,10 +401,15 @@ const ProductDetail = () => {
             ) : (
               <div className="mb-4 flex items-center  text-gray-700">
                 Price:
-                <p className="text-green-600 mr-2">${data.price}</p>
-                <p className="text-gray-600">
-                  <s>${shirtList[0].originalPrice}</s>
+                <p className="text-gray-600">${price}</p>
+                <p className="text-gray-500 mx-2 text-xs">
+                  <s>${sellingPrice}</s>
                 </p>
+                <div className="flex items-center gap-2">
+                  <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 max-w-max">
+                    {discount}% off
+                  </span>
+                </div>
               </div>
             )}
 
@@ -475,15 +424,17 @@ const ProductDetail = () => {
                     COLOR OPTIONS :{selectedColor}
                   </h2>
                   <div className="flex  flex-wrap">
-                    {colors.map((color) => (
+                    {data.variantColor.map((color, index) => (
                       <div
-                        key={color}
-                        className={`w-10 h-10 m-1 rounded-full bg-${color} cursor-pointer ${
-                          selectedColor === color
+                        key={index}
+                        className={`w-10 h-10 m-1 rounded-full bg-${
+                          color.color
+                        } cursor-pointer ${
+                          selectedColor === color.color
                             ? "border-[2px] border-gray-300 shadow-md   scale-125  "
                             : ""
                         }`}
-                        style={{ backgroundColor: color }}
+                        style={{ backgroundColor: color.color }}
                         onClick={() => handleColorChange(color)}
                       />
                     ))}
@@ -499,22 +450,22 @@ const ProductDetail = () => {
                     SELECT SIZE:{selectedSize}
                   </h2>
                   <div className="flex flex-wrap  ">
-                    {sizes.map((size) => (
+                    {data.variantSize.map((size, index) => (
                       <div
-                        key={size}
+                        key={index}
                         className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2 ${
-                          selectedSize === size
+                          selectedSize === size.size
                             ? "border-black scale-125"
                             : "border-gray-300"
                         }`}
-                        onClick={() => handleSizeChange(size)}
+                        onClick={() => handleSizeChange(size.size)}
                       >
                         <span
                           className={`text-${
                             selectedSize === size ? "black" : "gray-500"
                           }`}
                         >
-                          {size}
+                          {size.size}
                         </span>
                       </div>
                     ))}
@@ -522,46 +473,24 @@ const ProductDetail = () => {
                   <div></div>
                 </div>
               )}
-
-              {/* {<p className="text-gray-800 mt-4">Size Options:</p>
-            <div className="flex flex-wrap">
-              {shirtList[0].sizeOptions.map((size, index) => (
-                <div
-                  key={index}
-                  className=""
-                >
-                  {size}
-                </div>
-              ))}
-            </div>} */}
             </div>
             {!loading ? (
-              <div className=" w-full h-36 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-xl"></div>
+              <div className=" w-1/3 h-12  mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
-              <div className="mb-4">
-                <p className="text-gray-800">Description:</p>
-                <li className="list-disc text-gray-800 ">
-                  {shirtList[0].description}
-                </li>
+              <div class="flex items-center justify-start ml-2">
+                <button class="    " onClick={decrement}>
+                  <HiOutlineMinus />
+                </button>
+                <p type="text" class="w-12 text-center     ">
+                  {quantity}
+                </p>
+
+                <button class=" " onClick={increment}>
+                  <HiOutlinePlus />
+                </button>
               </div>
             )}
 
-            {/* Available Offers */}
-            {!loading ? (
-              <div className=" w-full h-36 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-xl"></div>
-            ) : (
-              <div className="mb-4">
-                <p className="text-gray-800">Available Offers:</p>
-                <ul className="list-disc pl-4">
-                  {shirtList[0].availableOffers.map((offer, index) => (
-                    <li key={index} className="text-gray-700">
-                      {offer}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {/* Buy Now and Add to Cart Buttons */}
             <div className="flex mt-4">
               {!loading ? (
                 <div
@@ -581,10 +510,8 @@ const ProductDetail = () => {
                       onClick={AddToCart}
                       className={`bg-black text-white text-center  py-2 px-4 rounded-full w-full  mb-2 lg:w-1/3 ${
                         loading4 && " flex items-center justify-center"
-                      } ${
-                        data?.inventory <= 0 && "opacity-50 hover:!bg-[#D02F2F]"
-                      }`}
-                      disabled={(loading4 && true) || data?.inventory <= 0}
+                      } ${inventory < quantity && "opacity-30"}`}
+                      disabled={(loading4 && true) || inventory < quantity}
                     >
                       {loading4 ? (
                         <TailSpin
@@ -598,43 +525,29 @@ const ProductDetail = () => {
                       ) : (
                         ""
                       )}{" "}
-                      {data?.inventory <= 0 ? "Out of Stock" : "Add to Cart"}
+                      {inventory && inventory < quantity ? ( //inventory>=quantity<=0
+                        "Out of Stock"
+                      ) : (
+                        <p className="ml-2"> Add to Cart</p>
+                      )}
                     </Button>
                   )}
                 </>
               )}
             </div>
+            {!loading ? (
+              <div className=" w-full h-36 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-xl"></div>
+            ) : (
+              <div className="mb-4 mt-8">
+                <p className="text-gray-800">Description:</p>
+                <li className="list-disc text-gray-800 ">{data.description}</li>
+              </div>
+            )}
           </div>
         </div>
-        {/* <Carousel /> */}
       </div>
     </>
   );
 };
-
-// const Carousel = () => {
-//   const responsive = {
-//     0: { items: 1 },
-//     600: { items: 3 },
-//     1024: { items: 4 },
-//   };
-
-//   return (
-//     <AliceCarousel
-//       mouseTracking
-//       items={shirtList.map((shirt, index) => (
-//         <div key={index} className=" container xl:pr-3 pr-2 mt-8 md:mt-12   ">
-//           <img
-//             src={shirt.image}
-//             alt={shirt.name}
-//             className="w-full h-60 object-cover rounded-md"
-//           />
-//           <p className="text-center mt-2">{shirt.name}</p>
-//         </div>
-//       ))}
-//       responsive={responsive}
-//     />
-//   );
-// };
 
 export default ProductDetailPage;

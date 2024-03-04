@@ -6,8 +6,8 @@ import Table, {
   StatusActive,
   StatusPill,
 } from "./utils/Table"; // Update the import
-import item1 from "../../assets/merchandise1.png";
-import { useCanister } from "@connect2ic/react";
+/* import item1 from "../../assets/merchandise1.png";
+ */ import { useCanister } from "@connect2ic/react";
 import { CiCirclePlus } from "react-icons/ci";
 import { InfinitySpin } from "react-loader-spinner";
 const Products = () => {
@@ -24,7 +24,7 @@ const Products = () => {
       },
       {
         Header: "Status",
-        accessor: "status",
+        accessor: "active",
         Filter: SelectColumnFilter, // new
         Cell: StatusPill,
       },
@@ -55,7 +55,7 @@ const Products = () => {
 
   const listAllProducts = async () => {
     try {
-      const items = await backend.listProducts();
+      const items = await backend.listallProducts();
       setProducts(items);
     } catch (error) {
       console.error("Error listing all category:", error);
@@ -66,20 +66,26 @@ const Products = () => {
 
   const data = useMemo(() => products, [products]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => data);
-  console.log(extractedData);
+  const extractedData = data.map(([key, data]) => ({
+    title: data.title,
+    slug: data.slug,
+    category: data.category,
+    active: data.active ? "active" : "inactive",
+    price: data.variantColor[0].variant_price,
+    inventory: data.variantColor[0].inventory,
+  }));
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white dark:bg-slate-800 rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
       <div className="">
         <div className="mb-5 flex justify-between items-center">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Products
           </h1>
           <div>
             <Link
               to="/admin/products/create-product"
-              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
             >
               <CiCirclePlus className="w-5 h-5" /> NEW PRODUCT
             </Link>

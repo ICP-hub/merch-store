@@ -9,12 +9,14 @@ import AnimationView from "../components/common/AnimationView";
 import ScrollToTop from "../components/common/ScrollToTop";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import Hero from "../components/common/Hero";
 import {
   HorizontalStepperComponent,
   VerticalStepperComponent,
   // VerticalStepperComponent,
 } from "../components/common/Stepper";
+import CartApiHandler from "../apiHandlers/CartApiHandler";
+import { useParams } from "react-router-dom";
+import NoImage from "../assets/placeholderImg-Small.jpeg";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  Base : MyOrderDetailPage.
@@ -24,7 +26,6 @@ const MyOrderDetailPage = () => {
     <AnimationView>
       <ScrollToTop />
       <Header title={"OrderDetails"}></Header>
-      <Hero></Hero>
       <MyOrderDetailContainerMain />
       <Footer></Footer>
     </AnimationView>
@@ -35,12 +36,75 @@ const MyOrderDetailPage = () => {
 /*  @  MyOrderDetailPage : <MyOrderContainerMain />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrderDetailContainerMain = () => {
+  const { orderList, getOrderList, isLoading } = CartApiHandler();
+  const { id } = useParams();
+  // Filter orderList from params
+  const orderData = orderList.find(([orderId, _]) => orderId === id);
+
+  const fetchOrderData = () => {
+    if (orderData) {
+      const {
+        awb,
+        orderStatus,
+        paymentAddress,
+        paymentMethod,
+        paymentStatus,
+        shippingAddress,
+        products,
+        shippingAmount,
+        subTotalAmount,
+        timeCreated,
+        timeUpdated,
+        totalAmount,
+        userid,
+      } = orderData[1];
+
+      return {
+        awb,
+        orderStatus,
+        paymentAddress,
+        paymentMethod,
+        paymentStatus,
+        shippingAddress,
+        products,
+        shippingAmount,
+        subTotalAmount,
+        timeCreated,
+        timeUpdated,
+        totalAmount,
+        userid,
+      };
+    }
+    return null; // If no match
+  };
+
+  const orderDetails = fetchOrderData();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getOrderList();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
-      <TabChanges />
-      <DeliveryInfo />
-      <DeliveryStepper />
-      <OrderItemComp />
+      {console.log(isLoading)}
+      {orderData === undefined ? (
+        <div>Invalid Order ID</div>
+      ) : (
+        <>
+          {" "}
+          <TabChanges orderId={id} />
+          <DeliveryInfo shippingAddress={orderDetails?.shippingAddress} />
+          <DeliveryStepper />
+          <OrderItemComp products={orderDetails?.products} />
+        </>
+      )}
     </div>
   );
 };
@@ -48,8 +112,8 @@ const MyOrderDetailContainerMain = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <TabChanges /> > top bar 
 /* ----------------------------------------------------------------------------------------------------- */
-const TabChanges = () => {
-  const paths = ["Home", "My Account", "My Orders", "ABCED-FGHIJ-12345"];
+const TabChanges = ({ orderId }) => {
+  const paths = ["Home", "My Account", "My Orders", orderId];
 
   return (
     <div className="text-gray-600 gap-2 flex text-xs font-medium py-6 items-center">
@@ -66,15 +130,18 @@ const TabChanges = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Left 
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryInfo = () => {
+const DeliveryInfo = ({ shippingAddress }) => {
   return (
     <div className="flex border border-dashed  rounded-2xl border-gray-900 min-w-full max-sm:flex-col">
       <div className="sm:w-1/2 sm:border-r sm:border-r-gray-900 border-dashed max-sm:border-b max-sm:border-b-gray-900">
         <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">
           <h3 className="font-medium text-lg">Delivery Address</h3>
-          <h4 className="font-medium">Avanish Ranjan Shrivastava</h4>
+          <h4 className="font-medium">
+            {shippingAddress?.firstname} {shippingAddress?.lastname}
+          </h4>
           <p className="text-sm">
-            Tarapur Colony, sector number 1, Jaunpur, 222022, Uttar Pradesh
+            {shippingAddress?.addressline1},{shippingAddress?.addressline2},
+            {shippingAddress?.pin},{shippingAddress?.state}
           </p>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Email</p>
@@ -82,7 +149,7 @@ const DeliveryInfo = () => {
           </div>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Phone Number</p>
-            <p>123456789</p>
+            <p>{shippingAddress?.phone_number}</p>
           </div>
         </div>
       </div>
@@ -198,72 +265,53 @@ const DeliveryStepper = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <OrderItemComp />  
 /* ----------------------------------------------------------------------------------------------------- */
-const OrderItemComp = () => {
-  const fakeProducts = [
-    {
-      _id: "fakeItemId1",
-      name: "Boat Headphone XYZ",
-      image: FakeProdImg,
-      price: 29.99,
-      quantity: 2,
-      orderedAt: new Date("2024-02-10T12:00:00"),
-      shippedAt: new Date("2024-02-11T14:30:00"),
-      deliveredAt: new Date("2024-02-12T10:15:00"),
-    },
-    {
-      _id: "fakeItemId2",
-      name: "Boat Headphone ABC",
-      image: FakeProdImg,
-      price: 29.99,
-      quantity: 2,
-      orderedAt: new Date("2024-02-10T12:00:00"),
-      shippedAt: new Date("2024-02-11T14:30:00"),
-      deliveredAt: new Date("2024-02-12T10:15:00"),
-    },
-  ];
-
+const OrderItemComp = ({ products }) => {
   return (
     <div className="border-dashed border-gray-900 border rounded-2xl">
       <div className="flex flex-col">
-        {fakeProducts.map((product, index) => (
+        {products?.map((product, index) => (
           <div
-            key={product._id}
+            key={product?.id}
             // Don't need border-b for the last item
             className={`flex flex-col sm:flex-row gap-2 sm:items-center p-4 ${
-              index !== fakeProducts.length - 1
+              index !== products?.length - 1
                 ? "border-b border-b-gray-900 border-dashed"
                 : ""
             }`}
           >
             <div className="w-full sm:w-32 h-32">
               <img
-                draggable="false"
                 className="h-full w-full object-contain rounded-md"
-                src={product.image}
-                alt={product.name}
+                src={product?.img === "" ? NoImage : product?.img}
+                alt={product?.title}
               />
             </div>
             <div className="flex flex-col gap-1 overflow-hidden flex-1">
               <p className="text-sm font-medium">
-                {product.name.length > 60
-                  ? `${product.name.substring(0, 60)}...`
-                  : product.name}
+                {product?.title.length > 60
+                  ? `${product?.title.substring(0, 60)}...`
+                  : product?.title}
               </p>
               <p className="text-xs text-gray-600 mt-2">
-                Quantity: {product.quantity}
+                Quantity: {product?.quantity}
               </p>
               <p className="text-xs text-gray-600">
-                Price: ${product.price.toLocaleString()}
+                Price: ${product?.sale_price.toLocaleString()}
               </p>
+              <span className="text-xs text-gray-600 flex gap-4">
+                <p>Size: ${product?.size}</p>
+                <p>Color: ${product?.color}</p>
+              </span>
               <span className="font-medium">
-                Total: ${(product.quantity * product.price).toLocaleString()}
+                Total: $
+                {(product?.quantity * product?.sale_price)?.toLocaleString()}
               </span>
             </div>
             <div className="flex flex-col w-full sm:w-1/2 items-start">
               <h3 className="font-medium sm:text-center">Order Status</h3>
-              <p className="text-sm">{`Ordered on: ${product.orderedAt.toLocaleString()}`}</p>
-              <p className="text-sm">{`Shipped on: ${product.shippedAt.toLocaleString()}`}</p>
-              <p className="text-sm">{`Delivered on: ${product.deliveredAt.toLocaleString()}`}</p>
+              {/* <p className="text-sm">{`Ordered on: ${product.orderedAt.toLocaleString()}`}</p> */}
+              {/* <p className="text-sm">{`Shipped on: ${product.shippedAt.toLocaleString()}`}</p>
+              <p className="text-sm">{`Delivered on: ${product.deliveredAt.toLocaleString()}`}</p> */}
             </div>
           </div>
         ))}

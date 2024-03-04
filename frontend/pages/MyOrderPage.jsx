@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React from "react";
+import React, { useEffect } from "react";
 import FakeProdImg from "../assets/fakeprod.png";
 import { BsFillBagCheckFill, BsTruck } from "react-icons/bs";
 import Button from "../components/common/Button";
@@ -12,6 +12,9 @@ import Header from "../components/common/Header";
 import Hero from "../components/common/Hero";
 import Footer from "../components/common/Footer";
 import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
+import CartApiHandler from "../apiHandlers/CartApiHandler";
+import NoImage from "../assets/placeholderImg-Small.jpeg";
+import { useNavigate } from "react-router-dom";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -21,23 +24,21 @@ const MyOrderPage = () => {
     <AnimationView>
       <ScrollToTop />
       <Header title={"Orders"}></Header>
-      <Hero></Hero>
       <MyOrderPageContainerMain />
       <Footer></Footer>
     </AnimationView>
   );
 };
 
-// Date formatter to 'Dec 26th, 9:31pm : export on need
-export const formatDate = (date) => {
-  return date.toLocaleString("en-US", {
+// Date formatter to 'Dec 26th, 9:31pm
+export const formatDate = (timestamp) =>
+  new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
     hour12: true,
-  });
-};
+  }).format(new Date(Number(timestamp) / 1e6));
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ MyOrderPage : MyOrderPageContainerMain.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -56,37 +57,41 @@ const MyOrderPageContainerMain = () => {
 /*  @ MyOrderPage : MyOrderPageContainerMain : MyOrders Component.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrders = () => {
-  const date = new Date("December 26, 2023 21:31:00");
-  const MyOrderList = [
-    {
-      prodname: "Headphone xyz ",
-      image: FakeProdImg,
-      orderId: "ABCDE-FGHIJ-12345",
-      orderedOn: formatDate(date),
-      category: "electronics",
-      totalAmount: "$45.00",
-    },
-    {
-      prodname: "Headphone xyz ",
-      image: FakeProdImg,
-      orderId: "ABCDE-FGHIJ-12345",
-      orderedOn: formatDate(date),
-      category: "electronics",
-      totalAmount: "$45.00",
-    },
-    {
-      prodname: "Headphone xyz ",
-      image: FakeProdImg,
-      orderId: "ABCDE-FGHIJ-12345",
-      orderedOn: formatDate(date),
-      category: "electronics",
-      totalAmount: "$45.00",
-    },
-  ];
+  const { orderList, getOrderList } = CartApiHandler();
+  const navigate = useNavigate();
+
+  const fetchOrderDetail = () => {
+    const orders = orderList.map(
+      ([orderId, { products, subTotalAmount, timeCreated }]) => {
+        const productDetails = products.map(({ id, img, title, quantity }) => ({
+          id,
+          img,
+          title,
+          quantity,
+        }));
+
+        return {
+          orderId: orderId,
+          subTotalAmount: subTotalAmount,
+          timeCreated: formatDate(timeCreated),
+          productDetails: productDetails,
+        };
+      }
+    );
+    return orders;
+  };
+
+  const MyOrderList = fetchOrderDetail();
+  // console.log(MyOrderList);
+
+  useEffect(() => {
+    getOrderList();
+  }, []);
+
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
       <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2 ">
-        My recent orders({MyOrderList.length})
+        My recent orders({MyOrderList?.length})
       </h1>
       {MyOrderList.length === 0 ? (
         <div className="p-8 capitalize font-medium">
@@ -94,40 +99,40 @@ const MyOrders = () => {
         </div>
       ) : (
         <div className=" flex flex-col">
-          {MyOrderList.map((orders, index) => (
+          {MyOrderList?.map((orders, index) => (
             <div
               key={index}
               className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
             >
               <div className="flex max-md:flex-col gap-3">
-                <div>
+                <div className="flex p-1 border border-gray-300 rounded-xl">
                   <img
-                    draggable="false"
-                    className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
-                    src={orders.image}
-                    alt={orders.prodname}
+                    className="max-w-24 max-h-24 object-contain rounded-xl"
+                    src={
+                      orders?.productDetails[0]?.img === ""
+                        ? NoImage
+                        : orders?.productDetails[0]?.img
+                    }
+                    alt={orders?.productDetails[0]?.title}
                   />
                 </div>
                 <div className="flex flex-col lg:justify-center">
                   <p className="text-lg capitalize font-medium">
-                    {orders.prodname}
-                  </p>
-                  <p className="text-xs uppercase">
-                    Category : {orders.category}
+                    {orders?.productDetails[0]?.title}
                   </p>
                   <p className="text-xs uppercase">
                     {" "}
-                    Order Id: {orders.orderId}
+                    Order Id: {orders?.orderId}
                   </p>
-                  <p className="uppercase text-xs">
-                    Ordered On : {orders.orderedOn}
-                  </p>
+                  <p className="uppercase text-xs">{orders?.timeCreated}</p>
                 </div>
               </div>
               <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
                 <div className="flex flex-col justify-center">
                   <span className="text-[12px] uppercase">Total amount</span>
-                  <p className="text-lg font-medium">{orders.totalAmount}</p>
+                  <p className="text-lg font-medium">
+                    ${orders?.subTotalAmount}
+                  </p>
                 </div>
                 <div className="flex justify-center flex-col">
                   {/*keeping empty div for better alignment */}
@@ -136,7 +141,11 @@ const MyOrders = () => {
                     <Button className=" hover:text-green-500">
                       <BsTruck size={20} />
                     </Button>
-                    <Button>
+                    <Button
+                      onClick={() =>
+                        navigate(`/my-order-detail/${orders?.orderId}`)
+                      }
+                    >
                       <BsArrowRightCircle size={20} />
                     </Button>
                   </div>

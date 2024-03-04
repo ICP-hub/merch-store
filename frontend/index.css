@@ -190,7 +190,7 @@ body {
 
 /* order confirmation page*/
 /**
- * Extracted from: SweetAlert
+ * Extracted from: Sweettoast
  * Modified by: Istiak Tridip
  */
 .success-checkmark {
@@ -411,7 +411,6 @@ body {
 .alice-carousel__next-btn {
   display: none !important;
 }
-
 
 .slick-next {
   right: -20px !important;

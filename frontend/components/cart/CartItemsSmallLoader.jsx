@@ -1,5 +1,5 @@
-import React from "react"
-import placeholderImg from "../../assets/placeholderImg-Small.jpeg"
+import React from "react";
+import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 
 const CartItemsSmallLoader = () => {
   return (
@@ -28,7 +28,7 @@ const CartItemsSmallLoader = () => {
         <div className="w-5 h-5 rounded-full bg-gray-100 animate-pulse"></div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CartItemsSmallLoader
+export default CartItemsSmallLoader;

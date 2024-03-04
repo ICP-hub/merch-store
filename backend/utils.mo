@@ -38,22 +38,34 @@ module {
         slug;
     };
 
-    let adminPrincipals : [Text] = [
-        "4w6mb-vqaaa-aaaab-qac5q-cai"
-    ];
-
-    public func isAdmin(userPrincipal : Principal) : Bool {
-        let userPrincipalStr = Principal.toText(userPrincipal);
-        let foundAdmin = Array.find<Text>(
-            adminPrincipals,
-            func(adminPrincipal : Text) : Bool {
-                return userPrincipalStr == adminPrincipal;
-            },
-        );
-
-        switch (foundAdmin) {
-            case (null) { return false };
-            case (_) { return true };
-        };
+     // A 200 Ok response with picture
+  public func picture(pic : Blob) : Types.Response {
+    {
+      body = pic;
+      headers = [
+        ("Content-Type", "image/jpg"),
+        ("Access-Control-Allow-Origin", "*")
+        //("Expires", "Wed, 9 Jan 2099 09:09:09 GMT")
+      ];
+      status_code = 200;
+      streaming_strategy = null;
     };
+  };
+
+  // A 404 response with an optional error message.
+  public func http404(msg : ?Text) : Types.Response {
+    {
+      body = Text.encodeUtf8(
+        switch (msg) {
+          case (?msg) msg;
+          case null "Not found.";
+        }
+      );
+      headers = [("Content-Type", "text/plain")];
+      status_code = 404;
+      streaming_strategy = null;
+    };
+  };
+
+
 };

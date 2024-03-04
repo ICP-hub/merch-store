@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState, Fragment } from "react"
-import LOGO from "../../assets/logo.svg"
-import PROFILE from "../../assets/profile.svg"
+import React, { useEffect, useRef, useState, Fragment } from "react";
+import LOGO from "../../assets/logo.svg";
+import PROFILE from "../../assets/profile.svg";
 import {
   HiOutlineBars2,
   HiOutlineShoppingCart,
   HiOutlineTrash,
   HiOutlineUser,
-} from "react-icons/hi2"
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
-import { motion, useScroll, useTransform } from "framer-motion"
-import WAVES from "vanta/dist/vanta.waves.min"
-import { Menu, Transition } from "@headlessui/react"
-import { useCanister, useConnect, useDialog } from "@connect2ic/react"
-import toast from "react-hot-toast"
+} from "react-icons/hi2";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { motion, useScroll, useTransform } from "framer-motion";
+import WAVES from "vanta/dist/vanta.waves.min";
+import { Menu, Transition } from "@headlessui/react";
+import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+import toast from "react-hot-toast";
 import {
   RiContactsFill,
   RiContactsLine,
@@ -36,99 +36,118 @@ import {
   RiUser3Line,
   RiUser4Line,
   RiVideoAddLine,
-} from "react-icons/ri"
-import { PiUsersFourFill, PiUsersFour } from "react-icons/pi"
-import CartItemsSmall from "../cart/CartItemsSmall"
-import Avatar from "boring-avatars"
-import NoDataFound from "./NoDataFound"
-import TrendingProducts from "./TrendingProducts"
-import CartItemsSmallLoader from "../cart/CartItemsSmallLoader"
+} from "react-icons/ri";
+import { PiUsersFourFill, PiUsersFour } from "react-icons/pi";
+import CartItemsSmall from "../cart/CartItemsSmall";
+import Avatar from "boring-avatars";
+import NoDataFound from "./NoDataFound";
+import TrendingProducts from "./TrendingProducts";
+import CartItemsSmallLoader from "../cart/CartItemsSmallLoader";
+import { Principal } from "@dfinity/principal";
 
 const getRandomColor = () => {
-  const minDarkness = 20 // Minimum darkness level (0-255)
-  const maxDarkness = 100 // Maximum darkness level (0-255)
-  const range = maxDarkness - minDarkness + 1
+  const minDarkness = 20; // Minimum darkness level (0-255)
+  const maxDarkness = 100; // Maximum darkness level (0-255)
+  const range = maxDarkness - minDarkness + 1;
 
   const red = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const green = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const blue = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
 
-  return `#${red}${green}${blue}`
-}
+  return `#${red}${green}${blue}`;
+};
 
 const Header = ({ title }) => {
-  const { scrollYProgress } = useScroll()
-  const x = useTransform(scrollYProgress, [0, 1], [0, -800])
-  const location = useLocation() // Get the current location
-  const isHomePage = location.pathname === "/" // Check if it's the homepage
-  const navigate = useNavigate()
-  const [vantaEffect, setVantaEffect] = useState(null)
-  const myRef = useRef(null)
-  const { isConnected, disconnect, principal } = useConnect()
-  const [carts, setCarts] = useState([])
-  const [backend] = useCanister("backend")
-  const [loading, setLoading] = useState(true)
-  const maxInitialDisplay = 3
-  const { open } = useDialog()
+  const { scrollYProgress } = useScroll();
+  const x = useTransform(scrollYProgress, [0, 1], [0, -800]);
+  const location = useLocation(); // Get the current location
+  const isHomePage = location.pathname === "/"; // Check if it's the homepage
+  const navigate = useNavigate();
+  const [vantaEffect, setVantaEffect] = useState(null);
+  const myRef = useRef(null);
+  const { isConnected, disconnect, principal } = useConnect();
+  const [carts, setCarts] = useState([]);
+  const [backend] = useCanister("backend");
+  const [loading, setLoading] = useState(false);
+  const maxInitialDisplay = 3;
+  const { open } = useDialog();
+  const [isAdmin, setIsAdmin] = useState(false); // Add isAdmin state
+
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      try {
+        if (isConnected) {
+          const res = await backend.isAdmin(Principal.fromText(principal));
+          setIsAdmin(res);
+        }
+      } catch (error) {
+        console.error("Error checking isAdmin:", error);
+        setIsAdmin(false); // Set isAdmin to false in case of an error
+      }
+    };
+
+    checkIsAdmin();
+  }, [isConnected, backend, principal, navigate]);
 
   useEffect(() => {
     const listCarts = async () => {
       try {
-        setLoading(true)
-        const cart = await backend.getCallerCartItems()
-        setCarts(cart)
+        setLoading(true);
+        const cart = await backend.getCallerCartItems();
+        setCarts(cart);
+        console.log(cart, "hello");
       } catch (error) {
-        console.error("Error listing carts:", error)
+        console.error("Error listing carts:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     if (backend) {
-      listCarts()
+      listCarts();
     }
-  }, [backend])
+  }, [backend]);
 
   useEffect(() => {
-    let intervalId
+    let intervalId;
 
     if (!vantaEffect) {
       // Apply the smooth background transition class initially
-      myRef.current.classList.add("smooth-bg")
+      myRef.current.classList.add("smooth-bg");
 
       setVantaEffect(
         WAVES({
           el: myRef.current,
           color: getRandomColor(), // Set initial color
-        }),
-      )
+        })
+      );
     }
 
     const changeColor = () => {
       setVantaEffect((prevEffect) => {
-        prevEffect.setOptions({ color: getRandomColor() })
-        return prevEffect
-      })
-    }
+        prevEffect.setOptions({ color: getRandomColor() });
+        return prevEffect;
+      });
+    };
 
     const startColorChange = () => {
-      intervalId = setInterval(changeColor, 10000) // Change color every 10 seconds
-    }
+      intervalId = setInterval(changeColor, 10000); // Change color every 10 seconds
+    };
 
-    startColorChange()
+    startColorChange();
 
     return () => {
-      clearInterval(intervalId)
-    }
-  }, [vantaEffect])
+      clearInterval(intervalId);
+    };
+  }, [vantaEffect]);
 
-  console.log(carts, "carts2")
+  // console.log(carts.length, "carts2");
 
   return (
     <div
@@ -358,35 +377,35 @@ const Header = ({ title }) => {
                           <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right divide-y divide-gray-100 rounded-2xl bg-white !backdrop-blur-3xl  shadow-lg ring-1 ring-black/5 focus:outline-none">
                             {/*  {isConnected ? ( */}
                             <>
-                              {/* {isAdmin && ( */}
-                              <div className="px-2 py-2 ">
-                                <Menu.Item>
-                                  {({ active }) => (
-                                    <Link
-                                      to="/admin"
-                                      className={`${
-                                        active
-                                          ? "bg-gray-100 text-gray-900"
-                                          : "text-gray-900"
-                                      } group flex w-full items-center rounded-xl px-3 py-2 text-md font-semibold tracking-wider`}
-                                    >
-                                      {active ? (
-                                        <RiDashboardFill
-                                          className="mr-2 h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      ) : (
-                                        <RiDashboardLine
-                                          className="mr-2 h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      )}
-                                      Dashboard
-                                    </Link>
-                                  )}
-                                </Menu.Item>
-                              </div>
-                              {/*  )}  */}
+                              {isAdmin && (
+                                <div className="px-2 py-2 ">
+                                  <Menu.Item>
+                                    {({ active }) => (
+                                      <Link
+                                        to="/admin"
+                                        className={`${
+                                          active
+                                            ? "bg-gray-100 text-gray-900"
+                                            : "text-gray-900"
+                                        } group flex w-full items-center rounded-xl px-3 py-2 text-md font-semibold tracking-wider`}
+                                      >
+                                        {active ? (
+                                          <RiDashboardFill
+                                            className="mr-2 h-5 w-5"
+                                            aria-hidden="true"
+                                          />
+                                        ) : (
+                                          <RiDashboardLine
+                                            className="mr-2 h-5 w-5"
+                                            aria-hidden="true"
+                                          />
+                                        )}
+                                        Dashboard
+                                      </Link>
+                                    )}
+                                  </Menu.Item>
+                                </div>
+                              )}
 
                               <div className="px-2 py-2 flex flex-col gap-2">
                                 <Menu.Item>
@@ -499,8 +518,8 @@ const Header = ({ title }) => {
                                 {/* {isConnected ? ( */}
                                 <button
                                   onClick={() => {
-                                    disconnect()
-                                    toast.success("Logout successfully.")
+                                    disconnect();
+                                    toast.success("Logout successfully.");
                                   }}
                                   className="bg-black text-white group flex w-full items-center rounded-xl px-3 py-2 text-md font-semibold tracking-wider"
                                 >
@@ -522,8 +541,8 @@ const Header = ({ title }) => {
                   ) : (
                     <button
                       onClick={() => {
-                        navigate("/login")
-                        toast.error("Please connect your wallet first!")
+                        navigate("/login");
+                        toast.error("Please connect your wallet first!");
                       }}
                       className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full flex justify-center items-center"
                     >
@@ -532,7 +551,7 @@ const Header = ({ title }) => {
                   )}
                 </div>
 
-                {isConnected ? (
+                {!isConnected ? (
                   <div>
                     <Menu as="div" className="relative inline-block text-left">
                       <div className="mb-0">
@@ -559,41 +578,20 @@ const Header = ({ title }) => {
                             </h2>
                           </div>
                           <div className="p-3">
-                            {loading ? (
+                            {carts.length > 0 ? (
                               <div className="border-[1px] border-gray-200 p-3 rounded-xl mb-3 grid grid-cols-1 gap-3">
-                                {[...Array(3)].map((_, index) => (
-                                  <CartItemsSmallLoader key={index} />
-                                ))}
+                                <CartItemsSmall />
                               </div>
                             ) : (
-                              <>
-                                {carts.length > 0 ? (
-                                  <div className="border-[1px] border-gray-200 p-3 rounded-xl mb-3 grid grid-cols-1 gap-3">
-                                    {carts
-                                      .slice(0, maxInitialDisplay)
-                                      .map((item, index) => (
-                                        <CartItemsSmall
-                                          key={index}
-                                          cart={item}
-                                          setCarts={setCarts}
-                                        />
-                                      ))}
-                                  </div>
-                                ) : (
-                                  <NoDataFound
-                                    title={"No Items Available Yet"}
-                                  />
-                                )}
-                              </>
+                              <NoDataFound title={"No Items Available Yet"} />
                             )}
-                            {carts.length > maxInitialDisplay && (
-                              <button
-                                onClick={() => navigate("/cart")}
-                                className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
-                              >
-                                view all
-                              </button>
-                            )}
+
+                            <button
+                              onClick={() => navigate("/cart")}
+                              className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
+                            >
+                              view all
+                            </button>
                           </div>
                         </Menu.Items>
                       </Transition>
@@ -602,8 +600,8 @@ const Header = ({ title }) => {
                 ) : (
                   <button
                     onClick={() => {
-                      toast.error("Please connect your wallet first")
-                      open()
+                      toast.error("Please connect your wallet first");
+                      open();
                     }}
                     className="border-[1px] border-gray-700 rounded-full w-12 h-12 rounded-full relative  flex justify-center items-center"
                   >
@@ -630,7 +628,7 @@ const Header = ({ title }) => {
         {title}
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

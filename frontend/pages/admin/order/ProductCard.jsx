@@ -55,7 +55,7 @@ const ProductCard = ({ loading, product }) => {
             ) : (
               <span className="flex items-center gap-1">
                 <FiDollarSign className="w-5 h-5" />{" "}
-                {product?.price?.toFixed(2)}
+                {product?.sale_price?.toFixed(2)}
               </span>
             )}
           </h6>
@@ -94,7 +94,7 @@ const ProductCard = ({ loading, product }) => {
               ) : (
                 <span className="flex items-center gap-1">
                   <FiDollarSign className="w-5 h-5" />{" "}
-                  {(product?.price * product?.quantity).toFixed(2)}{" "}
+                  {(product?.sale_price * product?.quantity).toFixed(2)}{" "}
                 </span>
               )}
             </h6>

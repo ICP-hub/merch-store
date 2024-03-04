@@ -1,19 +1,20 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import { BsEnvelopeAt } from "react-icons/bs";
 import { TelephoneInput } from "../common/CommonInput";
 import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 import toast from "react-hot-toast";
+import { TailSpin } from "react-loader-spinner";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ ContactPage Components.
 /* ----------------------------------------------------------------------------------------------------- */
 const ContactPageContainerMain = () => {
-  const { createContact } = UserApiHanlder();
-  const [username, setUsername] = useState("");
+  const { createContact, isLoading, successfulSubmit } = UserApiHanlder();
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -22,13 +23,15 @@ const ContactPageContainerMain = () => {
   const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isNotEmpty = (value) => value.trim() !== "";
 
-  const validateForm = ({ username, phone, email, message }) => ({
-    username: isNotEmpty(username) ? undefined : "Name is required",
-    // Required For Phone ?
-    // phone: isNotEmpty(phone) ? undefined : "Phone is required",
+  const validateForm = ({ name, email, contact_number, message }) => ({
+    name: isNotEmpty(name) ? undefined : "Please enter your name",
     email: isEmailValid(email)
       ? undefined
       : "Please enter a valid email address",
+    // Required For Phone ?
+    contact_number: phone.isValidNumberPrecise()
+      ? undefined
+      : "Please Enter a valid phone number",
     // Required for message ?
     // message: isNotEmpty(message) ? undefined : "Message is required",
   });
@@ -36,13 +39,15 @@ const ContactPageContainerMain = () => {
   // Hanlde Form Submit
   const handleCreateContact = (e) => {
     e.preventDefault();
-
-    const formData = { username, phone, email, message };
+    // Get Phone number fron itl input : check console.log(phone)
+    const contact_number = phone.getNumber();
+    const formData = { name, email, contact_number, message };
+    // console.log(formData);
     const errors = validateForm(formData);
 
     if (Object.values(errors).every((error) => error === undefined)) {
       // Call createcontact and pass the form createContact()
-      console.log("Form is valid!", formData);
+      createContact({ name, email, contact_number, message });
     } else {
       // Display each error individually
       Object.values(errors).forEach((error) => {
@@ -52,6 +57,18 @@ const ContactPageContainerMain = () => {
       });
     }
   };
+
+  // Reset the form when successfulSubmit is true
+  useEffect(() => {
+    if (successfulSubmit) {
+      [setName, setEmail, setMessage].forEach((setField) => setField(""));
+
+      // Reset phone
+      if (phone && phone.telInput) {
+        phone.telInput.value = "";
+      }
+    }
+  }, [successfulSubmit]);
 
   return (
     <div
@@ -86,8 +103,8 @@ const ContactPageContainerMain = () => {
                 type="text"
                 placeholder="Enter you name"
                 className="px-4 py-4 border border-slate-500 rounded-full focus:outline-none w-full"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -105,8 +122,7 @@ const ContactPageContainerMain = () => {
             <TelephoneInput
               divClass="border border-slate-500 rounded-full flex w-full gap-2 items-center"
               inputClass="focus:outline-none border-none p-4"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              setPhone={setPhone}
             />
             <div className="flex flex-col gap-4 border border-slate-500 rounded-2xl p-4">
               <textarea
@@ -118,7 +134,20 @@ const ContactPageContainerMain = () => {
               ></textarea>
             </div>
             <Button className="flex w-full bg-black text-white justify-center rounded-full p-4">
-              Submit
+              {isLoading ? (
+                <TailSpin
+                  visible={true}
+                  height="30"
+                  width="30"
+                  color="white"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
           <div className=" text-slate-600 text-sm">

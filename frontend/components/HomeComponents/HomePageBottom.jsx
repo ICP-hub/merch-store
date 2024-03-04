@@ -2,15 +2,16 @@
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import React, { useEffect } from "react";
-import { BsArrowLeft, BsArrowRight, BsCart3 } from "react-icons/bs";
 import Button from "../common/Button";
-import fakeProd from "../../assets/fakeprod.png";
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import SmoothList from "react-smooth-list";
 import { Tilt } from "react-tilt";
 import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingScreen from "../common/LoadingScreen";
+import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
+import NewIcon from "../../assets/new-icon.svg";
+
 const defaultOptions = {
   reverse: false, // reverse the tilt direction
   max: 35, // max tilt rotation (degrees)
@@ -22,22 +23,28 @@ const defaultOptions = {
   reset: true, // If the tilt effect has to be reset on exit.
   easing: "cubic-bezier(.03,.98,.52,.99)", // Easing on enter/exit.
 };
+
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main : HomePage Bottom Component.
 /* ----------------------------------------------------------------------------------------------------- */
-const HomePageBottom = ({ productList }) => {
+const HomePageBottom = ({ productList, isLoading }) => {
   // Filter new Arrival from productList : last index will be the latest
   const newArrivalList = productList?.filter(([prodSlug, { newArrival }]) => {
     if (newArrival) {
       return productList;
     }
   });
-  // Last Product of the newArrival : newArrivalList.slice(-1);
-  // console.log(newArrivalList.slice(-1));
-  const newArrivalProd = newArrivalList?.slice(-1);
+  // Get the lastest product based on time updated
+  const newArrivalProd = newArrivalList.reduce((latest, current) => {
+    const [, { time_updated: currentTime }] = current;
+    const [, { time_updated: latestTime }] = latest;
+
+    return Number(currentTime) > Number(latestTime) ? current : latest;
+  }, newArrivalList[0]);
+
   return (
     <div className="flex flex-col py-8  rounded-2xl gap-8 tracking-wider">
-      <NewArrival newArrivalProd={newArrivalProd} />
+      <NewArrival newArrivalProd={newArrivalProd} isLoading={isLoading} />
       <ExpCategories />
     </div>
   );
@@ -47,38 +54,73 @@ const HomePageBottom = ({ productList }) => {
 /*  @ First Div: HomeBottom : New Arrival Div.
 /* ----------------------------------------------------------------------------------------------------- */
 
-const NewArrival = ({ newArrivalProd }) => {
-  // Extract title, description and required fields
-  const prodDetails = newArrivalProd?.map(
-    ([prodSlug, prodDetails]) => prodDetails
-  )[0];
-  // console.log("prodDetails:", prodDetails);
+const NewArrival = ({ newArrivalProd, isLoading }) => {
+  const { NewArrivalLoadingScreen } = LoadingScreen();
 
-  const { title, description } = prodDetails || {};
-  // console.log("title:", title);
-  // console.log("description:", description);
+  if (isLoading) {
+    return <NewArrivalLoadingScreen />;
+  }
+  if (!newArrivalProd) {
+    // If no product details, return nothing
+    return null;
+  }
+
+  const { title, description, variantColor, slug } = newArrivalProd[1];
+
+  const discount =
+    ((variantColor[0].variant_price - variantColor[0].variant_sale_price) /
+      variantColor[0].variant_price) *
+    100;
+
   return (
     <div className="px-6 md:container md:mx-auto mb-10">
       <div
         data-aos="fade-up"
-        className="p-6 grid sm:grid-cols-2 max-h-full overflow-hidden gap-2 border-[1px] border-dashed rounded-2xl"
+        className="p-6 grid sm:grid-cols-2 max-h-full overflow-hidden gap-4 border border-gray-300 border-dashed rounded-2xl"
       >
         <div data-aos="fade-up" className="order-2 sm:order-1 flex flex-col">
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto flex flex-col">
             <p className="text-sm text-slate-600">NEW ARRIVAL</p>
             <h1 className="text-4xl max-md:text-3xl font-semibold pb-4 capitalize">
               {title}
             </h1>
-            <p className="text-slate-600">{description}</p>
+            <p className="text-slate-600 pb-4">{description}</p>
+            <div className="flex justify-between mt-auto">
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-4">
+                  <span className="flex gap-2 items-center">
+                    <p className="font-semibold text-lg">
+                      ${variantColor[0].variant_sale_price}
+                    </p>
+                    <p className="line-through text-sm text-gray-600">
+                      ${variantColor[0].variant_price}
+                    </p>
+                  </span>
+                  <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 max-w-max flex items-center">
+                    {Math.round(discount)}% off
+                  </span>
+                </div>
+                <Link
+                  to={`/product/${slug}`}
+                  className="flex items-start mt-auto px-4 py-2 bg-black rounded-full text-white text-sm justify-center"
+                >
+                  Get this Product
+                </Link>
+              </div>
+              <img
+                src={NewIcon}
+                alt="New arrival"
+                className="max-w-24 max-h-24 pr-4"
+              />
+            </div>
           </div>
-          <Features />
         </div>
         <Tilt
           options={defaultOptions}
           className="order-1 sm:order-2 rounded-2xl bg-gray-200 justify-center items-center flex shadow-lg mb-4 md:mb-0"
         >
           <img
-            src={fakeProd}
+            src={variantColor.img1 || placeholderImg}
             alt="prod.name"
             className="h-80 w-80 object-contain"
           />
@@ -87,7 +129,13 @@ const NewArrival = ({ newArrivalProd }) => {
     </div>
   );
 };
-
+{
+  /* <img
+src={NewIcon}
+alt="New arrival"
+className="max-w-16 max-h-16 absolute top-[-28px] left-[-8px] max-sm:left-[-3px]"
+/> */
+}
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Second Div: HomeBottom : ExploreCategories component.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -165,9 +213,15 @@ const ExpCategories = () => {
       <SmoothList delay={200}>
         <div className="grid-category">
           {/* render 6 category card at max */}
-          {categoryList?.slice(0, 6).map(([cateSlug, { name }], index) => (
-            <CategoryCard key={index} name={name} />
-          ))}
+          {categoryList
+            ?.slice(0, 6)
+            .map(([cateSlug, { name, category_img }], index) => (
+              <CategoryCard
+                key={index}
+                name={name}
+                category_img={category_img}
+              />
+            ))}
         </div>
       </SmoothList>
     </div>
@@ -175,13 +229,14 @@ const ExpCategories = () => {
 };
 
 //category card
-const CategoryCard = ({ name }) => {
+const CategoryCard = ({ name, category_img }) => {
   // Link from react-router-dom breaking css
   const navigate = useNavigate();
   return (
     <div
       data-aos="fade-up"
-      className="item-category rounded-2xl bg-[url('https://picsum.photos/1000')] bg-cover bg-center bg-no-repeat grayscale hover:grayscale-0 transition duration-300 ease-in-out cursor-pointer"
+      style={{ backgroundImage: `url(${category_img})` }}
+      className={`item-category rounded-2xl bg-cover bg-center bg-no-repeat grayscale hover:grayscale-0 transition duration-300 ease-in-out cursor-pointer`}
       onClick={() => navigate("/products", { state: name })}
     >
       <div className="h-full w-full bg-black/50 rounded-2xl flex flex-col justify-center items-center">
@@ -194,32 +249,32 @@ const CategoryCard = ({ name }) => {
 };
 
 // Features
-const FeatureItem = ({ title, quality }) => (
-  <div className="flex gap-3 items-center">
-    <Button className="p-4 rounded-full bg-gray-200">
-      <BsCart3 size={20} />
-    </Button>
-    <div className="flex flex-col">
-      <p className="text-lg font-semibold">{title}</p>
-      <p className="text-xs text-slate-600 font-semibold">{quality}</p>
-    </div>
-  </div>
-);
+// const FeatureItem = ({ title, quality }) => (
+//   <div className="flex gap-3 items-center">
+//     <Button className="p-4 rounded-full bg-gray-200">
+//       <BsCart3 size={20} />
+//     </Button>
+//     <div className="flex flex-col">
+//       <p className="text-lg font-semibold">{title}</p>
+//       <p className="text-xs text-slate-600 font-semibold">{quality}</p>
+//     </div>
+//   </div>
+// );
 
-export const Features = () => {
-  const featureData = [
-    { title: "Feature Name 1", quality: "Feature Quality 1" },
-    { title: "Feature Name 2", quality: "Feature Quality 2" },
-    { title: "Feature Name 3", quality: "Feature Quality 3" },
-  ];
+// export const Features = () => {
+//   const featureData = [
+//     { title: "Feature Name 1", quality: "Feature Quality 1" },
+//     { title: "Feature Name 2", quality: "Feature Quality 2" },
+//     { title: "Feature Name 3", quality: "Feature Quality 3" },
+//   ];
 
-  return (
-    <div className="features flex flex-col gap-4 mt-4">
-      {featureData.map((feature, index) => (
-        <FeatureItem key={index} {...feature} />
-      ))}
-    </div>
-  );
-};
+//   return (
+//     <div className="features flex flex-col gap-4 mt-4">
+//       {featureData.map((feature, index) => (
+//         <FeatureItem key={index} {...feature} />
+//       ))}
+//     </div>
+//   );
+// };
 
 export default HomePageBottom;

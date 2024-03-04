@@ -18,7 +18,7 @@ const Categories = () => {
       },
       {
         Header: "Status",
-        accessor: "status",
+        accessor: "featured",
         Filter: SelectColumnFilter, // new
         Cell: StatusPill,
       },
@@ -33,7 +33,7 @@ const Categories = () => {
 
   const [backend] = useCanister("backend");
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     listAllCategories();
@@ -41,8 +41,10 @@ const Categories = () => {
 
   const listAllCategories = async () => {
     try {
-      setLoading(true);
       const category = await backend.listCategories();
+      console.log(category, "hello from list categories");
+
+      setLoading(true);
       setCategories(category);
     } catch (error) {
       console.error("Error listing all category:", error);
@@ -53,20 +55,24 @@ const Categories = () => {
 
   const data = useMemo(() => categories, [categories]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => data);
+  const extractedData = data.map(([key, data]) => ({
+    name: data.name,
+    slug: data.slug,
+    featured: data.featured ? "active" : "inactive",
+  }));
   console.log(extractedData);
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white dark:bg-slate-800 rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
       <div className="">
         <div className="mb-6 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Categories
           </h1>
           <div>
             <Link
               to="/admin/categories/create-category"
-              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
             >
               <CiCirclePlus className="w-5 h-5" /> Create New
             </Link>

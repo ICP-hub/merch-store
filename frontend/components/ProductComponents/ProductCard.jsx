@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
@@ -6,107 +6,308 @@ import React from "react";
 import Fakeprod from "../../assets/fakeprod.png";
 import { BsFillStarFill } from "react-icons/bs";
 import Button from "../common/Button";
-import { IoHeartOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
-
+import { IoHeartOutline, IoHeart } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
+import { useCanister, useConnect } from "@connect2ic/react";
+import toast from "react-hot-toast";
+import { TailSpin } from "react-loader-spinner";
+import { useEffect } from "react";
+import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component ProductCard.
 /* ----------------------------------------------------------------------------------------------------- */
 const ProductCard = ({ product }) => {
-  if (product !== undefined) {
-    // Product structure :  ['product-four-7', {…}]
-    // Destructure the array to extract the product name and details
-    const [productSlug, productDetails] = product;
-    const { category, price, slug, title } = productDetails; // Add more properties as required
+  const { principal, isConnected } = useConnect();
+  const [loading3, setLoading3] = useState(false);
+  const [wishlist, setWishlist] = useState([]);
 
+  const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
+
+  const [backend] = useCanister("backend");
+  const [loading, setLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [click, setClick] = useState(false);
+  const navigate = useNavigate();
+
+  const AddToCart = async (text) => {
+    try {
+      setLoading(true);
+      const res1 = await backend.listCategories();
+      console.log(res1, "Hello catagories");
+      const res = await backend.addtoCartItems(
+        product[0],
+        product[1].variantSize[0].size,
+        product[1].variantColor[0].color,
+        quantity
+      );
+      setQuantity(0);
+
+      if ("ok" in res) {
+        toast.success(text);
+        console.log("     Item added successfully     ", res);
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
+      }
+    } catch (error) {
+      // Log the error for debugging
+      console.error("An error occurred adding items to cart:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const buyNowHandler = async () => {
+    try {
+      const res = await backend.clearallcartitmesbyprincipal();
+      if ("ok" in res) {
+        AddToCart("Directed to shipping page");
+      } else {
+        console.log(" error while clearing the cart", res);
+      }
+    } catch (error) {
+      console.log("Error while buying the product", error);
+    }
+  };
+  useEffect(() => {
+    listWishlists();
+  }, [backend]);
+
+  const listWishlists = async () => {
+    try {
+      //setLoading4(true)
+
+      const wishlist2 = await backend.listWishlistItems();
+      setWishlist(wishlist2);
+    } catch (error) {
+      console.error("Error listing wishlist:", error);
+    } finally {
+      // setLoading4(false)
+    }
+  };
+
+  useEffect(() => {
+    // Check if the product is in the local cart
+    const isProductInWishlist = wishlist.some(
+      (item) =>
+        item[1].product_slug === product[0] &&
+        item[1].principal.toText() === principal
+    );
+    setProductInLocalWishlist(isProductInWishlist);
+  }, [wishlist, product, principal]);
+  // add to wishlist functionality for adding items to the wishlist
+
+  const AddToWishlist = async () => {
+    if (isConnected) {
+      try {
+        setLoading3(true);
+        const res = await backend.addtoWishlist(product[0]);
+        setProductInLocalWishlist(true);
+
+        if ("ok" in res) {
+          toast.success("item added to wishlist Successfully");
+          console.log("     Item added  to wishlist successfully     ", res);
+        } else {
+          // Log an error if the response does not have "ok" property
+          console.error("Unexpected response from backend:", res);
+        }
+      } catch (error) {
+        // Log the error for debugging
+        console.error("An error occurred adding items to wishlist:", error);
+      } finally {
+        setLoading3(false);
+      }
+    } else {
+      toast.error("You need to login first");
+      // open();
+    }
+  };
+
+  const removeToWishlist = async () => {
+    try {
+      const wishlistItem = wishlist.filter(
+        (item) =>
+          item[1].product_slug === product[0] &&
+          item[1].principal.toText() === principal
+      );
+
+      setLoading3(true);
+      const res = await backend.deleteWishlistItems(wishlistItem[0][1].id);
+      console.log(res);
+      if ("ok" in res) {
+        toast.success("The product has been removed to your wishlist.");
+        listWishlists();
+        //window.location.reload()
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setLoading3(false); // Set loading to false when the update is complete (success or error)
+    }
+  };
+
+  /* ----------------------------------------------------------------------------------------------------- */
+  /*  @ Final ProductCard and Renders
+/* ----------------------------------------------------------------------------------------------------- */
+  // Product structure :  ['product-four-7', {…}]
+  // Destructure product to extract required
+  const extractProductInfo = (product) => {
+    const { title, category, description, variantColor, variantSize, slug } =
+      product[1];
+    const { color, img1, img2, img3, variant_price, variant_sale_price } =
+      variantColor[0];
+    const { size } = variantSize[0];
+
+    return {
+      title,
+      slug,
+      category,
+      description,
+      variantInfo: {
+        color,
+        img1,
+        img2,
+        img3,
+        variant_price,
+        variant_sale_price,
+      },
+      size,
+    };
+  };
+  const productInfo = extractProductInfo(product);
+  // console.log(productInfo);
+  // Calculate discount
+  const calculateDiscountPercentage = () => {
+    if (productInfo?.variantInfo.variant_price === 0) {
+      return 0;
+    }
+    const discountPercentage =
+      ((productInfo?.variantInfo.variant_price -
+        productInfo?.variantInfo.variant_sale_price) /
+        productInfo?.variantInfo.variant_price) *
+      100;
+
+    return Math.round(discountPercentage);
+  };
+
+  const discount = calculateDiscountPercentage();
+
+  if (productInfo !== undefined || null) {
     return (
       <div className="rounded-xl  flex flex-col overflow-hidden gap-2">
         <div className="bg-gray-200 relative rounded-xl">
-          <div className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold">
-            {category}
+          <div
+            className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold"
+            style={{ zIndex: "1" }}
+          >
+            {productInfo.category}
           </div>
           <button
-            className={`absolute top-2 right-2 bg-white p-2 rounded-full shadow-sm w-[40px] h-[40px]`}
+            onClick={() => {
+              isProductInLocalWishlist ? removeToWishlist() : AddToWishlist();
+            }}
+            className={`absolute top-2  right-2  bg-white p-2 rounded-full shadow-sm w-[40px] h-[40px] ${
+              loading3 && "opacity-50"
+            }`}
+            disabled={loading3 && true}
+            style={{ zIndex: "1" }}
           >
-            {/* <IoHeart className="text-[#D02F2F]" size="1.5em" /> */}
-            {<IoHeartOutline size="1.5em" />}
+            {loading3 ? (
+              <TailSpin
+                height="100%"
+                width="100%"
+                color="black"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            ) : (
+              <>
+                {isProductInLocalWishlist ? (
+                  <IoHeart className="text-[#D02F2F]" size="1.5em" />
+                ) : (
+                  <IoHeartOutline size="1.5em" />
+                )}
+              </>
+            )}
           </button>
-          <Link to={`/product/${slug}`}>
+          <Link to={`/product/${productInfo.slug}`}>
             <div className="img-hover-zoom rounded-xl  cursor-pointer">
-              <img src={Fakeprod} alt="prod name" className="rounded-xl" />
+              <img
+                src={productInfo.variantInfo.img1 || placeholderImg}
+                alt="prod name"
+                className="rounded-xl"
+              />
             </div>
           </Link>
         </div>
         <div className="flex flex-col gap-1 max-md:px-4">
-          <Link
-            to={`/product/${slug}`}
-            className="text-lg font-semibold line-clamp-2"
-          >
-            {title}
-          </Link>
+          <div className="flex justify-between">
+            <Link
+              to={`/product/${productInfo.slug}`}
+              className="text-lg font-semibold line-clamp-2 capitalize"
+            >
+              {productInfo.title}
+            </Link>
+          </div>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BsFillStarFill fill="#f29f41" />
-              <span className="text-slate-600 text-xs font-semibold ">
-                5.0(1.2K reviews)
+            <div className="flex gap-2 items-center">
+              <span className="font-medium text-lg">
+                ${productInfo.variantInfo.variant_sale_price}
+              </span>
+              <span className="text-sm line-through font-light">
+                ${productInfo.variantInfo.variant_price}
               </span>
             </div>
-            <span className="font-bold text-lg">${price}</span>
+            <div className="flex items-center gap-2">
+              <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 max-w-max flex items-center">
+                {discount}% off
+              </span>
+            </div>
           </div>
           <div className="flex justify-between gap-2 text-sm">
-            <Button className="w-full rounded-full text-black font-semibold bg-white border border-slate-500 px-4 py-2">
-              Add to Cart
+            <Button
+              onClick={() => {
+                AddToCart("item added to cart Successfully");
+                setClick(true);
+              }}
+              className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
+                loading && " flex items-center justify-center"
+              } `}
+              disabled={loading && true}
+            >
+              {loading && click ? (
+                <TailSpin
+                  height="20"
+                  width="20"
+                  color="black"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  visible={true}
+                />
+              ) : (
+                <div>
+                  {!quantity //inventory>=quantity<=0
+                    ? " Go to cart"
+                    : " Add to Cart"}{" "}
+                </div>
+              )}
             </Button>
-            <Button className="w-full rounded-full text-white font-semibold bg-black border border-black px-4 py-2">
+
+            <Link
+              to="/shipping-address"
+              className="w-full rounded-full text-white font-semibold bg-black border border-black px-4 py-2 flex items-center justify-center"
+              onClick={() => {
+                buyNowHandler();
+              }}
+            >
               Buy Now
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
     );
   } else {
-    return (
-      <div className="rounded-xl  flex flex-col overflow-hidden gap-2">
-        <div className="bg-gray-200 relative rounded-xl">
-          <div className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold">
-            Category
-          </div>
-          <button
-            className={`absolute top-2 right-2 bg-white p-2 rounded-full shadow-sm w-[40px] h-[40px]`}
-          >
-            {/* <IoHeart className="text-[#D02F2F]" size="1.5em" /> */}
-            {<IoHeartOutline size="1.5em" />}
-          </button>
-          <Link to={"/"}>
-            <div className="img-hover-zoom rounded-xl  cursor-pointer">
-              <img src={Fakeprod} alt="prod name" className="rounded-xl" />
-            </div>
-          </Link>
-        </div>
-        <div className="flex flex-col gap-1 max-md:px-4">
-          <Link to="/" className="text-lg font-semibold line-clamp-2">
-            Phone Holder Shakti
-          </Link>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BsFillStarFill fill="#f29f41" />
-              <span className="text-slate-600 text-xs font-semibold ">
-                5.0(1.2K reviews)
-              </span>
-            </div>
-            <span className="font-bold text-lg">$29.90</span>
-          </div>
-          <div className="flex justify-between gap-2 text-sm">
-            <Button className="w-full rounded-full text-black font-semibold bg-white border border-slate-500 px-4 py-2">
-              Add to Cart
-            </Button>
-            <Button className="w-full rounded-full text-white font-semibold bg-black border border-black px-4 py-2">
-              Buy Now
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
+    return;
   }
 };
 

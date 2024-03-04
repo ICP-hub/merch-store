@@ -1,15 +1,17 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import toast from "react-hot-toast";
+import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component Contact.
 /* ----------------------------------------------------------------------------------------------------- */
 const Contact = () => {
   const [email, setEmail] = useState("");
+  const { createContact, isLoading, successfulSubmit } = UserApiHanlder();
 
   // handle email validation regex and send
   const isEmailValid = (email) => {
@@ -20,11 +22,19 @@ const Contact = () => {
   const handleEmailSubmit = () => {
     if (isEmailValid(email)) {
       // Apply backend methods
+      createContact({ email: email });
       console.log("Email is valid!");
     } else {
       toast.error("Please enter a valid email address");
     }
   };
+
+  // Reset the form when successfulSubmit is true
+  useEffect(() => {
+    if (successfulSubmit) {
+      setEmail("");
+    }
+  }, [successfulSubmit]);
 
   return (
     <div
@@ -34,31 +44,29 @@ const Contact = () => {
       <div className="rounded-t-3xl bg-black/70 w-[80%] md:w-[90%] py-2"></div>
       <div className="rounded-t-3xl bg-black/80 w-[90%] md:w-[95%] py-2"></div>
       <div className="w-full flex px-6 py-12 bg-black bg-opacity-90 rounded-2xl flex-col gap-4 tracking-wider">
-        <p className="text-4xl max-md:text-3xl font-semibold max-w-80 text-white">
-          Ready to get our new stuff ?
+        <p className="max-md:text-xl text-2xl font-semibold text-white max-w-80">
+          Get the latest merch drops and exclusive offers. Subscribe now!
         </p>
-        <div className="flex justify-between max-md:flex-col gap-4 ">
+        <div className="flex justify-between max-lg:flex-col gap-4 ">
           <div className="max-w-80">
             <SearchBar
               type="text"
               placeholder="john@doe.com"
               buttonText="send"
               value={email}
+              isLoading={isLoading}
               onChange={(e) => setEmail(e.target.value)}
               onSearchClick={() => handleEmailSubmit()}
             />
           </div>
           <div>
-            <span className="flex flex-col items-start text-xs text-white gap-2">
-              <p className="font-semibold text-sm">
-                Stuffus for Homes and Needs
-              </p>
+            <span className="flex flex-col items-start text-xs text-white gap-2 lg:max-w-[500px]">
+              <p className="font-medium text-sm">Merch Store</p>
               <p>
-                We'll listen to your needs, identify the best approach and then
-              </p>
-              <p>
-                create a bespoke smart EV charging solution that's right for
-                you.
+                Discover your style, share your vibe, and let us curate a
+                customized merch collection that perfectly fits your personality
+                and needs.Your unique fashion statement starts here at Merch
+                Store
               </p>
             </span>
           </div>

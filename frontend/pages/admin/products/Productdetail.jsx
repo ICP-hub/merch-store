@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast"
+
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
+import { TiDeleteOutline } from "react-icons/ti";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const [backend] = useCanister("backend");
@@ -13,12 +16,12 @@ const ProductDetail = () => {
   const [product, setProduct] = useState([]);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  ;
   const param = useParams();
+  const [click, setClick] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
-    status: "",
+    status: "active",
     description: "",
     category: "",
     price: 0,
@@ -26,17 +29,29 @@ const ProductDetail = () => {
     img1: "",
     img2: "",
     img3: "",
+    img4: "",
+    sale_price: 0,
+    variants: [
+      {
+        img1: "",
+        img2: "",
+        img3: "",
+        img4: "",
+        inventory: 0,
+        color: "",
+        variant_price: 0,
+        variant_sale_price: 0,
+      },
+    ],
+    sizes: [{ size: "" }],
   });
-
   const getProduct = async () => {
     try {
-      setLoading2(true);
-
       const item = await backend.getProduct(param.slug);
       if (item.ok) {
         setFormData({
           title: item.ok.title,
-          status: item.ok.status,
+          status: item.ok.active ? "active" : "inactive",
           description: item.ok.description,
           category: item.ok.category,
           price: item.ok.price,
@@ -44,6 +59,10 @@ const ProductDetail = () => {
           img1: item.ok.img1,
           img2: item.ok.img2,
           img3: item.ok.img3,
+          img4: item.ok.img4,
+          sale_price: item.ok.sellingPrice,
+          variants: item.ok.variantColor || [],
+          sizes: item.ok.variantSize || [],
         });
         setProduct(item.ok);
         console.log(item.ok);
@@ -78,6 +97,65 @@ const ProductDetail = () => {
       [name]: value,
     });
   };
+  const handleVariantChange = (index, e) => {
+    const { name, value } = e.target;
+    const newVariants = [...formData.variants];
+    newVariants[index] = { ...newVariants[index], [name]: value };
+    setFormData({
+      ...formData,
+      variants: newVariants,
+    });
+  };
+  const handleSizeChange = (index, e) => {
+    const { value } = e.target;
+    const newSizes = [...formData.sizes];
+    newSizes[index] = { size: value };
+    setFormData({
+      ...formData,
+      sizes: newSizes,
+    });
+  };
+  const handleAddVariant = () => {
+    setFormData({
+      ...formData,
+      variants: [
+        ...formData.variants,
+        {
+          img1: "",
+          img2: "",
+          img3: "",
+
+          inventory: 0,
+          color: "",
+          variant_price: 0,
+          variant_sale_price: 0,
+        },
+      ],
+    });
+  };
+  const handleRemoveVariant = (index) => {
+    const newVariants = [...formData.variants];
+    newVariants.splice(index, 1);
+    setFormData({
+      ...formData,
+      variants: newVariants,
+    });
+  };
+
+  const handleAddSize = () => {
+    setFormData({
+      ...formData,
+      sizes: [...formData.sizes, { size: "" }],
+    });
+  };
+  const handleRemoveSize = (index) => {
+    const newSizes = [...formData.sizes];
+    newSizes.splice(index, 1);
+    setFormData({
+      ...formData,
+      sizes: newSizes,
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -85,35 +163,58 @@ const ProductDetail = () => {
       if (!validateForm()) {
         return;
       }
-      setLoading(true);
 
-      const existingProduct = await backend.getProduct(param.slug);
+      //const existingProduct = await backend.getProduct(param.slug);
+      console.log("hello");
 
       const requestData = {
         title: formData.title,
-        status: formData.status,
-        description: formData.description,
+        active: formData.status === "active" ? true : false,
+
         category: formData.category,
-        price: parseFloat(formData.price),
-        inventory: parseInt(formData.inventory, 10),
-        img1: formData.img1,
-        img2: formData.img2,
-        img3: formData.img3,
+        description: formData.description,
+        trending: true,
+        newArrival: true,
       };
+      const variantColors = formData.variants.map((variant) => ({
+        img1: variant.img1,
+        img2: variant.img2,
+        img3: variant.img3,
 
-      if (existingProduct.ok) {
-        const res = await backend.updateProduct(param.slug, requestData);
+        inventory: parseInt(variant.inventory),
+        color: variant.color,
+        variant_price: parseFloat(variant.variant_price),
+        variant_sale_price: parseFloat(variant.variant_sale_price),
+      }));
 
-        if ("ok" in res) {
-          toast.success("Product Updated Successfully");
-        }
-      } else {
-        const res = await backend.createProduct(requestData);
+      const variantSizes = formData.sizes.map((size) => ({
+        size: size.size,
+      }));
 
-        if ("ok" in res) {
-          toast.success("Product Added Successfully");
-        }
+      // if (existingProduct.ok) {
+      console.log("hello");
+      const res = await backend.updateProduct(
+        param.slug,
+        requestData,
+        variantSizes,
+        variantColors
+      );
+      console.log(res);
+
+      if (res) {
+        toast.success("Product Updated Successfully");
       }
+      // } else {
+      //   const res = await backend.createProduct(
+      //     requestData,
+      //     variantColors,
+      //     variantSizes
+      //   );
+
+      //   if ("ok" in res) {
+      //     toast.success("Product Added Successfully");
+      //   }
+      // }
     } catch (error) {
       toast.error("An error occurred while processing the product.");
       console.error("An error occurred:", error);
@@ -156,40 +257,7 @@ const ProductDetail = () => {
       setLoading3(false);
     }
   };
-  /*  const [blobInput, setBlobInput] = useState(null);
-  const [imgBlob, setImgBlob] = useState(null);
-  const [imageSource, setImageSource] = useState("");
-  const blobFromFile = async () => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const blob = new Blob([reader.result], { type: "image/*" });
-        resolve(blob);
-      };
-      reader.onerror = reject;
 
-      if (blobInput) {
-        reader.readAsArrayBuffer(blobInput);
-      } else {
-        reject(new Error("No file input provided."));
-      }
-    });
-  };
-
-  useEffect(() => {
-    const convertBlobFromFile = async () => {
-      if (blobInput) {
-        try {
-          const blob = await blobFromFile();
-          setImgBlob(blob);
-        } catch (error) {
-          console.error("Error converting file to blob:", error);
-        }
-      }
-    };
-
-    convertBlobFromFile();
-  }, [blobInput]); */
   return (
     <div className="w-full">
       <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
@@ -271,7 +339,7 @@ const ProductDetail = () => {
                 ))}
               </select>
             </div>
-            <div className="my-2">
+            {/* <div className="my-2">
               <label
                 htmlFor="price"
                 className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
@@ -286,6 +354,24 @@ const ProductDetail = () => {
                 type="number"
                 className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
                 placeholder="Enter Product Price"
+                disabled={loading}
+              />
+            </div> */}
+            {/* <div className="my-2">
+              <label
+                htmlFor="sale_price"
+                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
+              >
+                Enter Product Sale Price
+              </label>
+              <input
+                id="sale_price"
+                name="sale_price"
+                value={loading2 ? 0 : formData.sale_price}
+                onChange={handleInputChange}
+                type="number"
+                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                placeholder="Enter Product Sale Price"
                 disabled={loading}
               />
             </div>
@@ -362,6 +448,166 @@ const ProductDetail = () => {
                 disabled={loading}
               />
             </div>
+            <div className="my-2">
+              <label
+                htmlFor="img4"
+                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
+              >
+                Enter Image Four Url
+              </label>
+              <input
+                id="img4"
+                name="img4"
+                value={loading2 ? "loading..." : formData.img4}
+                onChange={handleInputChange}
+                type="text"
+                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                placeholder="Enter Image Four Url"
+                disabled={loading}
+              />
+            </div> */}
+            <div className="mb-6 ">
+              <h3 className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                Color Variants
+              </h3>
+              {formData.variants.map((variant, index) => (
+                <div key={index} className="grid grid-cols-4 mb-4">
+                  <input
+                    type="text"
+                    value={loading2 ? "loading..." : variant.color}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`color`}
+                    name={`color`}
+                    placeholder="Color"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={
+                      loading2 ? "loading..." : parseInt(variant.inventory)
+                    }
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`inventory`}
+                    name={`inventory`}
+                    placeholder="Inventory"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={loading2 ? "loading " : variant.variant_price}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`variant_price`}
+                    name={`variant_price`}
+                    placeholder="Variant Price"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={loading2 ? "loading " : variant.variant_sale_price}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`variant_sale_price`}
+                    name={`variant_sale_price`}
+                    placeholder="Variant Sale Price"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={loading2 ? "loading... " : variant.img1}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img1`}
+                    name={`img1`}
+                    placeholder="Varient Image One Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={loading2 ? "loading... " : variant.img2}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img2`}
+                    name={`img2`}
+                    placeholder="Varient Image Two Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={loading2 ? "loading... " : variant.img3}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img3`}
+                    name={`img3`}
+                    placeholder="Varient Image Three Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={loading2 ? "loading... " : variant.img4}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img4`}
+                    name={`img4`}
+                    placeholder="Varient Image Four Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveVariant(index)}
+                    className="bg-red-500 text-white mr-2 mb-2 px-3 py-2 flex  items-center justify-center w-12 h-10 rounded hover:bg-red-600"
+                  >
+                    <TiDeleteOutline className="w-5 h-5 text-lg" />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddVariant}
+                className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1af0]"
+              >
+                <IoMdAddCircleOutline />
+              </button>
+            </div>
+
+            <div>
+              <div>
+                <h3 className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                  Sizes
+                </h3>
+                {formData.sizes.map((size, index) => (
+                  <div key={index} className="mb-4">
+                    <input
+                      id={`size`}
+                      name={`size`}
+                      type="text"
+                      value={loading2 ? "loading... " : size.size}
+                      onChange={(e) => handleSizeChange(index, e)}
+                      placeholder="Size"
+                      className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                      disabled={loading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSize(index)}
+                      className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                    >
+                      <TiDeleteOutline />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddSize}
+                className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1ae0]"
+              >
+                <IoMdAddCircleOutline />
+              </button>
+            </div>
 
             {/* <div className="my-2">
               <label
@@ -402,42 +648,23 @@ const ProductDetail = () => {
                 onChange={handleInputChange}
                 name="status" // Ensure you have a name attribute
               >
-                <option
-                  value="active"
-                  defaultValue={product.status === "active"}
-                >
-                  Active
-                </option>
-                <option
-                  value="inactive"
-                  defaultValue={product.status === "inactive"}
-                >
-                  Inactive
-                </option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
 
             <div className="flex flex-col items-end justify-end gap-4 mt-6">
               <button
-                onClick={handleSubmit}
+                onClick={() => {
+                  handleSubmit();
+                }}
                 type="submit"
                 className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                   loading && "opacity-50"
                 }`}
                 disabled={loading}
               >
-                {loading ? (
-                  <TailSpin
-                    height="20"
-                    width="20"
-                    color="white"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    visible={true}
-                  />
-                ) : (
-                  <CiCircleCheck className="w-5 h-5" />
-                )}
+                <CiCircleCheck className="w-5 h-5" />
                 UPDATE PRODUCT
               </button>
             </div>

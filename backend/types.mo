@@ -13,8 +13,8 @@ module {
 
     public type User = {
         id : Principal;
-        FirstName : Text;
-        LastName : Text;
+        firstName : Text;
+        lastName : Text;
         email : Text;
     };
 
@@ -101,6 +101,10 @@ module {
         #fivestar;
     };
 
+    public type shippingAmount = {
+        shipping_amount : Float;
+    };
+
     public type ReviewRatings = {
         product_slug : SlugId;
         rating : Rating;
@@ -108,6 +112,60 @@ module {
         created_by : Principal;
         time_created : Time.Time;
         time_updated : Time.Time;
+    };
+
+    public type UserAddress = {
+        address_type : Text;
+        firstname : Text;
+        lastname : Text;
+        email : Text;
+        phone_number : Text;
+        addressline1 : Text;
+        addressline2 : Text;
+        city : Text;
+        pincode : Text;
+        state : Text;
+        country : Text;
+    };
+
+    public type Address = UserAddress and {
+        id : Text;
+    };
+
+    public type CreateAddressError = {
+        #UserNotAuthenticated;
+        #EmptyFirstName;
+        #EmptyLastName;
+        #EmptyEmail;
+        #EmptyPhoneNumber;
+        #EmptyAddressLine1;
+        #EmptyCity;
+        #EmptyPincode;
+        #EmptyState;
+        #EmptyCountry;
+    };
+
+    public type UpdateAddressError = {
+        #UserNotAuthenticated;
+        #EmptyFirstName;
+        #EmptyLastName;
+        #EmptyEmail;
+        #EmptyPhoneNumber;
+        #EmptyAddressLine1;
+        #EmptyCity;
+        #EmptyPincode;
+        #EmptyState;
+        #EmptyCountry;
+        #AddressNotFound;
+    };
+
+    public type GetAddressError = {
+        #AddressNotFound;
+    };
+
+    public type DeleteAddressError = {
+        #UserNotAuthenticated;
+        #AddressNotFound;
     };
 
     public type OrderError = {
@@ -121,14 +179,29 @@ module {
     public type Category = {
         name : Text;
         slug : SlugId;
-        category_img : ImgId;
+        category_img : Text;
+        featured : Bool;
+    };
+
+    public type VariantSize = {
+        size : Text;
+    };
+
+    public type VariantColor = {
+        color : Text;
+        img1 : Text;
+        img2 : Text;
+        img3 : Text;
+        variant_price : Float;
+        variant_sale_price : Float;
+        inventory : Nat;
     };
 
     // User input data for products
     public type UserProduct = {
         title : Text;
-        price : Float;
-        sellingPrice : Float;
+        //price : Float;
+        //sellingPrice : Float;
         description : Text;
         category : SlugId;
         active : Bool;
@@ -138,9 +211,11 @@ module {
 
     // Backend data for products
     public type Product = UserProduct and {
-        img : ImgId; // Upload 3 images for each product
+        //img : Text; // Upload 3 images for each product
         id : ProductId;
         slug : SlugId;
+        variantSize : [VariantSize];
+        variantColor : [VariantColor];
         time_created : Time.Time;
         time_updated : Time.Time;
     };
@@ -185,36 +260,39 @@ module {
         #VariantSlugAlreadyExists;
     };
 
-    public type ImgId = Text;
     public type OrderId = Text;
     public type OrderProduct = {
-        id : ProductId;
+        id : Text;
+        title : Text;
+        img : Text;
         quantity : Nat8;
-    };
-
-    public type ShippingAddress = {
-        mail : Text;
-        firstName : Text;
-        lastName : Text;
-        street : Text;
-        city : Text;
-        postCode : Text;
-        country : Text;
-        county : Text;
+        size : Text;
+        color : Text;
+        sale_price : Float;
     };
     // TODO: show the price in the order a argument
     public type NewOrder = {
-        shippingAddress : ShippingAddress;
+        shippingAddress : Address;
         products : [OrderProduct];
         paymentAddress : Text;
         userid : Principal;
         totalAmount : Float;
         subTotalAmount : Float;
-        shippingAmount : Float;
+        shippingAmount : shippingAmount;
         paymentMethod : Text;
         orderStatus : Text;
         paymentStatus : Text;
         awb : Text;
+    };
+
+    public type PaymentStatus = {
+        #Pending;
+        #Failed;
+        #Success;
+    };
+
+    public type GetPaymentStatusError = {
+        #OrderNotFound;
     };
 
     public type Order = NewOrder and {
@@ -230,6 +308,12 @@ module {
     };
 
     public type UpdateOrderError = {
+        #OrderNotFound;
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+    };
+
+    public type UpdatepaymentStatusError = {
         #OrderNotFound;
         #UserNotAuthenticated;
         #UserNotAdmin;
@@ -297,8 +381,8 @@ module {
     public type CartItem = {
         id : CartId;
         product_slug : Text;
-        // size : Size;
-        // color : Color;
+        size : Text;
+        color : Text;
         quantity : Nat8;
         principal : Principal;
         time_created : Time.Time;
@@ -376,7 +460,7 @@ module {
         name : Text;
         email : Text;
         message : Text;
-        contact_number : Nat32;
+        contact_number : Text;
     };
 
     public type Contact = UserContact and {

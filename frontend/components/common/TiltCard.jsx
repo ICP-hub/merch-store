@@ -1,6 +1,7 @@
 import React from 'react'
 import { Tilt } from 'react-tilt'
 import fakeProd from "../../assets/fakeprod.png"
+import placeholderImg from "../../assets/placeholderImg-Small.jpeg"
 
 const defaultOptions = {
 	reverse:        false,  // reverse the tilt direction
@@ -17,7 +18,7 @@ const TiltCard = () => {
   return (
     <Tilt options={defaultOptions} style={{ height: 250, width: 250 }}>
       <img
-          src={fakeProd}
+          src={placeholderImg}
           alt="prod.name"
           className="h-80 w-80 object-contain"
         />

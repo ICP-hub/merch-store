@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Header from "../components/common/Header.jsx";
 import ScrollToTop from "../components/common/ScrollToTop.jsx";
@@ -10,6 +10,16 @@ import { HiOutlineTrash } from "react-icons/hi2";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi2";
 import Button from "../components/common/Button.jsx";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import CartApiHandler from "../apiHandlers/CartApiHandler.jsx";
+import ProductApiHandler from "../apiHandlers/ProductApiHandler.jsx";
+import {
+  getCartItemDetails,
+  totalCartSellPrice,
+} from "../apiHandlers/cartUtils.js";
+import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler.jsx";
+import NoImage from "../assets/placeholderImg.png";
+import { TailSpin } from "react-loader-spinner";
 
 const pMethod = [
   {
@@ -36,7 +46,6 @@ const CheckoutPage = () => {
         <ScrollToTop />
         <Header title={"CheckOut"} />
         <Checkout />
-
         <Footer></Footer>
       </AnimationView>
     </>
@@ -47,18 +56,137 @@ const CheckoutPage = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const Checkout = () => {
   const [selected, setSelected] = useState(pMethod[0]);
+  // Get data passed by shipping-addresspage as navigation state
+  const { state } = useLocation();
+  const { cartItems, getCallerCartItems, orderPlacement, isLoading } =
+    CartApiHandler();
+  const { productList, getProductList } = ProductApiHandler();
+  const [itemQuantities, setItemQuantities] = useState([]);
+  const [priceAfterChange, setPriceAfterChange] = useState(0);
+  const { userAddessList, getAddressList } = UserAddressApiHandler();
 
-  const [checkOut, setCheckOut] = useState([
-    {
-      id: 2,
-      name: "Avanish ranjan srivastava",
-      address: "Tarapur colony sector no-1 House no-138 jaunpur",
-      pin: "222002",
-      phone: "9554524783",
-      product: "Tws bujug",
-      price: "40.00",
-    },
-  ]);
+  // Increment button
+  const handleIncrement = (index) => {
+    setItemQuantities((prevQuantities) => {
+      const newQuantities = [...prevQuantities];
+      newQuantities[index] = (newQuantities[index] || 0) + 1;
+
+      const itemSellingPrice = itemDetails[index]?.variantSellPrice || 0;
+      const newPriceAfterChange = priceAfterChange + itemSellingPrice;
+      setPriceAfterChange(newPriceAfterChange);
+      return newQuantities;
+    });
+  };
+
+  const fetchAddress = () => {
+    // If address is present : state
+    if (state) {
+      return state;
+    }
+    // If CurrAdress is present : localStorage
+    const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
+    if (localStorageAddress) {
+      return localStorageAddress;
+    } else if (userAddessList && userAddessList.length > 0) {
+      // If CurrAdress is not in localStorage : latest address from userAddessList
+      const latestAddress = userAddessList[userAddessList.length - 1][1];
+      return latestAddress;
+    } else {
+      return null;
+    }
+  };
+
+  const Address = fetchAddress();
+
+  const handleDecrement = (index) => {
+    setItemQuantities((prevQuantities) => {
+      const newQuantities = [...prevQuantities];
+      if (newQuantities[index] > 1) {
+        newQuantities[index] -= 1;
+
+        const itemSellingPrice = itemDetails[index]?.variantSellPrice || 0;
+        const newPriceAfterChange = priceAfterChange - itemSellingPrice;
+
+        setPriceAfterChange(newPriceAfterChange);
+      }
+      return newQuantities;
+    });
+  };
+
+  // Get CartItemDetails object : cartUtils.js
+  const cartItemDetails = getCartItemDetails(cartItems, productList);
+  // console.log("Cart Item Details : ", cartItemDetails);
+  // Sell Price
+  const initialTotalPrice = totalCartSellPrice(cartItemDetails);
+  // Toal price after increase or decrease qty
+  const finalTotalPrice = initialTotalPrice + priceAfterChange;
+  // Extract properties from cartItemDetails
+  // console.log(cartItemDetails);
+  const itemDetails = cartItemDetails?.map(
+    ({
+      quantity,
+      color,
+      orderId,
+      product: { category, title, slug, img },
+      size,
+      variantPrice,
+      variantSellPrice,
+      variantSellPriceBasedOnQty,
+    }) => ({
+      quantity,
+      color,
+      orderId,
+      category,
+      title,
+      img,
+      size,
+      slug,
+      variantPrice,
+      variantSellPrice,
+      variantSellPriceBasedOnQty,
+    })
+  );
+
+  const handleOrderPlacement = () => {
+    const products = itemDetails.map(
+      ({ slug, img, title, color, size, variantSellPrice, quantity }) => {
+        return {
+          id: slug,
+          img: img,
+          title: title,
+          color: color,
+          size: size,
+          sale_price: variantSellPrice,
+          quantity: quantity,
+        };
+      }
+    );
+    const shippingAddress = Address;
+    const totalAmount = finalTotalPrice;
+    const subTotal = finalTotalPrice;
+    const paymentMethod = selected.value;
+    orderPlacement(
+      products,
+      shippingAddress,
+      totalAmount,
+      subTotal,
+      paymentMethod
+    );
+  };
+
+  useEffect(() => {
+    // Set initial itemQuantities from itemDetails
+    if (itemQuantities.length === 0 && itemDetails.length > 0) {
+      setItemQuantities(itemDetails.map((item) => item.quantity));
+    }
+  }, [itemDetails, itemQuantities]);
+
+  // Fetch data parallelly when the component mounts
+  useEffect(() => {
+    getProductList();
+    getCallerCartItems();
+    getAddressList();
+  }, []);
 
   return (
     <>
@@ -78,9 +206,16 @@ const Checkout = () => {
             </div>
           </div>
 
-          {checkOut.map((item) => (
-            <CheckOutCard key={item.id} item={item} />
+          {itemDetails?.map((item, index) => (
+            <CheckOutCard
+              cartItem={item}
+              key={index}
+              increment={() => handleIncrement(index)}
+              decrement={() => handleDecrement(index)}
+              numofItems={itemQuantities[index] || 1}
+            />
           ))}
+          <AddressCardContainer address={Address} />
 
           {/*Radio button for the payment method */}
           <div className="md:w-3/4 w-full mt-4">
@@ -127,16 +262,6 @@ const Checkout = () => {
               </div>
             </RadioGroup>
           </div>
-
-          {/* <div className="border border-gray-300  flex mt-6 p-2 py-2 w-full rounded-xl">
-              <button className="bg-black text-white   py-2 px-4 m-2 text-xs md:text-sm w-36 rounded-md  md:w-36 xl:w-48  flex items-center justify-between   ">
-                Plug wallet <FaCheckCircle />
-              </button>
-
-              <button className="bg-black text-white ml-4 py-2 px-4 m-2 text-xs md:text-sm w-36 rounded-md  md:w-36 xl:w-48">
-                Pay with paypal
-              </button>
-                            </div>*/}
         </div>
         <div
           className=" flex flex-col items-start md:justify-start   
@@ -145,28 +270,53 @@ const Checkout = () => {
           <p className="text-xl font-bold text-gray-500 p-2">PRICE DETAILS</p>
           <p className="w-full border-t border-gray-300"></p>
           <div className="flex justify-between w-full">
-            <p className="p-2 text-gray-400">Price(2 items):</p>
-            <span className="font-bold text-black item-end  p-2   ">$109</span>
+            <p className="p-2 text-gray-400">
+              Price(
+              {itemDetails?.length > 1
+                ? itemDetails?.length + " Items"
+                : itemDetails?.length + " Item"}
+              ):
+            </p>
+            <span className="font-bold text-black item-end  p-2   ">
+              ${finalTotalPrice}
+            </span>
           </div>
           <div className="flex justify-between w-full">
             <p className="p-2 text-gray-400"> Delivery Charges </p>
             <span className="   text-green-400   p-2  ">
               {" "}
-              <s className="item-end text-gray-400">$109</s> Free
+              <s className="item-end text-gray-400">${finalTotalPrice}</s> Free
             </span>
           </div>
           <p className="w-full border-t border-dashed border-gray-300"></p>
           <div className="flex justify-between w-full">
             <p className="p-3 pt-6 text-black font-bold">Total Payable</p>
-            <span className="font-bold text-black  p-3 pt-6   ">$109</span>
+            <span className="font-bold text-black  p-3 pt-6   ">
+              ${finalTotalPrice}
+            </span>
           </div>
           <p className="w-full border-t border-dashed border-gray-300"></p>
-          <p className="text-green-400   mt-3 mb-2 ">
-            Your total saving on this order is 2237
-          </p>
           <div className="w-full flex items-center justify-center">
-            <Button className="bg-black text-white  p-2  text-md  rounded-full    w-64   ">
-              Proceed
+            <Button
+              className="bg-black text-white  p-2  text-md  rounded-full min-w-full min-h-12"
+              onClick={handleOrderPlacement}
+            >
+              {isLoading ? (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <TailSpin
+                    visible={true}
+                    height="20"
+                    width="20"
+                    color="white"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              ) : (
+                "Proceed"
+              )}
             </Button>
           </div>
         </div>
@@ -196,103 +346,109 @@ function CheckIcon(props) {
 /* ----------------------------------------------------------------------------------------------------- */
 /*   checkout card container
 /* ----------------------------------------------------------------------------------------------------- */
-const CheckOutCard = ({ item }) => {
-  const [items, setItems] = useState(1);
-  const increment = () => {
-    setItems(items + 1);
-  };
-  const decrement = () => {
-    if (items > 1) {
-      setItems(items - 1);
-    }
-  };
+const CheckOutCard = ({ cartItem, increment, decrement, numofItems }) => {
   return (
-    <>
-      <div className=" md:flex flex-wrap items-center m-0   md: justify-between border border-gray-300 mt-4  rounded-xl  p-2 py-2 w-[100%]">
-        <div>
-          <div className="flex m-2">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 text-yellow-500  rounded-none"
-              name="selectItem"
-            />
+    <div className="py-4">
+      <div className="flex border border-gray-300 rounded-xl p-4 max-lg:flex-col">
+        <div className="flex gap-4 flex-1">
+          <div className="flex p-1 border border-gray-300 rounded-xl">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNJNcA6I9f85ESkLkHq4HKYJ-CjzIdVXQTL25Am9yjcA&s"
-              alt=""
-              className="w-24  h-24 border border-gray-300 bg-gray-400 rounded-lg ml-2"
+              src={cartItem.img === "" ? NoImage : cartItem.img}
+              alt={cartItem.title}
+              className="max-w-24 max-h-24 object-contain rounded-xl"
             />
-            <div className="md:mt-6 md:ml-2 ml-4">
-              <p className="border border-gray-300 rounded-full w-16 item-center pl-2">
-                Other
-              </p>
-              <p>{item.product}</p>
-              <span className="xl:text-sm text-xs">
-                <span className="text-gray-400">Type:</span> Stereo
-              </span>
-              <span className="xl:text-sm text-xs">
-                {" "}
-                <span className="text-gray-400">color:</span> Blue
-              </span>
-            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="border border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
+              {cartItem.category}
+            </span>
+            <p className="text-lg font-semibold capitalize">{cartItem.title}</p>
+            <span className="flex gap-4">
+              <p className="capitalize text-xs">Size: {cartItem.size}</p>
+              <p className="capitalize text-xs">Color : {cartItem.color}</p>
+            </span>
           </div>
         </div>
-        <div className="xl:mt-4 mt-2">
-          <div className="flex flex-col items-end  ">
-            <s className="text-gray-400 text-xs">$50.00</s>
-
-            <p className="text-left">{item.price}</p>
-          </div>
-          <div className="xl:flex">
-            <div className="flex items-center justify-end">
-              <button className="">
-                <HiOutlineTrash className="w-5 h-5 text-gray-400 m-1 xl:m-4" />
-              </button>
-            </div>
-
-            <div class="flex items-center justify-end">
-              <button
-                class="bg-gray-100 text-gray-700 py-2 px-4 border-t border-l border-b  border-gray-300 rounded-l-md hover:bg-gray-200"
+        <div className="flex justify-end flex-col gap-2 items-end">
+          <p className="line-through text-gray-500 text-sm">
+            ${cartItem.variantPrice}
+          </p>
+          <p className="font-medium">${cartItem.variantSellPrice}</p>
+          <div className="flex gap-4">
+            <Button>
+              <HiOutlineTrash size={24} color="#ff8383" />
+            </Button>
+            <div className="flex items-center border rounded-md border-gray-300">
+              <Button
+                className="p-2 border-r border-r-gray-300"
                 onClick={decrement}
               >
-                <HiOutlineMinus />
-              </button>
-              <p
-                type="text"
-                class="w-16 text-center  py-1 px-2 border-t border-b border-gray-300   bg-gray-100  "
-              >
-                {items}
-              </p>
-
-              <button
-                class="bg-gray-100 text-gray-700 py-2 px-4 border-t border-r border-b border-gray-300  rounded-r-md hover:bg-gray-200"
+                <HiOutlineMinus size={18} />
+              </Button>
+              <span className="min-w-16 flex items-center justify-center">
+                {numofItems}
+              </span>
+              <Button
+                className="p-2 border-l border-l-gray-300"
                 onClick={increment}
               >
-                <HiOutlinePlus />
-              </button>
+                <HiOutlinePlus size={18} />
+              </Button>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+};
 
-      <div className=" md:flex flex-wrap items-center    md: justify-between border border-gray-300    mt-4  rounded-xl   p-2 py-2 w-[100%]">
-        <div className="flex     ">
-          <div className="flex flex-wrap ">
-            <p className="m-2 font-bold">{item.name}</p>
+const AddressCardContainer = ({ address }) => {
+  // Check if address is provided, otherwise set default values
+  const {
+    firstname = "",
+    lastname = "",
+    phone_number = "",
+    pincode = "",
+    addressline1 = "",
+    addressline2 = "",
+    state = "",
+    address_type = "",
+  } = address || {};
 
-            <p className="border border-gray-300 bg-gray-300 rounded-md m-1 ml-5 md:ml-0 text-gray-500 w-16 flex items-center justify-center">
-              Home
+  // By Clicking edit navigate to shipping address page again so that we can re-select address
+  // const navigate = useNavigate();
+
+  if (!address) {
+    // If address is null don't show the component - or any custom
+    return null; // or any other fallback content
+  }
+
+  return (
+    <div className="py-4">
+      <div className="border border-gray-300 rounded-xl p-4">
+        <div className="flex gap-3 flex-col">
+          <div className="flex-1 flex sm:items-center gap-2 max-sm:flex-col">
+            <p className="font-bold capitalize min-w-max">
+              {firstname} {lastname}
             </p>
-            <span className="m-2 ml-5 md:ml-2 font-bold">{item.phone}</span>
-            <p className="m-2    ">
-              {item.address} <strong>{item.pin}</strong>
-            </p>
+            <span className="px-2 py-1 rounded-md bg-gray-300 text-gray-500 uppercase text-xs flex items-center max-w-max font-semibold">
+              {address_type}
+            </span>
+            <p className="font-semibold">{phone_number}</p>
           </div>
-          <Button className="border   bg-black rounded-full m-2 ml-5 md:ml-0 text-white p-4 md:w-16 h-10 flex items-center justify-center">
-            Edit
-          </Button>
+          <div className="font-semibold">
+            {addressline1},{addressline2},{pincode},{state}
+          </div>
+          <Link
+            tp="/shipping-address"
+            className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-semibold max-w-max"
+            // onClick={() => navigate("/shipping-address")}
+          >
+            Change
+          </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

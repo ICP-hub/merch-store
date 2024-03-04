@@ -8,9 +8,10 @@ import Header from "../components/common/Header";
 import Hero from "../components/common/Hero";
 import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import Footer from "../components/common/Footer";
-import { CommonInput, TelephoneInput } from "../components/common/CommonInput";
-import { BsFillGeoAltFill } from "react-icons/bs";
 import Button from "../components/common/Button";
+import AddressForm from "../components/ContactPageComponents/AddressForm";
+import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler";
+import { Principal } from "@dfinity/principal";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base 
@@ -20,7 +21,6 @@ const MyAddressPage = () => {
     <AnimationView>
       <ScrollToTop />
       <Header title={"Address"}></Header>
-      <Hero />
       <MyAddressContainerMain />
       <Footer></Footer>
     </AnimationView>
@@ -45,71 +45,73 @@ const MyAddressContainerMain = () => {
 /*  @ MyAddress Page : <MyAddressContainerMain /> : <MyAddress Component />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyAddress = () => {
-  // State for managing edit mode, new address, and selected address index
   const [editMode, setEditMode] = useState(false);
   const [newAddress, setNewAddress] = useState(false);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
+  const { getAddressList } = UserAddressApiHandler();
+  const [userAddessList, setUserAddressList] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successfulSubmit, setSuccessfulSubmit] = useState(false);
 
-  // Entering edit mode
+  const addressDetails = userAddessList?.map(([Principal, [...Address]]) => {
+    // console.log(Address); //Op : [Array(3)] [{…}]
+    // Extract required props
+    return Address;
+  });
+
   const handleEditMode = () => {
     setEditMode(true);
   };
 
-  // Adding a new address
   const handleNewAddress = () => {
     setNewAddress(true);
   };
 
-  const userAddresses = [
-    {
-      firstName: "Avanish",
-      lastName: "Srivastava",
-      email: "avanish@example.com",
-      address1: "uttar pradesh,address,address",
-      address2: "Second address line, address",
-      city: "Anytown",
-      phoneNumber: "123-456-7890",
-      pincode: "12345",
-      state: "Uttar Pradesh",
-      country: "India",
-    },
-    {
-      firstName: "Ankur",
-      lastName: "Nayak",
-      email: "ankur@example.com",
-      address1: "my addresses and address",
-      address2: "guwahati",
-      city: "guwahati",
-      phoneNumber: "123-456-7890",
-      pincode: "12345",
-      state: "Assam",
-      country: "India",
-    },
-  ];
+  const handleCancel = (e) => {
+    e.preventDefault();
+    setEditMode(false);
+    setNewAddress(false);
+  };
+
+  // Effect getAddressList : re-render on successful submit
+  useEffect(() => {
+    getAddressList(setUserAddressList, setIsLoading);
+  }, [successfulSubmit]);
+
+  // Swich to saved form after form
+  useEffect(() => {
+    if (!isLoading) {
+      setEditMode(false);
+      setNewAddress(false);
+    }
+  }, [isLoading]);
 
   return (
     <div className="w-full rounded-2xl border border-gray-300">
-      {/* Header */}
       <div className="flex justify-between px-2 sm:px-8 py-4 font-medium ">
         <h1 className="text-lg">My Address</h1>
-        <Button onClick={handleNewAddress} className="text-sm">
-          + Add a new Address
-        </Button>
+        {/*Hide button if form is open */}
+        {!newAddress && !editMode ? (
+          <Button onClick={handleNewAddress} className="text-sm">
+            + Add a new Address
+          </Button>
+        ) : null}
       </div>
-      {/* Conditional rendering edit mode || new address */}
       {newAddress || editMode ? (
-        // Render AddressForm for editing or adding a new address
-        <div className="grid lg:grid-cols-2 gap-3 px-2 sm:px-8 py-4">
-          <AddressForm
-            userAddress={userAddresses[selectedAddressIndex]}
-            setEditMode={setEditMode}
-            isNewAddress={newAddress}
-            setNewAddress={setNewAddress}
-          />
-        </div>
+        <AddressForm
+          onCancel={handleCancel}
+          isNew={newAddress}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setSuccessfulSubmit={setSuccessfulSubmit}
+          initialFormValues={
+            editMode && addressDetails
+              ? addressDetails?.flat()[selectedAddressIndex]
+              : {}
+          }
+        />
       ) : (
-        // Displaying existing addresses
-        userAddresses.map((address, index) => (
+        addressDetails?.flat().map((address, index) => (
           <MyAddressSaved
             key={index}
             onEditMode={() => {
@@ -128,29 +130,37 @@ const MyAddress = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const MyAddressSaved = ({ onEditMode, userAddress }) => {
   const {
-    firstName,
-    lastName,
-    address1,
-    address2,
-    pin,
+    firstname,
+    lastname,
+    addressline1,
+    addressline2,
+    pincode,
     state,
     country,
-    phoneNumber,
+    phone_number,
   } = userAddress;
 
-  const addressFields = [address1, address2, pin, state, country, phoneNumber];
+  const addressFields = [
+    addressline1,
+    addressline2,
+    pincode,
+    state,
+    country,
+    phone_number,
+  ];
+
   return (
     <div className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col max-lg:gap-3">
       <div className="gap-3 flex-1">
         {/* Display user's first name and last name */}
         <div className="flex gap-3">
           <div className="capitalize text-lg font-medium">
-            {firstName} {lastName}
+            {firstname} {lastname}
           </div>
         </div>
 
         {/* address details */}
-        {addressFields.map((value, index) => (
+        {addressFields?.map((value, index) => (
           <div key={index} className="flex gap-3 text-sm font-medium">
             <div>{value}</div>
           </div>
@@ -165,92 +175,6 @@ const MyAddressSaved = ({ onEditMode, userAddress }) => {
         </Button>
       </div>
     </div>
-  );
-};
-
-/* ----------------------------------------------------------------------------------------------------- */
-/*  @ MyAddress Page : <MyAddressContainerMain /> : <MyAddressSaved /> > <MyAddressForm component/>.
-/* ----------------------------------------------------------------------------------------------------- */
-const AddressForm = ({
-  userAddress,
-  setEditMode,
-  isNewAddress,
-  setNewAddress,
-}) => {
-  // Initial form values based on whether it's a new address or edit mode
-  const initialFormValues = isNewAddress
-    ? {
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        address1: "",
-        address2: "",
-        city: "",
-        pincode: "",
-        state: "",
-        country: "",
-      }
-    : userAddress;
-
-  // State to manage form values
-  const [newAddressForm, setNewAddressForm] = useState(initialFormValues);
-
-  // Handle Cancel button
-  const handleCancel = () => {
-    // Close edit mode and new address form
-    setEditMode(() => false);
-    setNewAddress(() => false);
-  };
-
-  return (
-    <>
-      {/* Form fields based on the newAddressForm state */}
-      {Object.entries(newAddressForm).map(([key, value]) =>
-        key === "phoneNumber" ? (
-          <TelephoneInput
-            key={key}
-            label="Phone number"
-            divClass="border border-gray-300 rounded-full"
-            inputClass="focus:outline-none p-2 h-[38px] placeholder:font-light"
-            value={value}
-            onChange={(e) =>
-              setNewAddressForm((prevForm) => ({
-                ...prevForm,
-                [key]: e.target.value,
-              }))
-            }
-          />
-        ) : (
-          <CommonInput
-            key={key}
-            label={key.toLowerCase()}
-            type="text"
-            placeholder={key}
-            value={value}
-            onChange={(e) =>
-              setNewAddressForm((prevForm) => ({
-                ...prevForm,
-                [key]: e.target.value,
-              }))
-            }
-          />
-        )
-      )}
-      {/* Save or Update Address button */}
-      <div className="py-6 flex gap-3">
-        <Button className="p-2 text-white border border-gray-700 bg-gray-700 rounded-full font-medium text-sm">
-          {isNewAddress ? "Save Address" : "Update Address"}
-        </Button>
-        {/* Cancel button */}
-        <Button
-          className="p-2 text-black bg-white border border-gray-900 rounded-full font-medium text-sm"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-      </div>
-    </>
   );
 };
 

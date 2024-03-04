@@ -56,7 +56,7 @@ const Modal = () => {
                 transition={{ duration: 0.5 }}
                 exit='exit'
                 onClick={(e) => e.stopPropagation()}
-                className="p-4 md:p-6 rounded-xl bg-white dark:bg-slate-800 dark:text-white"
+                className="p-4 md:p-6 rounded-xl bg-white  "
             >
                 <h2 className="text-lg">{title}</h2>
                 <p className="max-w-sm my-2">{desc}</p>

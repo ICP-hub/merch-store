@@ -4,7 +4,7 @@ import React from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 import { BsSearch } from "react-icons/bs";
 import Button from "./Button";
-
+import { RotatingLines, TailSpin } from "react-loader-spinner";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component Searchbar.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -16,6 +16,7 @@ const SearchBar = ({
   value,
   onChange,
   onSearchClick,
+  isLoading,
 }) => {
   return (
     <div className="border border-slate-500 flex max-md:w-full px-1 py-1 rounded-full items-center gap-2 bg-white">
@@ -29,14 +30,29 @@ const SearchBar = ({
         value={value}
         onChange={onChange}
       />
-      {buttonText?.length > 0 ? (
-        <Button
-          className="bg-black text-white px-4 py-1 rounded-full"
-          onClick={onSearchClick}
-        >
-          {buttonText}
-        </Button>
-      ) : null}
+      {isLoading ? (
+        <span className="px-4">
+          <TailSpin
+            visible={true}
+            height="30"
+            width="30"
+            color="black"
+            ariaLabel="tail-spin-loading"
+            radius="1"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
+        </span>
+      ) : (
+        buttonText?.length > 0 && (
+          <Button
+            className="bg-black text-white px-4 py-1 rounded-full"
+            onClick={onSearchClick}
+          >
+            {buttonText}
+          </Button>
+        )
+      )}
     </div>
   );
 };

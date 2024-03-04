@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 import Button from "../components/common/Button.jsx";
+import { useNavigate } from "react-router-dom";
 
 const OrderConfirmationPage = () => {
   const [showCheckIcon, setShowCheckIcon] = useState(true);
   const [showConfetti, setShowConfetti] = useState(true);
   const [paymentFailed, setPaymentFailed] = useState(false);
   const { width, height } = useWindowSize();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showConfetti) {
@@ -77,7 +79,10 @@ const OrderConfirmationPage = () => {
                 praesentium natus in ea
               </center>
               <div className="flex items-center xl:justify-center justify-between">
-                <Button className="border border-black xl:w-48 rounded-md text-xs  md:text-sm text-black p-3 m-3">
+                <Button
+                  className="border border-black xl:w-48 rounded-md text-xs  md:text-sm text-black p-3 m-3"
+                  onClick={() => navigate("/my-order")}
+                >
                   {" "}
                   view order{" "}
                 </Button>

@@ -4,11 +4,12 @@ import React, { useEffect } from "react";
  * Connect2ic provides essential utilities for IC app development
  */
 import { createClient } from "@connect2ic/core";
-import { PlugWallet, StoicWallet, defaultProviders } from "@connect2ic/core/providers";
 import {
-  ConnectDialog,
-  Connect2ICProvider,
-} from "@connect2ic/react";
+  PlugWallet,
+  StoicWallet,
+  defaultProviders,
+} from "@connect2ic/core/providers";
+import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react";
 import "@connect2ic/core/style.css";
 /*
  * Import canister definitions like this:
@@ -41,11 +42,23 @@ import MyProfilePage from "./pages/MyProfilePage";
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import BackToTop from "./components/common/BackToTop";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Protected from "./components/common/Protected";
-import AdminHome from "./pages/admin/AdminHome";
 import ProtectedAdmin from "./components/common/ProtectedAdmin";
+import AdminHome from "./pages/admin/AdminHome";
+import Products from "./pages/admin/Product";
+import CreateProduct from "./pages/admin/products/CreateProduct";
+import ProductDetail from "./pages/admin/products/Productdetail";
+import Categories from "./pages/admin/Categories";
+import CreateCategory from "./pages/admin/category/CreateCategory";
+import CategoryDetail from "./pages/admin/category/CategoryDetail";
+import Order from "./pages/admin/Order";
+import OrderDetail from "./pages/admin/order/OrderDetail";
+import Invoice from "./pages/admin/invoice";
+import Message from "./pages/admin/Message";
+import MessageDetail from "./pages/admin/message/MessageDetail";
+import UserDetails from "./pages/admin/UserDetails";
 
 const router = createBrowserRouter([
   {
@@ -62,7 +75,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    element:  <Protected><CartPage></CartPage></Protected>,
+    element: <CartPage></CartPage>,
   },
   {
     path: "/checkout",
@@ -96,7 +109,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/my-profile",
-    element: <Protected><MyProfilePage></MyProfilePage></Protected>,
+    element: (
+      <Protected>
+        <MyProfilePage></MyProfilePage>
+      </Protected>
+    ),
   },
   {
     path: "/my-wishlist",
@@ -140,12 +157,64 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: (
-      <ProtectedAdmin>
-        <AdminHome></AdminHome>
-      </ProtectedAdmin>
-    ),
+
+    element: <AdminHome></AdminHome>,
   },
+  {
+    path: "/admin/Products",
+    element: <Products />,
+  },
+  {
+    path: "/admin/orders",
+
+    element: <Order />,
+  },
+
+  {
+    path: "/admin/orders/:id",
+    element: <OrderDetail />,
+  },
+  {
+    path: "/admin/invoice/:orderId",
+    element: <Invoice />,
+  },
+  {
+    path: "/admin/categories",
+    element: <Categories />,
+  },
+  {
+    path: "/admin/users-list",
+    element: <UserDetails />,
+  },
+  {
+    path: "/admin/categories/:slug",
+    element: <CategoryDetail />,
+  },
+  {
+    path: "/admin/categories/create-category",
+    element: <CreateCategory />,
+  },
+  {
+    path: "/admin/products/create-product",
+    element: <CreateProduct />,
+  },
+
+  {
+    path: "/admin/Products/:slug",
+    element: <ProductDetail />,
+  },
+  {
+    path: "/admin/messages",
+    element: <Message />,
+  },
+  {
+    path: "/admin/messages/:id",
+    element: <MessageDetail />,
+  },
+  // {
+  //   path: "/admin/categories",
+  //   element: <Categories />,
+  // },
   /*{
     path: "/my-profile",
     element: (
@@ -157,11 +226,12 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <ProtectedAdmin>
+      
         <AdminHome></AdminHome>
-      </ProtectedAdmin>
+      
     ),
   }, */
+
   {
     path: "*",
     element: <Error404Page></Error404Page>,
@@ -171,7 +241,7 @@ const router = createBrowserRouter([
 const App = () => {
   useEffect(() => {
     AOS.init();
-  }, [])
+  }, []);
   return (
     <div className="App">
       <Toaster
@@ -186,7 +256,7 @@ const App = () => {
       </AnimatePresence>
     </div>
   );
-}
+};
 
 const client = createClient({
   canisters: {
@@ -201,9 +271,6 @@ const client = createClient({
 
 export default () => (
   <Connect2ICProvider client={client}>
-  
     <App />
-    
   </Connect2ICProvider>
-
 );

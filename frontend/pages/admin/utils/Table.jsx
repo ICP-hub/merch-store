@@ -35,7 +35,7 @@ function GlobalFilter({
       {/* <span className="text-gray-700">Search: </span> */}
       <input
         type="text"
-        className="bg-[#F4F2F2] rounded-lg  outline-none px-2 py-2"
+        className="bg-[#F5EEF8] rounded-lg  outline-none px-2 py-2"
         value={value || ""}
         onChange={(e) => {
           setValue(e.target.value);
@@ -67,7 +67,7 @@ export function SelectColumnFilter({
     <label className="flex gap-x-2 items-baseline">
       <span className="text-gray-700">{render("Header")}: </span>
       <select
-        className="bg-[#F4F2F2] rounded-lg  outline-none px-4 py-2"
+        className="bg-[#F5EEF8] rounded-lg  outline-none px-4 py-2"
         name={id}
         id={id}
         value={filterValue}
@@ -174,7 +174,7 @@ export function DetailButton({ value }) {
   return (
     <Link
       to={value}
-      className="bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium"
+      className="bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium"
     >
       Detail
     </Link>
@@ -260,12 +260,12 @@ function Table({ columns, data }) {
         {/* <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8"> */}
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-7">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden border-b border-[#F4F2F2] sm:rounded-lg">
+            <div className="overflow-hidden border-b border-[#F5EEF8] sm:rounded-lg">
               <table
                 {...getTableProps()}
-                className="min-w-full divide-y divide-[#F4F2F2]"
+                className="min-w-full divide-y divide-[#F5EEF8]"
               >
-                <thead className="bg-[#F4F2F2]">
+                <thead className="bg-[#F5EEF8]">
                   {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                       {headerGroup.headers.map((column) => (
@@ -284,12 +284,12 @@ function Table({ columns, data }) {
                             <span>
                               {column.isSorted ? (
                                 column.isSortedDesc ? (
-                                  <SortDownIcon className="w-4 h-4 text-[#330000]" />
+                                  <SortDownIcon className="w-4 h-4 text-[#512E5F]" />
                                 ) : (
-                                  <SortUpIcon className="w-4 h-4 text-[#330000]" />
+                                  <SortUpIcon className="w-4 h-4 text-[#512E5F]" />
                                 )
                               ) : (
-                                <SortIcon className="w-4 h-4 text-[#330000] opacity-0 group-hover:opacity-100" />
+                                <SortIcon className="w-4 h-4 text-[#512E5F] opacity-0 group-hover:opacity-100" />
                               )}
                             </span>
                           </div>
@@ -300,7 +300,7 @@ function Table({ columns, data }) {
                 </thead>
                 <tbody
                   {...getTableBodyProps()}
-                  className="bg-white divide-y divide-[#F4F2F2]"
+                  className="bg-white divide-y divide-[#F5EEF8]"
                 >
                   {page.map((row, i) => {
                     // new
@@ -353,7 +353,7 @@ function Table({ columns, data }) {
             <label>
               <span className="sr-only">Items Per Page</span>
               <select
-                className="mt-1 block w-full bg-[#F4F2F2] rounded-lg  outline-none px-2 py-2"
+                className="mt-1 block w-full bg-[#F5EEF8] rounded-lg  outline-none px-2 py-2"
                 value={state.pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -373,46 +373,46 @@ function Table({ columns, data }) {
               aria-label="Pagination"
             >
               <PageButton
-                className="!rounded-l-lg !bg-[#F4F2F2] !hover:bg-[#F4F2F2] !border-[#330000]"
+                className="!rounded-l-lg !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
               >
                 <span className="sr-only">First</span>
                 <HiChevronDoubleLeft
-                  className="h-5 w-5 text-[#330000]"
+                  className="h-5 w-5 text-[#512E5F]"
                   aria-hidden="true"
                 />
               </PageButton>
               <PageButton
-                className="!bg-[#F4F2F2] !hover:bg-[#F4F2F2] !border-[#330000]"
+                className="!bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
                 <span className="sr-only">Previous</span>
                 <HiChevronLeft
-                  className="h-5 w-5 text-[#330000]"
+                  className="h-5 w-5 text-[#512E5F]"
                   aria-hidden="true"
                 />
               </PageButton>
               <PageButton
-                className=" !bg-[#F4F2F2] !hover:bg-[#F4F2F2] !border-[#330000]"
+                className=" !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >
                 <span className="sr-only">Next</span>
                 <HiChevronRight
-                  className="h-5 w-5 text-[#330000]"
+                  className="h-5 w-5 text-[#512E5F]"
                   aria-hidden="true"
                 />
               </PageButton>
               <PageButton
-                className="!rounded-r-lg !bg-[#F4F2F2] !hover:bg-[#F4F2F2] !border-[#330000]"
+                className="!rounded-r-lg !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
                 onClick={() => gotoPage(pageCount - 1)}
                 disabled={!canNextPage}
               >
                 <span className="sr-only">Last</span>
                 <HiChevronDoubleRight
-                  className="h-5 w-5 text-[#330000]"
+                  className="h-5 w-5 text-[#512E5F]"
                   aria-hidden="true"
                 />
               </PageButton>

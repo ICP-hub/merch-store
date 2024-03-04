@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import Button from "../common/Button";
 import SmoothList from "react-smooth-list";
-import { useNavigate } from "react-router-dom";
 import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 
 // const categories = ["All", "Home", "Music", "Phone", "Storage", "Other"];
@@ -13,19 +12,19 @@ import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 /* ----------------------------------------------------------------------------------------------------- */
 const CategoriesVertical = ({ searchProductByCategory, state }) => {
   const { categoryList, getCategoryList } = ProductApiHandler();
-
+  const [focusedIndex, setFocusedIndex] = useState(0);
   // Extract categories using a loop
   const categories = ["all"];
-
   // Show category name from category list:
   if (categoryList !== null) {
     categoryList.map(([cateSlug, { name }]) => categories.push(name));
   }
 
   // ApplyFilter based on category
-  const handleCategoryFilter = (category) => {
+  const handleCategoryFilter = (category, index) => {
     // If navigating from the HomePage
     searchProductByCategory(category);
+    setFocusedIndex(index);
   };
 
   // Call getCategoryList at page reload
@@ -42,9 +41,15 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
       {categories.map((category, index) => (
         <Button
           key={index}
-          className="focus:outline-none py-2 px-4 rounded-full focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full  max-md:justify-center capitalize"
-          autoFocus={state !== null ? state === category : index === 0}
-          onClick={() => handleCategoryFilter(category)}
+          className={`focus:outline-none py-2 px-4 rounded-full ${
+            state === category || focusedIndex === index
+              ? "bg-black text-white"
+              : ""
+          } focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full max-md:justify-center capitalize`}
+          autoFocus={
+            state !== null ? state === category : focusedIndex === index
+          }
+          onClick={() => handleCategoryFilter(category, index)}
         >
           {category}
         </Button>
@@ -58,7 +63,7 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 const CategoriesHorizontal = ({ searchProductByCategory }) => {
   const { categoryList, getCategoryList } = ProductApiHandler();
-
+  const [focusedIndex, setFocusedIndex] = useState(0);
   // Extract categories using a loop
   const categories = ["all"];
   // Show category name from category list:
@@ -67,8 +72,9 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
   }
 
   // ApplyFilter based on category
-  const handleCategoryFilter = (category) => {
+  const handleCategoryFilter = (category, index) => {
     searchProductByCategory(category);
+    setFocusedIndex(index);
   };
 
   // Call getCategoryList at page reload
@@ -76,7 +82,6 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
     getCategoryList();
   }, []);
 
-  const navigate = useNavigate();
   return (
     <SmoothList
       delay={200}
@@ -90,9 +95,12 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
         {categories.map((category, index) => (
           <Button
             key={index}
-            className="px-4 py-1 rounded-full hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500 bg-white flex items-start font-semibold text-sm focus:outline-none min-w-max"
-            autoFocus={index === 0}
-            onClick={() => handleCategoryFilter(category)}
+            className={`px-4 py-1 rounded-full ${
+              focusedIndex === index ? "bg-black text-white" : ""
+            }
+            hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500  flex items-start font-semibold text-sm focus:outline-none min-w-max `}
+            autoFocus={focusedIndex === index}
+            onClick={() => handleCategoryFilter(category, index)}
           >
             {category}
           </Button>

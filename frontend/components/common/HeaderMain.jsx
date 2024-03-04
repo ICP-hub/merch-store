@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState, Fragment } from "react"
-import LOGO from "../../assets/logo.svg"
+import React, { useEffect, useRef, useState, Fragment } from "react";
+import LOGO from "../../assets/logo.svg";
 import {
   HiOutlineBars2,
   HiOutlineShoppingCart,
   HiOutlineUser,
-} from "react-icons/hi2"
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
-import { motion, useScroll, useTransform } from "framer-motion"
-import WAVES from "vanta/dist/vanta.waves.min"
-import { Menu, Transition } from "@headlessui/react"
-import { useConnect } from "@connect2ic/react"
-import toast from "react-hot-toast"
+} from "react-icons/hi2";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { motion, useScroll, useTransform } from "framer-motion";
+import WAVES from "vanta/dist/vanta.waves.min";
+import { Menu, Transition } from "@headlessui/react";
+import { useConnect } from "@connect2ic/react";
+import toast from "react-hot-toast";
 import {
   RiContactsFill,
   RiContactsLine,
@@ -29,76 +29,76 @@ import {
   RiStickyNote2Line,
   RiUser3Fill,
   RiUser3Line,
-} from "react-icons/ri"
-import { PiUsersFourFill, PiUsersFour } from "react-icons/pi"
-import CartItemsSmall from "../cart/CartItemsSmall"
-import TrendingProducts from "./TrendingProducts"
-import Avatar from "boring-avatars"
+} from "react-icons/ri";
+import { PiUsersFourFill, PiUsersFour } from "react-icons/pi";
+import CartItemsSmall from "../cart/CartItemsSmall";
+import TrendingProducts from "./TrendingProducts";
+import Avatar from "boring-avatars";
 
 const getRandomColor = () => {
-  const minDarkness = 20 // Minimum darkness level (0-255)
-  const maxDarkness = 100 // Maximum darkness level (0-255)
-  const range = maxDarkness - minDarkness + 1
+  const minDarkness = 20; // Minimum darkness level (0-255)
+  const maxDarkness = 100; // Maximum darkness level (0-255)
+  const range = maxDarkness - minDarkness + 1;
 
   const red = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const green = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const blue = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
 
-  return `#${red}${green}${blue}`
-}
+  return `#${red}${green}${blue}`;
+};
 
 const HeaderMain = ({ title }) => {
-  const { scrollYProgress } = useScroll()
-  const x = useTransform(scrollYProgress, [0, 1], [0, -800])
-  const location = useLocation() // Get the current location
+  const { scrollYProgress } = useScroll();
+  const x = useTransform(scrollYProgress, [0, 1], [0, -800]);
+  const location = useLocation(); // Get the current location
   //const isHomePage = location.pathname === "/" // Check if it's the homepage
-  const navigate = useNavigate()
-  const [vantaEffect, setVantaEffect] = useState(null)
-  const myRef = useRef(null)
-  const { isConnected, disconnect, principal } = useConnect()
+  const navigate = useNavigate();
+  const [vantaEffect, setVantaEffect] = useState(null);
+  const myRef = useRef(null);
+  const { isConnected, disconnect, principal } = useConnect();
 
   /*   const getRandomColor = () => {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }; */
 
   useEffect(() => {
-    let intervalId
+    let intervalId;
 
     if (!vantaEffect) {
       // Apply the smooth background transition class initially
-      myRef.current.classList.add("smooth-bg")
+      myRef.current.classList.add("smooth-bg");
 
       setVantaEffect(
         WAVES({
           el: myRef.current,
           color: getRandomColor(), // Set initial color
-        }),
-      )
+        })
+      );
     }
 
     const changeColor = () => {
       setVantaEffect((prevEffect) => {
-        prevEffect.setOptions({ color: getRandomColor() })
-        return prevEffect
-      })
-    }
+        prevEffect.setOptions({ color: getRandomColor() });
+        return prevEffect;
+      });
+    };
 
     const startColorChange = () => {
-      intervalId = setInterval(changeColor, 10000) // Change color every 10 seconds
-    }
+      intervalId = setInterval(changeColor, 10000); // Change color every 10 seconds
+    };
 
-    startColorChange()
+    startColorChange();
 
     return () => {
-      clearInterval(intervalId)
-    }
-  }, [vantaEffect])
+      clearInterval(intervalId);
+    };
+  }, [vantaEffect]);
 
   return (
     <div
@@ -467,8 +467,8 @@ const HeaderMain = ({ title }) => {
                                 {/* {isConnected ? ( */}
                                 <button
                                   onClick={() => {
-                                    disconnect()
-                                    toast.success("Logout successfully.")
+                                    disconnect();
+                                    toast.success("Logout successfully.");
                                   }}
                                   className="bg-black text-white group flex w-full items-center rounded-xl px-3 py-2 text-md font-semibold tracking-wider"
                                 >
@@ -562,7 +562,7 @@ const HeaderMain = ({ title }) => {
         {title}
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default HeaderMain
+export default HeaderMain;

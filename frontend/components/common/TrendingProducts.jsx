@@ -15,11 +15,13 @@ const TrendingProducts = () => {
   const { isLoading, productList, getProductList } = ProductApiHandler();
 
   // Filter trending products from productList
-  const trendingProducts = productList?.filter(([prodSlug, { trending }]) => {
-    if (trending) {
-      return productList;
+  const trendingProducts = productList?.filter(
+    ([prodSlug, { trending, active }]) => {
+      if (trending && active) {
+        return productList;
+      }
     }
-  });
+  );
 
   useEffect(() => {
     getProductList();

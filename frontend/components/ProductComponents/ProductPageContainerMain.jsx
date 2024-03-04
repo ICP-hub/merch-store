@@ -132,9 +132,13 @@ const ContainerMid = ({
               delay={200}
               className="grid lg:grid-cols-3 xl:grid-cols-4 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1 pb-4 border-b border-b-slate-500"
             >
-              {currentProducts.map((product, index) => (
-                <ProductCard key={index} product={product} />
-              ))}
+              {currentProducts.length === 0
+                ? productList.map((product, index) => (
+                    <ProductCard key={index} product={product} />
+                  ))
+                : currentProducts.map((product, index) => (
+                    <ProductCard key={index} product={product} />
+                  ))}
             </SmoothList>
 
             {productList?.length > 8 && (

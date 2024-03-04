@@ -1,4 +1,4 @@
-# Merch Store 
+# Merch Store
 
 Ecommerce Project on ic
 
@@ -41,9 +41,10 @@ dfx deploy
 - all commands for locally run
 
 ```bash
-  dfx generate
+ dfx generate
   cp src/declarations/backend/* .dfx/local/canisters/backend/
   dfx deploy
+  dfx deploy --network ic
 ```
 
 - deploy on network(for admin user)
@@ -54,7 +55,6 @@ dfx deploy
   dfx deploy
   dfx deploy --network ic
 ```
-
 
 BACKEND:-
 Navigate to the backend canister to view the Candid UI

@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast"
+
 import { Link } from "react-router-dom";
 import { CiCircleCheck, CiCircleChevLeft } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
 import { useCanister } from "@connect2ic/react";
-
+import { WithContext as ReactTags } from "react-tag-input";
+import { TiDeleteOutline } from "react-icons/ti";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import toast from "react-hot-toast";
 const CreateCategory = () => {
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [categorylist, setCategorylist] = useState([]);
+
+  const [tags, setTags] = useState([]);
+
   const [formData, setFormData] = useState({
     title: "",
     status: "active",
@@ -21,35 +26,23 @@ const CreateCategory = () => {
     img1: "",
     img2: "",
     img3: "",
+    img4: "",
+    sale_price: 0,
+    variants: [
+      {
+        img1: "",
+        img2: "",
+        img3: "",
+        img4: "",
+        inventory: 0,
+        color: "",
+        variant_price: 0,
+        variant_sale_price: 0,
+      },
+    ],
+    sizes: [{ size: "" }],
   });
-  ;
-  /* const [blobInput, setBlobInput] = useState(null);
-  const [imgBlob, setImgBlob] = useState(null);
-  const [imageSource, setImageSource] = useState(''); */
 
-  /* useEffect(async () => {
-    if (blobInput) {
-      const item = await backend.storeBlobImg(blobInput);
-      setImgBlob(item);
-        }
-  }, [blobInput]); */
-
-  /* useEffect(() => {
-    const backendCanisterId = 'a4gq6-oaaaa-aaaab-qaa4q-cai';
-    const developmentMode = 'development';
-
-    if (developmentMode) {
-      setImageSource(`http://127.0.0.1:3000/?canisterId=${backendCanisterId}&imgid=${'test'}`);
-    } else {
-      setImageSource(`https://${backendCanisterId}.raw.ic0.app/?imgid=${'test'}`);
-    }
-  }, []); */
-
-  /*  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setBlobInput(file);
-  };
- */
   useEffect(() => {
     listAllCategories();
     listAllProducts();
@@ -59,45 +52,13 @@ const CreateCategory = () => {
     try {
       setLoading2(true);
       const category = await backend.listCategories();
-      setCategories(category);
+      setCategorylist(category);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {
       setLoading2(false);
     }
   };
-  /*   const blobFromFile = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const blob = new Blob([reader.result], { type: file.type });
-        resolve(blob);
-      };
-      reader.onerror = reject;
-
-      if (file) {
-        reader.readAsArrayBuffer(file);
-      } else {
-        reject(new Error("No file provided."));
-      }
-    });
-  }; */
-
-  /*   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    try {
-      const blob = await blobFromFile(file);
-      console.log(blob);
-      setFormData((prevData) => ({
-        ...prevData,
-        image: blob,
-      }));
-      console.log(formData);
-      setSelectedFile(file); // Update selectedFile state
-    } catch (error) {
-      console.error("Error converting file to blob:", error);
-    }
-  }; */
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,7 +67,84 @@ const CreateCategory = () => {
       [name]: value,
     });
   };
+  // const handleAddCategory = () => {
+  //   const selectedCategories = Array.from(
+  //     document.getElementById("categories").selectedOptions
+  //   ).map((option) => option.value);
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     categories: [...prevState.categories, ...selectedCategories],
+  //   }));
+  // };
 
+  // const handleRemoveCategory = (categoryToRemove) => {
+  //   setFormData({
+  //     ...formData,
+  //     categories: formData.categories.filter(
+  //       (category) => category !== categoryToRemove
+  //     ),
+  //   });
+  // };
+  const handleVariantChange = (index, e) => {
+    const { name, value } = e.target;
+    const newVariants = [...formData.variants];
+    newVariants[index] = { ...newVariants[index], [name]: value };
+    setFormData({
+      ...formData,
+      variants: newVariants,
+    });
+  };
+  const handleSizeChange = (index, e) => {
+    const { value } = e.target;
+    const newSizes = [...formData.sizes];
+    newSizes[index] = { size: value };
+    setFormData({
+      ...formData,
+      sizes: newSizes,
+    });
+  };
+
+  const handleAddVariant = () => {
+    setFormData({
+      ...formData,
+      variants: [
+        ...formData.variants,
+        {
+          img1: "",
+          img2: "",
+          img3: "",
+          img4: "",
+          inventory: 0,
+          color: "",
+          variant_price: 0,
+          variant_sale_price: 0,
+        },
+      ],
+    });
+  };
+  const handleRemoveVariant = (index) => {
+    const newVariants = [...formData.variants];
+    newVariants.splice(index, 1);
+    setFormData({
+      ...formData,
+      variants: newVariants,
+    });
+  };
+
+  const handleAddSize = () => {
+    setFormData({
+      ...formData,
+      sizes: [...formData.sizes, { size: "" }],
+    });
+  };
+  const handleRemoveSize = (index) => {
+    const newSizes = [...formData.sizes];
+    newSizes.splice(index, 1);
+    setFormData({
+      ...formData,
+      sizes: newSizes,
+    });
+  };
   const validateForm = () => {
     if (!formData.title.trim()) {
       toast.error("Please enter Product title");
@@ -116,14 +154,13 @@ const CreateCategory = () => {
   };
   const listAllProducts = async () => {
     try {
-      const items = await backend.listProducts();
-      return items; // Return the list of products
+      const items = await backend.listallProducts();
+      return items;
     } catch (error) {
       console.error("Error listing all products:", error);
-      throw error; // Propagate the error
+      throw error;
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -135,46 +172,84 @@ const CreateCategory = () => {
 
       const requestData = {
         title: formData.title,
-        status: formData.status,
-        description: formData.description,
-        category: formData.category,
-        price: parseFloat(formData.price),
-        inventory: parseInt(formData.inventory, 10),
-        img1: formData.img1,
-        img2: formData.img2,
-        img3: formData.img3,
-      };
+        active: true,
 
-      // Check if the product title already exists
-      const products = await listAllProducts();
-      const existingProduct = products.find(
-        (product) => product.title === requestData.title
+        category: formData.category,
+        description: formData.description,
+        trending: true,
+        newArrival: true,
+      };
+      const variantColors = formData.variants.map((variant) => ({
+        img1: variant.img1,
+        img2: variant.img2,
+        img3: variant.img3,
+
+        inventory: parseInt(variant.inventory),
+        color: variant.color,
+        variant_price: parseFloat(variant.variant_price),
+        variant_sale_price: parseFloat(variant.variant_sale_price),
+      }));
+      const variantSizes = formData.sizes.map((size) => ({
+        size: size.size,
+      }));
+      // const categories = formData.categories.map((category) => ({
+      //   status: category.status,
+      //   name: category.name,
+      //   slug: category.slug,
+      // }));
+      // const products = await listAllProducts();
+      // const existingProduct = products.find(
+      //   (product) => product.title === requestData.title
+      // );
+
+      // if (existingProduct) {
+      //   toast.error(
+      //     "Product with this title already exists. Please choose a different title."
+      //   );
+      // } else {
+      const res = await backend.createProduct(
+        requestData,
+        variantSizes,
+        variantColors
       );
 
-      if (existingProduct) {
-        toast.error(
-          "Product with this title already exists. Please choose a different title."
-        );
-      } else {
-        // If the product doesn't exist, proceed with creating it
-        const res = await backend.createProduct(requestData);
+      console.log(res);
+      if ("ok" in res) {
+        toast.success("Product Added Successfully");
 
-        console.log(res);
-        if ("ok" in res) {
-          toast.success("Product Added Successfully");
-          setFormData({
-            title: "",
-            status: "active",
-            description: "",
-            category: "",
-            price: 0,
-            inventory: 0,
-            img1: "",
-            img2: "",
-            img3: "",
-          });
-        }
+        setFormData({
+          title: "",
+          status: "active",
+          description: "",
+          price: 0,
+          inventory: 0,
+          category: "",
+          img1: "",
+          img2: "",
+          img3: "",
+          img4: "",
+          sale_price: 0,
+          variants: [
+            {
+              img1: "",
+              img2: "",
+              img3: "",
+              img4: "",
+              inventory: 0,
+              color: "",
+              variant_price: 0,
+              variant_sale_price: 0,
+            },
+          ],
+          sizes: [
+            {
+              size: "",
+            },
+          ],
+          // categories: [{ status: "active", name: "", slug: "" }],
+        });
       }
+      // }
     } catch (error) {
       toast.error("An error occurred while creating the product.");
       console.error("An error occurred:", error);
@@ -182,8 +257,6 @@ const CreateCategory = () => {
       setLoading(false);
     }
   };
-
-  console.log(selectedFile, "selectedFile");
 
   return (
     <div className="w-full">
@@ -239,14 +312,14 @@ const CreateCategory = () => {
                 disabled={loading}
               />
             </div>
+
             <div className="my-2">
               <label
-                htmlFor="title"
+                htmlFor="category"
                 className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
               >
                 Select Product Category
               </label>
-
               <select
                 name="category"
                 id="category"
@@ -256,13 +329,67 @@ const CreateCategory = () => {
                 disabled={loading}
               >
                 <option value="">Select Product Category</option>
-                {categories.map((item, index) => (
+                {categorylist.map((item, index) => (
                   <option value={item[1].name} key={index}>
                     {item[1].name}
                   </option>
                 ))}
               </select>
             </div>
+            {/* <div className="my-2">
+              <label
+                htmlFor="categories"
+                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
+              >
+                Select Product Category
+              </label>
+
+              <div className="flex items-center mt-2">
+                <select
+                  name="categories"
+                  id="categories"
+                  className="border-2 p-2 outline-none border-[#F4F2F2] rounded-lg mr-2"
+                  value={formData.categories.name}
+                  onChange={handleInputChange}
+                  disabled={loading}
+                >
+                  <option value="">Select Product Category</option>
+                  {categorylist.map((item, index) => (
+                    <option
+                      value={item[1].name}
+                      key={index}
+                      selected={formData.categories.includes(item.name)}
+                    >
+                      {item[1].name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1ae2]"
+                >
+                  Add Category
+                </button>
+              </div>
+              <div className="selected-categories mt-2">
+                <p>Selected Categories:</p>
+                <ul>
+                  {formData.categories.map((category, index) => (
+                    <li key={index} className="flex items-center">
+                      {category.name}
+                      <button
+                        className="remove-button bg-red-500 text-white mr-2 mb-2 px-3 py-2 rounded hover:bg-red-600"
+                        onClick={() => handleRemoveCategory(category)}
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div> */}
+
             <div className="my-2">
               <label
                 htmlFor="title"
@@ -278,6 +405,24 @@ const CreateCategory = () => {
                 type="number"
                 className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
                 placeholder="Enter product price"
+                disabled={loading}
+              />
+            </div>
+            <div className="my-2">
+              <label
+                htmlFor="sale_price"
+                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
+              >
+                Enter Product Sale Price
+              </label>
+              <input
+                id="sale_price"
+                name="sale_price"
+                value={formData.sale_price}
+                onChange={handleInputChange}
+                type="number"
+                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                placeholder="Enter Sale  product price"
                 disabled={loading}
               />
             </div>
@@ -353,31 +498,164 @@ const CreateCategory = () => {
                 disabled={loading}
               />
             </div>
-            {/* <div className="my-2">
+            <div className="my-2">
               <label
-                htmlFor="image"
+                htmlFor="img4"
                 className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
               >
-                Product Image
+                Enter Image Four Url
               </label>
               <input
-                id="image"
-                name="image"
-                type="file"
-                value={blobInput}
-                onChange={handleFileChange}
+                id="img4"
+                name="img4"
+                value={formData.img4}
+                onChange={handleInputChange}
+                type="text"
                 className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Select Product image"
+                placeholder="Enter Image Four Url"
                 disabled={loading}
               />
-               {selectedFile && (
-                <img
-                  src={URL.createObjectURL(selectedFile)}
-                  alt="Selected Image"
-                  className="mt-2 w-32 h-32 object-cover rounded-lg"
-                />
-              )} 
-            </div> */}
+            </div>
+            <div className="mb-6 ">
+              <h3 className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                Color Variants
+              </h3>
+              {formData.variants.map((variant, index) => (
+                <div key={index} className="grid grid-cols-4 mb-4">
+                  <input
+                    type="text"
+                    value={variant.color}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`color`}
+                    name={`color`}
+                    placeholder="Color"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={variant.inventory}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`inventory`}
+                    name={`inventory`}
+                    placeholder="Inventory"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={variant.variant_price}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`variant_price`}
+                    name={`variant_price`}
+                    placeholder="Variant Price"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="number"
+                    value={variant.variant_sale_price}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`variant_sale_price`}
+                    name={`variant_sale_price`}
+                    placeholder="Variant Sale Price"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={variant.img1}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img1`}
+                    name={`img1`}
+                    placeholder="Varient Image One Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={variant.img2}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img2`}
+                    name={`img2`}
+                    placeholder="Varient Image Two Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={variant.img3}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img3`}
+                    name={`img3`}
+                    placeholder="Varient Image Three Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+                  <input
+                    type="text"
+                    value={variant.img4}
+                    onChange={(e) => handleVariantChange(index, e)}
+                    id={`img4`}
+                    name={`img4`}
+                    placeholder="Varient Image Four Url"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveVariant(index)}
+                    className="bg-red-500 text-white mr-2 mb-2 px-3 py-2 flex  items-center justify-center w-12 h-10 rounded hover:bg-red-600"
+                  >
+                    <TiDeleteOutline className="w-5 h-5 text-2xl" />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddVariant}
+                className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1aeb]"
+              >
+                <IoMdAddCircleOutline className="w-5 h-5 text-2xl" />
+              </button>
+            </div>
+
+            <div>
+              <div>
+                <h3 className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                  Sizes
+                </h3>
+                {formData.sizes.map((size, index) => (
+                  <div key={index} className="mb-4">
+                    <input
+                      id={"size"}
+                      name={`size`}
+                      type="text"
+                      value={size.size}
+                      onChange={(e) => handleSizeChange(index, e)}
+                      placeholder="Size"
+                      className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                      disabled={loading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSize(index)}
+                      className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                    >
+                      <TiDeleteOutline className="w-5 h-5 text-2xl" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddSize}
+                className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1ae2]"
+              >
+                <IoMdAddCircleOutline className="w-5 h-5 text-2xl" />
+              </button>
+            </div>
 
             <div className="flex justify-end mt-6">
               <button

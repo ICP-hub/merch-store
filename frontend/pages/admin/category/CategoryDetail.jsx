@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
@@ -10,22 +10,31 @@ const CategoryDetail = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [category, setCategory] = useState([]); // Add state for email
+  const [click, setClick] = useState(false);
   const navigate = useNavigate();
-  ;
   const param = useParams();
 
   const [formData, setFormData] = useState({
     name: "",
-    status: "",
+    status: "active",
   });
+  const [isActive, setIsActive] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsActive(!isActive);
+  };
 
   const getCategory = async () => {
     try {
       setLoading2(true);
 
+      console.log(param.slug, "hello");
       const item = await backend.getCategory(param.slug);
       if (item.ok) {
-        setFormData({ name: item.ok.name, status: item.ok.status });
+        setFormData({
+          name: item.ok.name,
+          status: item.ok.featured ? "active" : "inactive",
+        });
         setCategory(item.ok);
         console.log(item.ok);
       }
@@ -37,12 +46,8 @@ const CategoryDetail = () => {
   };
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      getCategory();
-    }, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, [backend]);
+    getCategory();
+  }, []);
 
   const validateForm = () => {
     if (!formData.name.trim()) {
@@ -71,7 +76,9 @@ const CategoryDetail = () => {
       const res = await backend.updateCategory(
         category.slug,
         formData.name,
-        formData.status
+        "image",
+
+        formData.status === "active" ? true : false
       );
 
       console.log(res);
@@ -113,15 +120,15 @@ const CategoryDetail = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Category Detail : {loading2 ? "loading..." : category.name}
           </h1>
           <div>
             <Link
               to="/admin/categories"
-              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
             >
               <CiCircleChevLeft className="w-5 h-5" /> Go back
             </Link>
@@ -142,7 +149,7 @@ const CategoryDetail = () => {
                 value={loading2 ? "loading..." : formData.name}
                 onChange={handleInputChange}
                 type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 placeholder="Enter Category Title"
                 disabled={loading}
               />
@@ -156,37 +163,40 @@ const CategoryDetail = () => {
                 Select Cetegory Status
               </label>
               <select
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 disabled={loading}
                 value={formData.status}
                 onChange={handleInputChange}
                 name="status" // Ensure you have a name attribute
               >
-                <option
-                  value="active"
-                  defaultValue={category.status === "active"}
-                >
-                  Active
-                </option>
-                <option
-                  value="inactive"
-                  defaultValue={category.status === "inactive"}
-                >
-                  Inactive
-                </option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isActive}
+                  onChange={toggleSwitch}
+                />
+                {isActive ? "Active" : "Inactive"}
+              </label>
             </div>
 
             <div className="flex flex-col items-end justify-end gap-4 mt-6">
               <button
-                onClick={handleSubmit}
+                onClick={() => {
+                  handleSubmit();
+                  setClick(true);
+                }}
                 type="submit"
-                className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
                   loading && "opacity-50"
                 }`}
                 disabled={loading}
               >
-                {loading ? (
+                {loading && click ? (
                   <TailSpin
                     height="20"
                     width="20"
@@ -208,7 +218,8 @@ const CategoryDetail = () => {
                 if (
                   window.confirm("Are you sure you wish to delete this item?")
                 )
-                  handleDelete(category.slug);
+                  handleDelete(param.slug);
+                setClick(false);
               }}
               type="submit"
               className={`bg-red-500 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
@@ -216,7 +227,7 @@ const CategoryDetail = () => {
               }`}
               disabled={loading}
             >
-              {loading ? (
+              {loading && !click ? (
                 <TailSpin
                   height="20"
                   width="20"

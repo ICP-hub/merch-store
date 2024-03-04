@@ -48,7 +48,7 @@ const HomePageContainerMain = () => {
         />
       </div>
       {/*Homepage Bot Div */}
-      <HomePageBottom productList={productList} />
+      <HomePageBottom productList={initialProductList} isLoading={isLoading} />
     </div>
   );
 };
@@ -70,16 +70,11 @@ const HomeProductList = ({ isLoading, productList, initialProductList }) => {
 
   // Slice the first 8 products for display
   const visibleProducts = productList ? productList.slice(0, 8) : [];
-  // Products to display based on visibility
-  const displayProducts =
-    visibleProducts.length === 0
-      ? initialProductList.slice(0, 8)
-      : visibleProducts;
 
   return (
     <SmoothList delay={200} className="mb-10">
       {/* Check if both productList and initialProductList are empty */}
-      {productList.length === 0 && initialProductList.length === 0 ? (
+      {visibleProducts.length === 0 ? (
         // If no products
         <div className="text-center text-gray-500 font-semibold w-full bg-gray-300 rounded-2xl">
           <NoDataFound
@@ -94,7 +89,7 @@ const HomeProductList = ({ isLoading, productList, initialProductList }) => {
           className="product-6 grid xl:grid-cols-4 lg:grid-cols-3 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1 py-8"
         >
           {/* Map through the products to render ProductCard components */}
-          {displayProducts.map((product, index) => (
+          {visibleProducts.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
         </SmoothList>
@@ -112,4 +107,5 @@ const HomeProductList = ({ isLoading, productList, initialProductList }) => {
     </SmoothList>
   );
 };
+
 export default HomePageContainerMain;

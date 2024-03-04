@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
@@ -11,7 +11,6 @@ const MessageDetail = () => {
   const [loading2, setLoading2] = useState(true);
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
-  ;
   const param = useParams();
 
   const [formData, setFormData] = useState({
@@ -19,11 +18,12 @@ const MessageDetail = () => {
     email: "",
     message: "",
     read: "true",
+    contact: "",
   });
 
   const getMessage = async () => {
     try {
-      setLoading2(true);
+      setLoading2(false);
 
       const item = await backend.getContact(param.id);
       if (item.ok) {
@@ -32,6 +32,7 @@ const MessageDetail = () => {
           read: item.ok.read,
           message: item.ok.message,
           email: item.ok.email,
+          contact: item.ok.contact_number,
         });
         setMessages(item.ok);
         console.log(item.ok);
@@ -39,7 +40,6 @@ const MessageDetail = () => {
     } catch (error) {
       console.error("Error listing user:", error);
     } finally {
-      setLoading2(false);
     }
   };
 
@@ -118,15 +118,15 @@ const MessageDetail = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Message Detail : {loading2 ? "loading..." : messages.name}
           </h1>
           <div>
             <Link
               to="/admin/messages"
-              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#330000]/20 dark:bg-[#330000]/20 hover:bg-[#330000]/20 dark:hover:bg-[#330000]/20 text-[#330000] rounded-xl px-6 py-3"
+              className="uppercase font-medium flex items-center justify-center gap-2 bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3"
             >
               <CiCircleChevLeft className="w-5 h-5" /> Go back
             </Link>
@@ -147,7 +147,7 @@ const MessageDetail = () => {
                 value={loading2 ? "loading..." : formData.name}
                 onChange={handleInputChange}
                 type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 placeholder="Enter Name"
                 disabled={loading}
                 readOnly
@@ -166,7 +166,26 @@ const MessageDetail = () => {
                 value={loading2 ? "loading..." : formData.email}
                 onChange={handleInputChange}
                 type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
+                placeholder="Enter Email"
+                disabled={loading}
+                readOnly
+              />
+            </div>
+            <div className="my-2">
+              <label
+                htmlFor="title"
+                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
+              >
+                Enter Contact Number
+              </label>
+              <input
+                id="email"
+                name="email"
+                value={loading2 ? "loading..." : formData.contact}
+                onChange={handleInputChange}
+                type="text"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 placeholder="Enter Email"
                 disabled={loading}
                 readOnly
@@ -187,7 +206,7 @@ const MessageDetail = () => {
                 value={loading2 ? "loading..." : formData.message}
                 onChange={handleInputChange}
                 type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
                 placeholder="Enter Message Detail"
                 disabled={loading}
                 readOnly

@@ -8,8 +8,8 @@ import Table, {
   StatusPayment,
   StatusPill,
 } from "./utils/Table"; // Update the import
-import item1 from "../../assets/merchandise1.png";
-import { useCanister } from "@connect2ic/react";
+/* import item1 from "../../assets/merchandise1.png";
+ */ import { useCanister } from "@connect2ic/react";
 import { CiCirclePlus } from "react-icons/ci";
 import { InfinitySpin } from "react-loader-spinner";
 
@@ -52,7 +52,7 @@ const Order = () => {
 
   const listAllOrders = async () => {
     try {
-      const items = await backend.listOrders();
+      const items = await backend.listallOrders();
       setOrders(items);
     } catch (error) {
       console.error("Error listing all Orders:", error);
@@ -67,10 +67,10 @@ const Order = () => {
   console.log(extractedData);
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white dark:bg-slate-800 rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
       <div className="">
         <div className="mb-6 flex justify-between items-center gap-2">
-          <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="uppercase text-xl font-semibold text-gray-900 ">
             Orders
           </h1>
         </div>
