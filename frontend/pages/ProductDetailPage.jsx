@@ -54,15 +54,25 @@ const ProductDetail = () => {
   const { slug } = useParams();
   const [selectedColor, setSelectedColor] = useState();
   const [inventory, setInventory] = useState();
+  const [mainImage, setMainImage] = useState("");
+  const [image, setImage] = useState({
+    img1: "",
+    img2: "",
+    img3: "",
+  });
 
   const handleColorChange = (color) => {
     setSelectedColor(color.color === selectedColor ? null : color.color);
     if (color.inventory < 5) {
       toast(` !!! Hurry up only ${color.inventory} piece left !!!`);
     }
+    setProductInLocalCart(false);
     setPrice(color.variant_sale_price);
     setSellingPrice(color.variant_price);
     setInventory(color.inventory);
+    setMainImage(color.img1);
+
+    setImage({ img1: color.img1, img2: color.img2, img3: color.img3 });
   };
   const [selectedSize, setSelectedSize] = useState();
 
@@ -81,6 +91,12 @@ const ProductDetail = () => {
       setSelectedSize(item.ok.variantSize[0].size);
       setSellingPrice(item.ok.variantColor[0].variant_price);
       setPrice(item.ok.variantColor[0].variant_sale_price);
+      setMainImage(item.ok.variantColor[0].img1);
+      setImage({
+        img1: item.ok.variantColor[0].img1,
+        img2: item.ok.variantColor[0].img2,
+        img3: item.ok.variantColor[0].img3,
+      });
 
       if (item.ok) {
         console.log(item.ok);
@@ -119,32 +135,35 @@ const ProductDetail = () => {
     // Check if the product is in the local cart
     const isProductInCart = carts.some(
       (item) =>
-        item[1]?.product_slug === data?.slug &&
-        item[1]?.principal.toText() === principal &&
-        data.variantColor.some((variant) => variant.color === item[1]?.color)
+        item[1]?.product_slug === data?.slug && item[1]?.color === selectedColor
     );
     setProductInLocalCart(isProductInCart);
-  }, [carts, data, principal]);
-
+  }, [carts, data, principal, listCarts]);
+  console.log(isProductInLocalCart);
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
     try {
-      setLoading4(true);
-      const res = await backend.addtoCartItems(
-        slug,
-        selectedSize,
-        selectedColor,
-        quantity
-      );
-      listCarts();
-
-      if ("ok" in res) {
-        setProductInLocalCart(true);
-        toast.success("item added to cart Successfully");
-        console.log("     Item added successfully     ", res);
+      if (isProductInLocalCart) {
+        toast.success("Item already present in the cart");
       } else {
-        // Log an error if the response does not have "ok" property
-        console.error("Unexpected response from backend:", res);
+        setLoading4(true);
+        const res = await backend.addtoCartItems(
+          slug,
+          selectedSize,
+          selectedColor,
+          quantity
+        );
+
+        listCarts();
+
+        if ("ok" in res) {
+          setProductInLocalCart(true);
+          toast.success("item added to cart Successfully");
+          console.log("     Item added successfully     ", res);
+        } else {
+          // Log an error if the response does not have "ok" property
+          console.error("Unexpected response from backend:", res);
+        }
       }
     } catch (error) {
       // Log the error for debugging
@@ -232,18 +251,17 @@ const ProductDetail = () => {
     }
   };
   // Image gallery function for selection of better product details
-  const [mainImage, setMainImage] = useState(placeholderImg);
 
   const handleImageClick1 = () => {
-    setMainImage(img1);
+    setMainImage(image.img1);
   };
 
   const handleImageClick2 = () => {
-    setMainImage(img2);
+    setMainImage(image.img2);
   };
 
   const handleImageClick3 = () => {
-    setMainImage(img3);
+    setMainImage(image.img3);
   };
 
   const increment = async (item) => {
@@ -267,8 +285,8 @@ const ProductDetail = () => {
   return (
     <>
       <div className="container mx-auto xl:mt-12 mt-6 px-6 flex items-center md:items-start justify-between md:flex-col flex-col">
-        <div className="flex flex-col   max-w-full  xl:ml-0  lg:flex-row">
-          <div className="lg:w-2/5 xl:pr-6 relative">
+        <div className="flex flex-col   max-w-full  xl:ml-0  lg:flex-row ">
+          <div className="lg:w-2/6 xl:pr-6 relative">
             {/* Product Image */}
             {!loading ? (
               <div className="w-full h-[80%] rounded-md animate-pulse bg-gray-200"></div>
@@ -324,46 +342,56 @@ const ProductDetail = () => {
               </button>
             )}
 
-            <div className="w-full flex mt-4 pr-4  gap-2">
-              <img
-                src={img1}
-                alt="img1"
-                className={`w-1/3 rounded-md cursor-pointer
-                ${
-                  mainImage === img1
-                    ? "border-[2px] border-gray-400 shadow-lg"
-                    : ""
-                }`}
-                onClick={handleImageClick1}
-              />
+            {!loading ? (
+              <div className="w-[96rem] flex mt-2 pr-4  gap-2"></div>
+            ) : (
+              <div className="w-full flex mt-2 pr-4  gap-2">
+                <img
+                  src={image.img1}
+                  alt="img1"
+                  className={`w-1/3 rounded-md cursor-pointer
+                    ${
+                      mainImage === image.img1
+                        ? "border-[2px] border-gray-400 shadow-lg"
+                        : ""
+                    }`}
+                  onClick={handleImageClick1}
+                />
 
-              <img
-                src={img2}
-                alt="img1"
-                className={`w-1/3 rounded-md cursor-pointer
-                ${
-                  mainImage === img2
-                    ? "border-[2px] border-gray-400 shadow-lg     "
-                    : ""
-                }`}
-                onClick={handleImageClick2}
-              />
+                <img
+                  src={image.img2}
+                  alt="img1"
+                  className={`w-1/3 rounded-md cursor-pointer
+                    ${
+                      mainImage === image.img2
+                        ? "border-[2px] border-gray-400 shadow-lg     "
+                        : ""
+                    }`}
+                  onClick={handleImageClick2}
+                />
 
-              <img
-                src={img3}
-                alt="img1"
-                className={`w-1/3 rounded-md cursor-pointer
-                ${
-                  mainImage === img3
-                    ? "border-[2px] border-gray-400 shadow-lg     "
-                    : ""
-                }`}
-                onClick={handleImageClick3}
-              />
-            </div>
+                <img
+                  src={image.img3}
+                  alt="img1"
+                  className={`w-1/3 rounded-md cursor-pointer
+                    ${
+                      mainImage === image.img3
+                        ? "border-[2px] border-gray-400 shadow-lg     "
+                        : ""
+                    }`}
+                  onClick={handleImageClick3}
+                />
+              </div>
+            )}
           </div>
 
-          <div className="lg:w-3/5 mt-4 ml-6 lg:mt-0">
+          <div
+            className="lg:w-4/6 mt-4 ml-3 pl-3 md:h-[500px] lg:mt-0 md:overflow-y-scroll  "
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "transparent transparent",
+            }}
+          >
             {/* Product Details */}
 
             {!loading ? (

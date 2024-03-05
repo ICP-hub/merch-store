@@ -112,7 +112,7 @@ const Header = ({ title }) => {
     if (backend) {
       listCarts();
     }
-  }, [backend]);
+  }, [backend, carts]);
 
   useEffect(() => {
     let intervalId;
@@ -586,12 +586,16 @@ const Header = ({ title }) => {
                               <NoDataFound title={"No Items Available Yet"} />
                             )}
 
-                            <button
-                              onClick={() => navigate("/cart")}
-                              className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
-                            >
-                              view all
-                            </button>
+                            {carts.length > 0 ? (
+                              <button
+                                onClick={() => navigate("/cart")}
+                                className="border-[1px] border-gray-200 w-full text-center capitalize tracking-wider p-2 rounded-full text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all ease-in-out duration-300"
+                              >
+                                view all
+                              </button>
+                            ) : (
+                              <div></div>
+                            )}
                           </div>
                         </Menu.Items>
                       </Transition>

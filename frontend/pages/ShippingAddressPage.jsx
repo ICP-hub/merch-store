@@ -37,7 +37,8 @@ const ShippingAddressPage = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressDetail = () => {
   const { getAddressList } = UserAddressApiHandler();
-  const { cartItems, getCallerCartItems } = CartApiHandler();
+  const { getCallerCartItems } = CartApiHandler();
+  const [cartItems, setCartItems] = useState(null);
   const { productList, getProductList } = ProductApiHandler();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -55,7 +56,7 @@ const AddressDetail = () => {
   useEffect(() => {
     getAddressList(setUserAddressList, setIsLoading);
     getProductList();
-    getCallerCartItems();
+    getCallerCartItems(setIsLoading, setCartItems);
     // Hide the form on successful submit
     if (successfulSubmit) {
       setShowForm(false);
@@ -73,7 +74,7 @@ const AddressDetail = () => {
     return Address;
   });
   // Calculate total discount
-  const totalDiscount = cartItemDetails.reduce((sum, item) => {
+  const totalDiscount = cartItemDetails?.reduce((sum, item) => {
     const discount =
       item.variantPriceBasedOnQty - item.variantSellPriceBasedOnQty;
     return sum + discount * item.quantity;
@@ -87,43 +88,37 @@ const AddressDetail = () => {
 
   return (
     <div className="container mx-auto py-6 max-md:px-2">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : cartItemDetails.length === 0 ? (
-        <EmptyCart />
-      ) : (
-        <div className="flex w-full max-md:flex-col gap-4">
-          <div className="flex-1 flex flex-col gap-4">
-            <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
-              Delivery address
-            </div>
-            {addressDetails?.flat().map((address, index) => (
-              <AddressCard
-                key={index}
-                address={address}
-                onSelect={() => handleAddressSelect(address)}
-                isSelected={address === selectedAddress}
-              />
-            ))}
-            <NewAddressSection
-              showForm={showForm}
-              setShowForm={setShowForm}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              handleCancel={handleCancel}
-              setSuccessfulSubmit={setSuccessfulSubmit}
-            />
+      <div className="flex w-full max-md:flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-4">
+          <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
+            Delivery address
           </div>
-          <div className="border-2 rounded-2xl max-h-96">
-            <BillSection
-              totalItem={cartItemDetails?.length}
-              totalPrice={totalPrice}
-              totalDiscount={totalDiscount}
-              selectedAddress={selectedAddress}
+          {addressDetails?.flat().map((address, index) => (
+            <AddressCard
+              key={index}
+              address={address}
+              onSelect={() => handleAddressSelect(address)}
+              isSelected={address === selectedAddress}
             />
-          </div>
+          ))}
+          <NewAddressSection
+            showForm={showForm}
+            setShowForm={setShowForm}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            handleCancel={handleCancel}
+            setSuccessfulSubmit={setSuccessfulSubmit}
+          />
         </div>
-      )}
+        <div className="border-2 rounded-2xl max-h-96">
+          <BillSection
+            totalItem={cartItemDetails?.length}
+            totalPrice={totalPrice}
+            totalDiscount={totalDiscount}
+            selectedAddress={selectedAddress}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -263,17 +258,17 @@ const BillSection = ({
               ({totalItem} {totalItem > 1 ? "items" : "item"})
             </span>
           </p>
-          <span>${totalPrice}</span>
+          <span className="font-bold">${totalPrice}</span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
           <p className="capitalize text-slate-500">Delivery charges</p>
           <span className="flex gap-2">
-            <p className="text-green-700">Free</p>
+            <p className="text-green-700 font-bold">Free</p>
           </span>
         </div>
       </div>
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
-        <div className="flex justify-between px-6 gap-2 font-semibold">
+        <div className="flex justify-between px-6 gap-2 font-bold">
           <p className="capitalize">Total Payable</p>
           <span>${totalPrice}</span>
         </div>

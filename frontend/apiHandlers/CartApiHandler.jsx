@@ -12,15 +12,12 @@ const useBackend = () => {
 const CartApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
-  const [isLoading, setIsLoading] = useState("");
-  const [successfulSubmit, setSuccessfulSubmit] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const { principal } = useConnect();
   const navigate = useNavigate();
 
   // Get caller cart items
-  const getCallerCartItems = async () => {
+  const getCallerCartItems = async (setIsLoading, setCartItems) => {
     try {
       setIsLoading(true);
       const response = await backend.getCallerCartItems();
@@ -40,12 +37,13 @@ const CartApiHandler = () => {
     paymentMethod
   ) => {
     // {awb:text; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64}) → (variant {ok:record {id:text; awb:text; timeUpdated:int; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; timeCreated:int; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64};
-    const userid = Principal.fromText(principal);
-    // const userid = principal;
-    if (userid === undefined || userid === null || !userid) {
-      toast.error("Please login to your account to place an order");
+    // If user not logged in :
+    if (principal === undefined) {
+      toast.error("You need to login first");
       return;
     }
+    const userid = Principal.fromText(principal);
+    // const userid = principal;
     // Create Object Orderdetails
     const orderDetails = {
       awb: "testing",
@@ -66,7 +64,7 @@ const CartApiHandler = () => {
     // Call Backend
     try {
       setIsLoading(true);
-      await backend.createOrder(orderDetails);
+      // await backend.createOrder(orderDetails);
       toast.success("Order successfully Placed");
       // Navigate to OrderConfirmationPage
       navigate("/order-confirm");
@@ -93,10 +91,7 @@ const CartApiHandler = () => {
 
   // Returns
   return {
-    cartItems,
     getCallerCartItems,
-    isLoading,
-    successfulSubmit,
     orderPlacement,
     orderList,
     getOrderList,

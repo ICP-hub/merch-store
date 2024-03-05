@@ -96,6 +96,7 @@ const CartItemsSmall = () => {
       const remove = await backend.deleteCartItems(id);
       if (remove) {
         getCartlist();
+        getProductCartlist();
 
         toast.success("item removed successfully");
       }
@@ -134,7 +135,7 @@ const CartItemsSmall = () => {
                     alt={"product image"}
                     className="w-[80px] bg-gray-100 rounded-xl "
                   />
-                  <span className="bg-green-500 absolute top-0 right-1 rounded-full text-[9px] w-3 h-3 flex justify-center items-center text-white p-1/2">
+                  <span className="bg-green-500 absolute top-1 right-1 rounded-md text-[9px] w-4 h-4 flex justify-center items-center text-white p-1/2">
                     {quantity[index]?.quantity}
                   </span>
                 </div>

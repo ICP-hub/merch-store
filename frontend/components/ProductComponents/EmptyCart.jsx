@@ -1,18 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
 // import EmptyCartSvg from '../../assets/undraw_empty_cart';
 const EmptyCart = () => {
   return (
-    <div className="border-2 rounded-xl p-6 relative">
-      <div className="flex justify-center">
+    <div className="border-2 rounded-2xl p-6 flex flex-col items-center justify-center">
+      <div className="max-h-96 max-w-96">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           data-name="Layer 1"
-          width="40%"
-          height="40%"
+          width="100%"
+          height="100%"
           viewBox="0 0 896 747.97143"
           xmlns:xlink="http://www.w3.org/1999/xlink"
         >
-          <title>empty_cart</title>
           <path
             d="M193.634,788.75225c12.42842,23.049,38.806,32.9435,38.806,32.9435s6.22712-27.47543-6.2013-50.52448-38.806-32.9435-38.806-32.9435S181.20559,765.7032,193.634,788.75225Z"
             transform="translate(-152 -76.01429)"
@@ -406,9 +406,17 @@ const EmptyCart = () => {
           />
         </svg>
       </div>
-      <p className="flex w-full justify-center text-4xl font-black text-slate-400 py-6">
-        No Items in cart
+      <p className="font-semibold text-2xl text-slate-400 py-6">
+        "No Items in cart"
       </p>
+      <span>
+        <Link
+          to="/products"
+          className="bg-gray-900 px-4 py-2 rounded-full text-white font-semibold"
+        >
+          View products
+        </Link>
+      </span>
     </div>
   );
 };
