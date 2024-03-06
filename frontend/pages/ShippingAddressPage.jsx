@@ -258,7 +258,7 @@ const BillSection = ({
               ({totalItem} {totalItem > 1 ? "items" : "item"})
             </span>
           </p>
-          <span className="font-bold">${totalPrice}</span>
+          <span className="font-bold">${totalPrice?.toFixed(2)}</span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
           <p className="capitalize text-slate-500">Delivery charges</p>
@@ -270,12 +270,12 @@ const BillSection = ({
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
         <div className="flex justify-between px-6 gap-2 font-bold">
           <p className="capitalize">Total Payable</p>
-          <span>${totalPrice}</span>
+          <span>${totalPrice?.toFixed(2)}</span>
         </div>
       </div>
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
         <div className="px-6 text-green-700">
-          Your total saving on this order is ${totalDiscount}
+          Your total saving on this order is ${totalDiscount?.toFixed(2)}
         </div>
       </div>
       <div className="p-6">

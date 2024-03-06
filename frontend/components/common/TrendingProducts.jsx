@@ -81,9 +81,8 @@ const TrendingProducts = () => {
           </Slider>
         ) : (
           <>
-            {trendingProducts.length > 0 ? (
+            {trendingProducts && trendingProducts.length > 0 ? (
               <Slider {...settings}>
-                {/* {console.log(trendingProducts)} */}
                 {trendingProducts
                   .slice(0, maxInitialDisplay)
                   .map(([prodSlug, prodDetails], index) => (
