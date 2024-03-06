@@ -174,6 +174,7 @@ module {
         #UnableToCreate;
         #OrderNotFound;
         #UnableToUpdate;
+        #UserNotAuthenticated;
     };
 
     public type Category = {
@@ -493,6 +494,18 @@ module {
         #EmptyEmail;
         #EmptyMessage;
         #ContactNotFound;
+    };
+
+    public type StatisticalDetail = {
+        totalOrders : Nat;
+        totalProducts : Nat;
+        totalCategories : Nat;
+        totalUsers : Nat;
+        totalContacts : Nat;
+    };
+
+    public type GetStatisticalDetailError = {
+        #UserNotAdmin;
     };
 
 };
