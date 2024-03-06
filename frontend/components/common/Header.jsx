@@ -101,7 +101,6 @@ const Header = ({ title }) => {
         setLoading(true);
         const cart = await backend.getCallerCartItems();
         setCarts(cart);
-        console.log(cart, "hello");
       } catch (error) {
         console.error("Error listing carts:", error);
       } finally {
@@ -112,7 +111,7 @@ const Header = ({ title }) => {
     if (backend) {
       listCarts();
     }
-  }, [backend, carts]);
+  }, [backend]);
 
   useEffect(() => {
     let intervalId;

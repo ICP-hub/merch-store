@@ -138,7 +138,7 @@ const ProductDetail = () => {
         item[1]?.product_slug === data?.slug && item[1]?.color === selectedColor
     );
     setProductInLocalCart(isProductInCart);
-  }, [carts, data, principal, listCarts]);
+  }, [carts, data, principal]);
   console.log(isProductInLocalCart);
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
@@ -154,8 +154,6 @@ const ProductDetail = () => {
           quantity
         );
 
-        listCarts();
-
         if ("ok" in res) {
           setProductInLocalCart(true);
           toast.success("item added to cart Successfully");
@@ -170,6 +168,7 @@ const ProductDetail = () => {
       console.error("An error occurred adding items to cart:", error);
     } finally {
       setLoading4(false);
+      listCarts();
     }
   };
 
