@@ -3,7 +3,6 @@
 /* ----------------------------------------------------------------------------------------------------- */
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
-import FakeProdImg from "../assets/fakeprod.png";
 import { formatDate } from "./MyOrderPage";
 import AnimationView from "../components/common/AnimationView";
 import ScrollToTop from "../components/common/ScrollToTop";
@@ -36,10 +35,10 @@ const MyOrderDetailPage = () => {
 /*  @  MyOrderDetailPage : <MyOrderContainerMain />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrderDetailContainerMain = () => {
-  const { orderList, getOrderList, isLoading } = CartApiHandler();
+  const { getOrderList, isLoading } = CartApiHandler();
   const { id } = useParams();
   // Filter orderList from params
-  const orderData = orderList.find(([orderId, _]) => orderId === id);
+  const orderData = orderList?.find(([orderId, _]) => orderId === id);
 
   const fetchOrderData = () => {
     if (orderData) {

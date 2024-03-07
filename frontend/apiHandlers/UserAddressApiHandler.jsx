@@ -45,6 +45,7 @@ const UserAddressApiHandler = () => {
 
   // Update Address
   const updateAddress = async (address, setIsLoading, setSuccessfulSubmit) => {
+    // console.log(address)
     try {
       setIsLoading(true);
       // Getting this error > Error updating address :  Error: Wrong number of message arguments

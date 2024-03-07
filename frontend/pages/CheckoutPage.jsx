@@ -58,7 +58,7 @@ const pMethod = [
 /*  @ checkout Container
 /* ----------------------------------------------------------------------------------------------------- */
 const Checkout = () => {
-  const { getCallerCartItems } = CartApiHandler();
+  const { getCallerCartItems, orderPlacement } = CartApiHandler();
   const { productList, getProductList } = ProductApiHandler();
   const [paymentMethod, setPaymentMethod] = useState(pMethod[0]);
   const [cartItems, setCartItems] = useState(null);
@@ -69,11 +69,12 @@ const Checkout = () => {
   const [isFinalCartLoading, setIsFinalCartLoading] = useState(true);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
+  const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
 
   // Get Cart Item details Object:
   const cartItemDetails = getCartItemDetails(cartItems, productList);
-  console.log("cartItemDetails", cartItemDetails);
-  console.log("finalCart", finalCart);
+  // console.log("cartItemDetails", cartItemDetails);
+  // console.log("finalCart", finalCart);
 
   // Increase quantity and price
   const handleIncrease = (index) => {
@@ -85,6 +86,39 @@ const Checkout = () => {
       updatedCart[index].variantSellPrice * updatedCart[index].quantity;
     setFinalCart(updatedCart);
     setIsChecked(index);
+  };
+
+  // console.log(finalCart);
+
+  // Required fields to pass for orderplacement
+  const updateProductsForPlacement = (products) => {
+    return products.map((product) => ({
+      id: product.orderId,
+      img: product.img1,
+      size: product.size,
+      title: product.product.title,
+      color: product.color,
+      sale_price: Number(product.variantSellPrice.toFixed(2)),
+      quantity: product.quantity,
+    }));
+  };
+
+  // Proceed order placement
+  const proceed = () => {
+    const { totalPrice } = totalPriceNQty;
+    const products = updateProductsForPlacement(finalCart);
+    const shippingAddress = userAddress;
+    const totalAmount = totalPrice;
+    const subTotal = totalPrice;
+    const payment = paymentMethod.value;
+    orderPlacement(
+      products,
+      shippingAddress,
+      totalAmount,
+      subTotal,
+      payment,
+      setOrderPlaceMentLoad
+    );
   };
 
   // Decrease quantity and price
@@ -177,7 +211,7 @@ const Checkout = () => {
           Back to cart
         </Button>
       </div>
-      {isFinalCartLoading ? (
+      {isLoading || isFinalCartLoading ? (
         <div>Loading...</div>
       ) : (
         <>
@@ -209,7 +243,11 @@ const Checkout = () => {
                 />
               </div>
               <div className="border-2 rounded-2xl max-h-80 lg:min-w-96">
-                <BillSection updatedPriceNQty={updatedPriceNQty} />
+                <BillSection
+                  updatedPriceNQty={updatedPriceNQty}
+                  proceed={proceed}
+                  orderPlacementLoad={orderPlacementLoad}
+                />
               </div>
             </div>
           ) : (
@@ -417,8 +455,9 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
-const BillSection = ({ updatedPriceNQty }) => {
+const BillSection = ({ updatedPriceNQty, proceed, orderPlacementLoad }) => {
   // console.log(updatedPriceNQty);
+  console.log(orderPlacementLoad);
   return (
     <div className="flex flex-col">
       <div className="border-b-2 py-6">
@@ -453,8 +492,26 @@ const BillSection = ({ updatedPriceNQty }) => {
         </div>
       </div>
       <div className="p-6 flex w-full">
-        <Button className="px-4 py-2 bg-black text-white font-semibold rounded-md w-full">
-          Proceed
+        <Button
+          className="p-2 min-w-full min-h-10 text-white border bg-black rounded-md font-medium text-sm relative"
+          onClick={() => proceed()}
+        >
+          {orderPlacementLoad ? (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <TailSpin
+                visible={true}
+                height="20"
+                width="20"
+                color="white"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                wrapperStyle={{}}
+                wrapperClass=""
+              />
+            </div>
+          ) : (
+            "Place order"
+          )}
         </Button>
       </div>
     </div>

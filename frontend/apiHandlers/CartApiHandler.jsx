@@ -12,7 +12,6 @@ const useBackend = () => {
 const CartApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
-  const [orderList, setOrderList] = useState([]);
   const { principal } = useConnect();
   const navigate = useNavigate();
 
@@ -34,7 +33,8 @@ const CartApiHandler = () => {
     shippingAddress,
     totalAmount,
     subTotal,
-    paymentMethod
+    payment,
+    setOrderPlaceMentLoad
   ) => {
     // {awb:text; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64}) → (variant {ok:record {id:text; awb:text; timeUpdated:int; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; timeCreated:int; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64};
     // If user not logged in :
@@ -42,13 +42,14 @@ const CartApiHandler = () => {
       toast.error("You need to login first");
       return;
     }
+
     const userid = Principal.fromText(principal);
     // const userid = principal;
     // Create Object Orderdetails
     const orderDetails = {
       awb: "testing",
       paymentStatus: "testing",
-      paymentMethod: paymentMethod,
+      paymentMethod: payment,
       shippingAmount: {
         shipping_amount: 1,
       },
@@ -60,27 +61,30 @@ const CartApiHandler = () => {
       products: products,
       subTotalAmount: subTotal,
     };
-    console.log(orderDetails);
+    // console.log(orderDetails);
     // Call Backend
     try {
-      setIsLoading(true);
-      // await backend.createOrder(orderDetails);
+      setOrderPlaceMentLoad(true);
+      await backend.createOrder(orderDetails);
       toast.success("Order successfully Placed");
       // Navigate to OrderConfirmationPage
       navigate("/order-confirm");
+      // Clear cart after successful order placement
+      // await backend.clearallcartitmesbyprincipal();
     } catch (err) {
       toast.error("Failed to place order");
       console.error("Error Order Placement", err);
     } finally {
-      setIsLoading(false);
+      setOrderPlaceMentLoad(false);
     }
   };
 
   // Get Order List
-  const getOrderList = async () => {
+  const getOrderList = async (setIsLoading, setOrderList) => {
     try {
       setIsLoading(true);
       const response = await backend.listUserOrders();
+      // console.log(response);
       setOrderList(response);
     } catch (err) {
       console.error("Failed to fetch user order list");
@@ -93,7 +97,6 @@ const CartApiHandler = () => {
   return {
     getCallerCartItems,
     orderPlacement,
-    orderList,
     getOrderList,
   };
 };
