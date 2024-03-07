@@ -111,7 +111,7 @@ const Header = ({ title }) => {
     if (backend) {
       listCarts();
     }
-  }, [backend]);
+  }, [backend, carts]);
 
   useEffect(() => {
     let intervalId;

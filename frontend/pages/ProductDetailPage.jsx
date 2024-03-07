@@ -45,7 +45,7 @@ const ProductDetail = () => {
   const [data, setData] = useState("");
   const [carts, setCarts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [isProductInLocalCart, setProductInLocalCart] = useState(false);
+  const [isProductInLocalCart, setProductInLocalCart] = useState(true);
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState();
@@ -135,33 +135,30 @@ const ProductDetail = () => {
     // Check if the product is in the local cart
     const isProductInCart = carts.some(
       (item) =>
-        item[1]?.product_slug === data?.slug && item[1]?.color === selectedColor
+        item[1]?.product_slug === data?.slug &&
+        item[1]?.color === selectedColor &&
+        item[1]?.size === selectedSize
     );
     setProductInLocalCart(isProductInCart);
-  }, [carts, data, principal]);
-  console.log(isProductInLocalCart);
+  }, [data, selectedColor, selectedSize, principal]);
+
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
     try {
-      if (isProductInLocalCart) {
-        toast.success("Item already present in the cart");
-      } else {
-        setLoading4(true);
-        const res = await backend.addtoCartItems(
-          slug,
-          selectedSize,
-          selectedColor,
-          quantity
-        );
+      setLoading4(true);
+      const res = await backend.addtoCartItems(
+        slug,
+        selectedSize,
+        selectedColor,
+        quantity
+      );
 
-        if ("ok" in res) {
-          setProductInLocalCart(true);
-          toast.success("item added to cart Successfully");
-          console.log("     Item added successfully     ", res);
-        } else {
-          // Log an error if the response does not have "ok" property
-          console.error("Unexpected response from backend:", res);
-        }
+      if ("ok" in res) {
+        toast.success("item added to cart Successfully");
+        console.log("     Item added successfully     ", res);
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
       }
     } catch (error) {
       // Log the error for debugging
@@ -188,7 +185,6 @@ const ProductDetail = () => {
       // setLoading4(false)
     }
   };
-  console.log(data, "hello");
 
   useEffect(() => {
     // Check if the product is in the local cart

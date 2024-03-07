@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
 
-  const AddToCart = async (text) => {
+  const AddToCart = async () => {
     try {
       setLoading(true);
       const res1 = await backend.listCategories();
@@ -43,8 +43,7 @@ const ProductCard = ({ product }) => {
       setQuantity(0);
 
       if ("ok" in res) {
-        toast.success(text);
-        console.log("     Item added successfully     ", res);
+        toast.success("Item added to cart");
       } else {
         // Log an error if the response does not have "ok" property
         console.error("Unexpected response from backend:", res);
@@ -60,7 +59,7 @@ const ProductCard = ({ product }) => {
     try {
       const res = await backend.clearallcartitmesbyprincipal();
       if ("ok" in res) {
-        AddToCart("Directed to shipping page");
+        AddToCart();
       } else {
         console.log(" error while clearing the cart", res);
       }
@@ -105,7 +104,6 @@ const ProductCard = ({ product }) => {
 
         if ("ok" in res) {
           toast.success("item added to wishlist Successfully");
-          console.log("     Item added  to wishlist successfully     ", res);
         } else {
           // Log an error if the response does not have "ok" property
           console.error("Unexpected response from backend:", res);
@@ -265,36 +263,41 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
           <div className="flex justify-between gap-2 text-sm">
-            <Button
-              onClick={() => {
-                AddToCart("item added to cart Successfully");
-                setClick(true);
-              }}
-              className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
-                loading && " flex items-center justify-center"
-              } `}
-              disabled={loading && true}
-            >
-              {loading && click ? (
-                <TailSpin
-                  height="20"
-                  width="20"
-                  color="black"
-                  ariaLabel="tail-spin-loading"
-                  radius="1"
-                  visible={true}
-                />
-              ) : (
-                <div>
-                  {!quantity //inventory>=quantity<=0
-                    ? " Go to cart"
-                    : " Add to Cart"}{" "}
-                </div>
-              )}
-            </Button>
+            {!quantity ? ( //inventory>=quantity<=0
+              <Link
+                to="/cart"
+                className="w-full rounded-full text-black font-semibold bg-white border border-black px-4 py-2 flex items-center justify-center"
+              >
+                Go to Cart
+              </Link>
+            ) : (
+              <Button
+                onClick={() => {
+                  AddToCart();
+                  setClick(true);
+                }}
+                className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
+                  loading && " flex items-center justify-center"
+                } `}
+                disabled={loading && true}
+              >
+                {loading && click ? (
+                  <TailSpin
+                    height="20"
+                    width="20"
+                    color="black"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    visible={true}
+                  />
+                ) : (
+                  <p>Add to Cart</p>
+                )}
+              </Button>
+            )}
 
             <Link
-              to="/shipping-address"
+              to="/cart"
               className="w-full rounded-full text-white font-semibold bg-black border border-black px-4 py-2 flex items-center justify-center"
               onClick={() => {
                 buyNowHandler();

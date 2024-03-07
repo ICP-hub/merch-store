@@ -34,7 +34,7 @@ const CartItemsSmall = () => {
       const formatSize = item.map((item) => ({
         size: item[1].size,
       }));
-      console.log(formatSize);
+
       setSize(formatSize);
       const formatIds = item.map((item) => ({
         id: item[1].id,
@@ -92,15 +92,13 @@ const CartItemsSmall = () => {
     try {
       setLoading3(true);
       setLoadingItemId(id);
-      console.log(id);
-      const remove = await backend.deleteCartItems(id);
-      if (remove) {
-        getCartlist();
-        getProductCartlist();
 
+      const remove = await backend.deleteCartItems(id);
+      getProductCartlist();
+      getCartlist();
+      if (remove) {
         toast.success("item removed successfully");
       }
-      console.log(remove);
     } catch (error) {
       console.error("deletion cannot be performed", error);
     } finally {
