@@ -104,6 +104,7 @@ export type GetContactError = { 'UserNotAdmin' : null } |
   { 'UserNotAuthenticated' : null };
 export type GetPaymentStatusError = { 'OrderNotFound' : null };
 export type GetProductError = { 'ProductNotFound' : null };
+export type GetStatisticalDetailError = { 'UserNotAdmin' : null };
 export type GetUserError = { 'UserNotFound' : null };
 export type GetVariantError = { 'VariantNotFound' : null };
 export interface NewOrder {
@@ -137,6 +138,7 @@ export interface Order {
 }
 export type OrderError = { 'PaymentAddressAlreadyUsed' : null } |
   { 'OrderNotFound' : null } |
+  { 'UserNotAuthenticated' : null } |
   { 'MissingData' : null } |
   { 'UnableToCreate' : null } |
   { 'UnableToUpdate' : null };
@@ -171,53 +173,55 @@ export type Result_1 = { 'ok' : WishlistItem } |
   { 'err' : UpdateWishlistItemError };
 export type Result_10 = { 'ok' : Variants } |
   { 'err' : GetVariantError };
-export type Result_11 = { 'ok' : string } |
+export type Result_11 = { 'ok' : StatisticalDetail } |
+  { 'err' : GetStatisticalDetailError };
+export type Result_12 = { 'ok' : string } |
   { 'err' : GetPaymentStatusError };
-export type Result_12 = { 'ok' : User } |
+export type Result_13 = { 'ok' : User } |
   { 'err' : GetUserError };
-export type Result_13 = { 'ok' : Product } |
+export type Result_14 = { 'ok' : Product } |
   { 'err' : GetProductError };
-export type Result_14 = { 'ok' : Order } |
+export type Result_15 = { 'ok' : Order } |
   { 'err' : OrderError };
-export type Result_15 = { 'ok' : Contact } |
+export type Result_16 = { 'ok' : Contact } |
   { 'err' : GetContactError };
-export type Result_16 = { 'ok' : Category } |
+export type Result_17 = { 'ok' : Category } |
   { 'err' : GetCategoryError };
-export type Result_17 = { 'ok' : Address } |
+export type Result_18 = { 'ok' : Address } |
   { 'err' : GetAddressError };
-export type Result_18 = { 'ok' : null } |
-  { 'err' : DeleteVariantError };
 export type Result_19 = { 'ok' : null } |
-  { 'err' : DeleteAddressError };
+  { 'err' : DeleteVariantError };
 export type Result_2 = { 'ok' : User } |
   { 'err' : UpdateUserError };
 export type Result_20 = { 'ok' : null } |
-  { 'err' : DeleteWishlistItemError };
+  { 'err' : DeleteAddressError };
 export type Result_21 = { 'ok' : null } |
-  { 'err' : DeleteProductError };
+  { 'err' : DeleteWishlistItemError };
 export type Result_22 = { 'ok' : null } |
-  { 'err' : DeleteOrderError };
+  { 'err' : DeleteProductError };
 export type Result_23 = { 'ok' : null } |
-  { 'err' : DeleteContactError };
+  { 'err' : DeleteOrderError };
 export type Result_24 = { 'ok' : null } |
-  { 'err' : DeleteCategoryError };
+  { 'err' : DeleteContactError };
 export type Result_25 = { 'ok' : null } |
+  { 'err' : DeleteCategoryError };
+export type Result_26 = { 'ok' : null } |
   { 'err' : DeleteCartItemsError };
-export type Result_26 = { 'ok' : Variants } |
+export type Result_27 = { 'ok' : Variants } |
   { 'err' : CreateVariantError };
-export type Result_27 = { 'ok' : Product } |
+export type Result_28 = { 'ok' : Product } |
   { 'err' : CreateProductError };
-export type Result_28 = { 'ok' : Contact } |
+export type Result_29 = { 'ok' : Contact } |
   { 'err' : CreateContactError };
-export type Result_29 = { 'ok' : Category } |
-  { 'err' : CreateCategoryError };
 export type Result_3 = { 'ok' : Order } |
   { 'err' : UpdateOrderError };
-export type Result_30 = { 'ok' : Address } |
+export type Result_30 = { 'ok' : Category } |
+  { 'err' : CreateCategoryError };
+export type Result_31 = { 'ok' : Address } |
   { 'err' : CreateAddressError };
-export type Result_31 = { 'ok' : WishlistItem } |
+export type Result_32 = { 'ok' : WishlistItem } |
   { 'err' : CreateWishlistItemError };
-export type Result_32 = { 'ok' : CartItem } |
+export type Result_33 = { 'ok' : CartItem } |
   { 'err' : CreateCartItemsError };
 export type Result_4 = { 'ok' : Product } |
   { 'err' : UpdateProductError };
@@ -232,6 +236,13 @@ export type Result_8 = { 'ok' : CartItem } |
 export type Result_9 = { 'ok' : Address } |
   { 'err' : UpdateAddressError };
 export type SlugId = string;
+export interface StatisticalDetail {
+  'totalProducts' : bigint,
+  'totalOrders' : bigint,
+  'totalContacts' : bigint,
+  'totalUsers' : bigint,
+  'totalCategories' : bigint,
+}
 export type Time = bigint;
 export type UpdateAddressError = { 'EmptyCountry' : null } |
   { 'UserNotAuthenticated' : null } |
@@ -344,38 +355,39 @@ export interface WishlistItem {
 }
 export interface shippingAmount { 'shipping_amount' : number }
 export interface _SERVICE {
-  'addtoCartItems' : ActorMethod<[string, string, string, number], Result_32>,
-  'addtoWishlist' : ActorMethod<[string], Result_31>,
-  'clearallcartitmesbyprincipal' : ActorMethod<[], Result_25>,
-  'createAddress' : ActorMethod<[UserAddress], Result_30>,
-  'createCategory' : ActorMethod<[string, string, boolean], Result_29>,
-  'createContact' : ActorMethod<[UserContact], Result_28>,
-  'createOrder' : ActorMethod<[NewOrder], Result_14>,
+  'addtoCartItems' : ActorMethod<[string, string, string, number], Result_33>,
+  'addtoWishlist' : ActorMethod<[string], Result_32>,
+  'clearallcartitmesbyprincipal' : ActorMethod<[], Result_26>,
+  'createAddress' : ActorMethod<[UserAddress], Result_31>,
+  'createCategory' : ActorMethod<[string, string, boolean], Result_30>,
+  'createContact' : ActorMethod<[UserContact], Result_29>,
+  'createOrder' : ActorMethod<[NewOrder], Result_15>,
   'createProduct' : ActorMethod<
     [UserProduct, Array<VariantSize>, Array<VariantColor>],
-    Result_27
+    Result_28
   >,
   'createVariant' : ActorMethod<
     [SlugId, string, string, bigint, number, number],
-    Result_26
+    Result_27
   >,
-  'deleteCartItems' : ActorMethod<[CartId], Result_25>,
-  'deleteCategory' : ActorMethod<[SlugId], Result_24>,
-  'deleteContact' : ActorMethod<[ContactId], Result_23>,
-  'deleteOrder' : ActorMethod<[OrderId], Result_22>,
-  'deleteProduct' : ActorMethod<[SlugId], Result_21>,
-  'deleteWishlistItems' : ActorMethod<[WishlistId], Result_20>,
-  'deleteaddress' : ActorMethod<[string], Result_19>,
-  'deletevariant' : ActorMethod<[SlugId], Result_18>,
-  'getAddress' : ActorMethod<[string], Result_17>,
+  'deleteCartItems' : ActorMethod<[CartId], Result_26>,
+  'deleteCategory' : ActorMethod<[SlugId], Result_25>,
+  'deleteContact' : ActorMethod<[ContactId], Result_24>,
+  'deleteOrder' : ActorMethod<[OrderId], Result_23>,
+  'deleteProduct' : ActorMethod<[SlugId], Result_22>,
+  'deleteWishlistItems' : ActorMethod<[WishlistId], Result_21>,
+  'deleteaddress' : ActorMethod<[string], Result_20>,
+  'deletevariant' : ActorMethod<[SlugId], Result_19>,
+  'getAddress' : ActorMethod<[string], Result_18>,
   'getCallerCartItems' : ActorMethod<[], Array<[CartId, CartItem]>>,
-  'getCategory' : ActorMethod<[SlugId], Result_16>,
-  'getContact' : ActorMethod<[ContactId], Result_15>,
-  'getOrder' : ActorMethod<[string], Result_14>,
-  'getProduct' : ActorMethod<[SlugId], Result_13>,
-  'getUserdetailsbycaller' : ActorMethod<[], Result_12>,
-  'getUserdetailsbyid' : ActorMethod<[Principal], Result_12>,
-  'getpaymentstatus' : ActorMethod<[], Result_11>,
+  'getCategory' : ActorMethod<[SlugId], Result_17>,
+  'getContact' : ActorMethod<[ContactId], Result_16>,
+  'getOrder' : ActorMethod<[string], Result_15>,
+  'getProduct' : ActorMethod<[SlugId], Result_14>,
+  'getUserdetailsbycaller' : ActorMethod<[], Result_13>,
+  'getUserdetailsbyid' : ActorMethod<[Principal], Result_13>,
+  'getpaymentstatus' : ActorMethod<[], Result_12>,
+  'getstatisticaldetailforadmin' : ActorMethod<[], Result_11>,
   'getvariant' : ActorMethod<[SlugId], Result_10>,
   'isAdmin' : ActorMethod<[Principal], boolean>,
   'listCategories' : ActorMethod<[], Array<[SlugId, Category]>>,

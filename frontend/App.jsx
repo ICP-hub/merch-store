@@ -1,26 +1,18 @@
 import React, { useEffect } from "react";
-
-/*
- * Connect2ic provides essential utilities for IC app development
- */
 import { createClient } from "@connect2ic/core";
 import {
   PlugWallet,
   StoicWallet,
-  defaultProviders,
 } from "@connect2ic/core/providers";
 import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react";
 import "@connect2ic/core/style.css";
-/*
- * Import canister definitions like this:
- */
 import * as backend from "../.dfx/local/canisters/backend";
 import { AnimatePresence } from "framer-motion";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Error404Page from "./pages/Error404Page";
 import HomePage from "./pages/HomePage";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ContactPage from "./pages/ContactPage";
@@ -158,80 +150,60 @@ const router = createBrowserRouter([
   {
     path: "/admin",
 
-    element: <AdminHome></AdminHome>,
+    element:       <ProtectedAdmin>
+    <AdminHome></AdminHome></ProtectedAdmin>,
   },
   {
     path: "/admin/Products",
-    element: <Products />,
+    element: <ProtectedAdmin><Products /></ProtectedAdmin>,
   },
   {
     path: "/admin/orders",
 
-    element: <Order />,
+    element: <ProtectedAdmin><Order /></ProtectedAdmin>,
   },
 
   {
     path: "/admin/orders/:id",
-    element: <OrderDetail />,
+    element: <ProtectedAdmin><OrderDetail /></ProtectedAdmin>,
   },
   {
     path: "/admin/invoice/:orderId",
-    element: <Invoice />,
+    element: <ProtectedAdmin><Invoice /></ProtectedAdmin>,
   },
   {
     path: "/admin/categories",
-    element: <Categories />,
+    element: <ProtectedAdmin><Categories /></ProtectedAdmin>,
   },
   {
     path: "/admin/users-list",
-    element: <UserDetails />,
+    element: <ProtectedAdmin><UserDetails /></ProtectedAdmin>,
   },
   {
     path: "/admin/categories/:slug",
-    element: <CategoryDetail />,
+    element: <ProtectedAdmin><CategoryDetail /></ProtectedAdmin>,
   },
   {
     path: "/admin/categories/create-category",
-    element: <CreateCategory />,
+    element: <ProtectedAdmin><CreateCategory /></ProtectedAdmin>,
   },
   {
     path: "/admin/products/create-product",
-    element: <CreateProduct />,
+    element: <ProtectedAdmin><CreateProduct /></ProtectedAdmin>,
   },
 
   {
     path: "/admin/Products/:slug",
-    element: <ProductDetail />,
+    element: <ProtectedAdmin><ProductDetail /></ProtectedAdmin>,
   },
   {
     path: "/admin/messages",
-    element: <Message />,
+    element: <ProtectedAdmin><Message /></ProtectedAdmin>,
   },
   {
     path: "/admin/messages/:id",
-    element: <MessageDetail />,
+    element: <ProtectedAdmin><MessageDetail /></ProtectedAdmin>,
   },
-  // {
-  //   path: "/admin/categories",
-  //   element: <Categories />,
-  // },
-  /*{
-    path: "/my-profile",
-    element: (
-      <Protected>
-        <MyProfilePage></MyProfilePage>
-      </Protected>
-    ),
-  },
-  {
-    path: "/admin",
-    element: (
-      
-        <AdminHome></AdminHome>
-      
-    ),
-  }, */
-
   {
     path: "*",
     element: <Error404Page></Error404Page>,
@@ -263,7 +235,6 @@ const client = createClient({
     backend,
   },
   providers: [new PlugWallet(), new StoicWallet()],
-  //providers: defaultProviders,
   globalProviderConfig: {
     dev: import.meta.env.DEV,
   },

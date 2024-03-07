@@ -19,7 +19,7 @@ export const idlFactory = ({ IDL }) => {
     'EmptySize' : IDL.Null,
     'EmptyColor' : IDL.Null,
   });
-  const Result_32 = IDL.Variant({
+  const Result_33 = IDL.Variant({
     'ok' : CartItem,
     'err' : CreateCartItemsError,
   });
@@ -37,7 +37,7 @@ export const idlFactory = ({ IDL }) => {
     'WishlistItemAlreadyExists' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_31 = IDL.Variant({
+  const Result_32 = IDL.Variant({
     'ok' : WishlistItem,
     'err' : CreateWishlistItemError,
   });
@@ -45,7 +45,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAdmin' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_25 = IDL.Variant({
+  const Result_26 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteCartItemsError,
   });
@@ -88,7 +88,7 @@ export const idlFactory = ({ IDL }) => {
     'EmptyPincode' : IDL.Null,
     'EmptyState' : IDL.Null,
   });
-  const Result_30 = IDL.Variant({ 'ok' : Address, 'err' : CreateAddressError });
+  const Result_31 = IDL.Variant({ 'ok' : Address, 'err' : CreateAddressError });
   const SlugId = IDL.Text;
   const Category = IDL.Record({
     'featured' : IDL.Bool,
@@ -102,7 +102,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAuthenticated' : IDL.Null,
     'EmptyName' : IDL.Null,
   });
-  const Result_29 = IDL.Variant({
+  const Result_30 = IDL.Variant({
     'ok' : Category,
     'err' : CreateCategoryError,
   });
@@ -127,7 +127,7 @@ export const idlFactory = ({ IDL }) => {
     'EmptyMessage' : IDL.Null,
     'EmptyEmail' : IDL.Null,
   });
-  const Result_28 = IDL.Variant({ 'ok' : Contact, 'err' : CreateContactError });
+  const Result_29 = IDL.Variant({ 'ok' : Contact, 'err' : CreateContactError });
   const shippingAmount = IDL.Record({ 'shipping_amount' : IDL.Float64 });
   const OrderProduct = IDL.Record({
     'id' : IDL.Text,
@@ -171,11 +171,12 @@ export const idlFactory = ({ IDL }) => {
   const OrderError = IDL.Variant({
     'PaymentAddressAlreadyUsed' : IDL.Null,
     'OrderNotFound' : IDL.Null,
+    'UserNotAuthenticated' : IDL.Null,
     'MissingData' : IDL.Null,
     'UnableToCreate' : IDL.Null,
     'UnableToUpdate' : IDL.Null,
   });
-  const Result_14 = IDL.Variant({ 'ok' : Order, 'err' : OrderError });
+  const Result_15 = IDL.Variant({ 'ok' : Order, 'err' : OrderError });
   const UserProduct = IDL.Record({
     'title' : IDL.Text,
     'active' : IDL.Bool,
@@ -214,7 +215,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAuthenticated' : IDL.Null,
     'EmptyTitle' : IDL.Null,
   });
-  const Result_27 = IDL.Variant({ 'ok' : Product, 'err' : CreateProductError });
+  const Result_28 = IDL.Variant({ 'ok' : Product, 'err' : CreateProductError });
   const Variants = IDL.Record({
     'variant_slug' : SlugId,
     'inventory' : IDL.Nat,
@@ -233,7 +234,7 @@ export const idlFactory = ({ IDL }) => {
     'EmptySize' : IDL.Null,
     'EmptyColor' : IDL.Null,
   });
-  const Result_26 = IDL.Variant({
+  const Result_27 = IDL.Variant({
     'ok' : Variants,
     'err' : CreateVariantError,
   });
@@ -241,7 +242,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAdmin' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_24 = IDL.Variant({
+  const Result_25 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteCategoryError,
   });
@@ -249,7 +250,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAdmin' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_23 = IDL.Variant({
+  const Result_24 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteContactError,
   });
@@ -258,12 +259,12 @@ export const idlFactory = ({ IDL }) => {
     'OrderNotFound' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_22 = IDL.Variant({ 'ok' : IDL.Null, 'err' : DeleteOrderError });
+  const Result_23 = IDL.Variant({ 'ok' : IDL.Null, 'err' : DeleteOrderError });
   const DeleteProductError = IDL.Variant({
     'UserNotAdmin' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_21 = IDL.Variant({
+  const Result_22 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteProductError,
   });
@@ -271,7 +272,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAdmin' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_20 = IDL.Variant({
+  const Result_21 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteWishlistItemError,
   });
@@ -279,7 +280,7 @@ export const idlFactory = ({ IDL }) => {
     'UserNotAuthenticated' : IDL.Null,
     'AddressNotFound' : IDL.Null,
   });
-  const Result_19 = IDL.Variant({
+  const Result_20 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteAddressError,
   });
@@ -288,22 +289,22 @@ export const idlFactory = ({ IDL }) => {
     'VariantNotFound' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_18 = IDL.Variant({
+  const Result_19 = IDL.Variant({
     'ok' : IDL.Null,
     'err' : DeleteVariantError,
   });
   const GetAddressError = IDL.Variant({ 'AddressNotFound' : IDL.Null });
-  const Result_17 = IDL.Variant({ 'ok' : Address, 'err' : GetAddressError });
+  const Result_18 = IDL.Variant({ 'ok' : Address, 'err' : GetAddressError });
   const GetCategoryError = IDL.Variant({ 'CategoryNotFound' : IDL.Null });
-  const Result_16 = IDL.Variant({ 'ok' : Category, 'err' : GetCategoryError });
+  const Result_17 = IDL.Variant({ 'ok' : Category, 'err' : GetCategoryError });
   const GetContactError = IDL.Variant({
     'UserNotAdmin' : IDL.Null,
     'ContactNotFound' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
   });
-  const Result_15 = IDL.Variant({ 'ok' : Contact, 'err' : GetContactError });
+  const Result_16 = IDL.Variant({ 'ok' : Contact, 'err' : GetContactError });
   const GetProductError = IDL.Variant({ 'ProductNotFound' : IDL.Null });
-  const Result_13 = IDL.Variant({ 'ok' : Product, 'err' : GetProductError });
+  const Result_14 = IDL.Variant({ 'ok' : Product, 'err' : GetProductError });
   const User = IDL.Record({
     'id' : IDL.Principal,
     'email' : IDL.Text,
@@ -311,11 +312,23 @@ export const idlFactory = ({ IDL }) => {
     'firstName' : IDL.Text,
   });
   const GetUserError = IDL.Variant({ 'UserNotFound' : IDL.Null });
-  const Result_12 = IDL.Variant({ 'ok' : User, 'err' : GetUserError });
+  const Result_13 = IDL.Variant({ 'ok' : User, 'err' : GetUserError });
   const GetPaymentStatusError = IDL.Variant({ 'OrderNotFound' : IDL.Null });
-  const Result_11 = IDL.Variant({
+  const Result_12 = IDL.Variant({
     'ok' : IDL.Text,
     'err' : GetPaymentStatusError,
+  });
+  const StatisticalDetail = IDL.Record({
+    'totalProducts' : IDL.Nat,
+    'totalOrders' : IDL.Nat,
+    'totalContacts' : IDL.Nat,
+    'totalUsers' : IDL.Nat,
+    'totalCategories' : IDL.Nat,
+  });
+  const GetStatisticalDetailError = IDL.Variant({ 'UserNotAdmin' : IDL.Null });
+  const Result_11 = IDL.Variant({
+    'ok' : StatisticalDetail,
+    'err' : GetStatisticalDetailError,
   });
   const GetVariantError = IDL.Variant({ 'VariantNotFound' : IDL.Null });
   const Result_10 = IDL.Variant({ 'ok' : Variants, 'err' : GetVariantError });
@@ -413,50 +426,51 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     'addtoCartItems' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, IDL.Nat8],
-        [Result_32],
+        [Result_33],
         [],
       ),
-    'addtoWishlist' : IDL.Func([IDL.Text], [Result_31], []),
-    'clearallcartitmesbyprincipal' : IDL.Func([], [Result_25], []),
-    'createAddress' : IDL.Func([UserAddress], [Result_30], []),
+    'addtoWishlist' : IDL.Func([IDL.Text], [Result_32], []),
+    'clearallcartitmesbyprincipal' : IDL.Func([], [Result_26], []),
+    'createAddress' : IDL.Func([UserAddress], [Result_31], []),
     'createCategory' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Bool],
-        [Result_29],
+        [Result_30],
         [],
       ),
-    'createContact' : IDL.Func([UserContact], [Result_28], []),
-    'createOrder' : IDL.Func([NewOrder], [Result_14], []),
+    'createContact' : IDL.Func([UserContact], [Result_29], []),
+    'createOrder' : IDL.Func([NewOrder], [Result_15], []),
     'createProduct' : IDL.Func(
         [UserProduct, IDL.Vec(VariantSize), IDL.Vec(VariantColor)],
-        [Result_27],
+        [Result_28],
         [],
       ),
     'createVariant' : IDL.Func(
         [SlugId, IDL.Text, IDL.Text, IDL.Nat, IDL.Float64, IDL.Float64],
-        [Result_26],
+        [Result_27],
         [],
       ),
-    'deleteCartItems' : IDL.Func([CartId], [Result_25], []),
-    'deleteCategory' : IDL.Func([SlugId], [Result_24], []),
-    'deleteContact' : IDL.Func([ContactId], [Result_23], []),
-    'deleteOrder' : IDL.Func([OrderId], [Result_22], []),
-    'deleteProduct' : IDL.Func([SlugId], [Result_21], []),
-    'deleteWishlistItems' : IDL.Func([WishlistId], [Result_20], []),
-    'deleteaddress' : IDL.Func([IDL.Text], [Result_19], []),
-    'deletevariant' : IDL.Func([SlugId], [Result_18], []),
-    'getAddress' : IDL.Func([IDL.Text], [Result_17], []),
+    'deleteCartItems' : IDL.Func([CartId], [Result_26], []),
+    'deleteCategory' : IDL.Func([SlugId], [Result_25], []),
+    'deleteContact' : IDL.Func([ContactId], [Result_24], []),
+    'deleteOrder' : IDL.Func([OrderId], [Result_23], []),
+    'deleteProduct' : IDL.Func([SlugId], [Result_22], []),
+    'deleteWishlistItems' : IDL.Func([WishlistId], [Result_21], []),
+    'deleteaddress' : IDL.Func([IDL.Text], [Result_20], []),
+    'deletevariant' : IDL.Func([SlugId], [Result_19], []),
+    'getAddress' : IDL.Func([IDL.Text], [Result_18], []),
     'getCallerCartItems' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(CartId, CartItem))],
         ['query'],
       ),
-    'getCategory' : IDL.Func([SlugId], [Result_16], ['query']),
-    'getContact' : IDL.Func([ContactId], [Result_15], ['query']),
-    'getOrder' : IDL.Func([IDL.Text], [Result_14], ['query']),
-    'getProduct' : IDL.Func([SlugId], [Result_13], ['query']),
-    'getUserdetailsbycaller' : IDL.Func([], [Result_12], ['query']),
-    'getUserdetailsbyid' : IDL.Func([IDL.Principal], [Result_12], ['query']),
-    'getpaymentstatus' : IDL.Func([], [Result_11], []),
+    'getCategory' : IDL.Func([SlugId], [Result_17], ['query']),
+    'getContact' : IDL.Func([ContactId], [Result_16], ['query']),
+    'getOrder' : IDL.Func([IDL.Text], [Result_15], ['query']),
+    'getProduct' : IDL.Func([SlugId], [Result_14], ['query']),
+    'getUserdetailsbycaller' : IDL.Func([], [Result_13], ['query']),
+    'getUserdetailsbyid' : IDL.Func([IDL.Principal], [Result_13], ['query']),
+    'getpaymentstatus' : IDL.Func([], [Result_12], []),
+    'getstatisticaldetailforadmin' : IDL.Func([], [Result_11], []),
     'getvariant' : IDL.Func([SlugId], [Result_10], []),
     'isAdmin' : IDL.Func([IDL.Principal], [IDL.Bool], []),
     'listCategories' : IDL.Func(

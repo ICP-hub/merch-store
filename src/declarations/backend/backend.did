@@ -146,6 +146,14 @@ type UpdateAddressError =
    UserNotAuthenticated;
  };
 type Time = int;
+type StatisticalDetail = 
+ record {
+   totalCategories: nat;
+   totalContacts: nat;
+   totalOrders: nat;
+   totalProducts: nat;
+   totalUsers: nat;
+ };
 type SlugId = text;
 type Result_9 = 
  variant {
@@ -177,20 +185,25 @@ type Result_4 =
    err: UpdateProductError;
    ok: Product;
  };
-type Result_32 = 
+type Result_33 = 
  variant {
    err: CreateCartItemsError;
    ok: CartItem;
  };
-type Result_31 = 
+type Result_32 = 
  variant {
    err: CreateWishlistItemError;
    ok: WishlistItem;
  };
-type Result_30 = 
+type Result_31 = 
  variant {
    err: CreateAddressError;
    ok: Address;
+ };
+type Result_30 = 
+ variant {
+   err: CreateCategoryError;
+   ok: Category;
  };
 type Result_3 = 
  variant {
@@ -199,52 +212,52 @@ type Result_3 =
  };
 type Result_29 = 
  variant {
-   err: CreateCategoryError;
-   ok: Category;
- };
-type Result_28 = 
- variant {
    err: CreateContactError;
    ok: Contact;
  };
-type Result_27 = 
+type Result_28 = 
  variant {
    err: CreateProductError;
    ok: Product;
  };
-type Result_26 = 
+type Result_27 = 
  variant {
    err: CreateVariantError;
    ok: Variants;
  };
-type Result_25 = 
+type Result_26 = 
  variant {
    err: DeleteCartItemsError;
    ok;
  };
-type Result_24 = 
+type Result_25 = 
  variant {
    err: DeleteCategoryError;
    ok;
  };
-type Result_23 = 
+type Result_24 = 
  variant {
    err: DeleteContactError;
    ok;
  };
-type Result_22 = 
+type Result_23 = 
  variant {
    err: DeleteOrderError;
    ok;
  };
-type Result_21 = 
+type Result_22 = 
  variant {
    err: DeleteProductError;
    ok;
  };
-type Result_20 = 
+type Result_21 = 
  variant {
    err: DeleteWishlistItemError;
+   ok;
+ };
+type Result_20 = 
+ variant {
+   err: DeleteAddressError;
    ok;
  };
 type Result_2 = 
@@ -254,48 +267,48 @@ type Result_2 =
  };
 type Result_19 = 
  variant {
-   err: DeleteAddressError;
+   err: DeleteVariantError;
    ok;
  };
 type Result_18 = 
  variant {
-   err: DeleteVariantError;
-   ok;
- };
-type Result_17 = 
- variant {
    err: GetAddressError;
    ok: Address;
  };
-type Result_16 = 
+type Result_17 = 
  variant {
    err: GetCategoryError;
    ok: Category;
  };
-type Result_15 = 
+type Result_16 = 
  variant {
    err: GetContactError;
    ok: Contact;
  };
-type Result_14 = 
+type Result_15 = 
  variant {
    err: OrderError;
    ok: Order;
  };
-type Result_13 = 
+type Result_14 = 
  variant {
    err: GetProductError;
    ok: Product;
  };
-type Result_12 = 
+type Result_13 = 
  variant {
    err: GetUserError;
    ok: User;
  };
-type Result_11 = 
+type Result_12 = 
  variant {
    err: GetPaymentStatusError;
    ok: text;
+ };
+type Result_11 = 
+ variant {
+   err: GetStatisticalDetailError;
+   ok: StatisticalDetail;
  };
 type Result_10 = 
  variant {
@@ -346,6 +359,7 @@ type OrderError =
    PaymentAddressAlreadyUsed;
    UnableToCreate;
    UnableToUpdate;
+   UserNotAuthenticated;
  };
 type Order = 
  record {
@@ -380,6 +394,7 @@ type NewOrder =
  };
 type GetVariantError = variant {VariantNotFound;};
 type GetUserError = variant {UserNotFound;};
+type GetStatisticalDetailError = variant {UserNotAdmin;};
 type GetProductError = variant {ProductNotFound;};
 type GetPaymentStatusError = variant {OrderNotFound;};
 type GetContactError = 
@@ -536,36 +551,37 @@ type Address =
    state: text;
  };
 service : {
-  addtoCartItems: (text, text, text, nat8) -> (Result_32);
-  addtoWishlist: (text) -> (Result_31);
-  clearallcartitmesbyprincipal: () -> (Result_25);
-  createAddress: (UserAddress) -> (Result_30);
-  createCategory: (text, text, bool) -> (Result_29);
-  createContact: (UserContact) -> (Result_28);
-  createOrder: (NewOrder) -> (Result_14);
+  addtoCartItems: (text, text, text, nat8) -> (Result_33);
+  addtoWishlist: (text) -> (Result_32);
+  clearallcartitmesbyprincipal: () -> (Result_26);
+  createAddress: (UserAddress) -> (Result_31);
+  createCategory: (text, text, bool) -> (Result_30);
+  createContact: (UserContact) -> (Result_29);
+  createOrder: (NewOrder) -> (Result_15);
   createProduct: (UserProduct, vec VariantSize, vec VariantColor) ->
-   (Result_27);
-  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_26);
-  deleteCartItems: (CartId) -> (Result_25);
-  deleteCategory: (SlugId) -> (Result_24);
-  deleteContact: (ContactId) -> (Result_23);
-  deleteOrder: (OrderId) -> (Result_22);
-  deleteProduct: (SlugId) -> (Result_21);
-  deleteWishlistItems: (WishlistId) -> (Result_20);
-  deleteaddress: (text) -> (Result_19);
-  deletevariant: (SlugId) -> (Result_18);
-  getAddress: (text) -> (Result_17);
+   (Result_28);
+  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_27);
+  deleteCartItems: (CartId) -> (Result_26);
+  deleteCategory: (SlugId) -> (Result_25);
+  deleteContact: (ContactId) -> (Result_24);
+  deleteOrder: (OrderId) -> (Result_23);
+  deleteProduct: (SlugId) -> (Result_22);
+  deleteWishlistItems: (WishlistId) -> (Result_21);
+  deleteaddress: (text) -> (Result_20);
+  deletevariant: (SlugId) -> (Result_19);
+  getAddress: (text) -> (Result_18);
   getCallerCartItems: () -> (vec record {
                                    CartId;
                                    CartItem;
                                  }) query;
-  getCategory: (SlugId) -> (Result_16) query;
-  getContact: (ContactId) -> (Result_15) query;
-  getOrder: (text) -> (Result_14) query;
-  getProduct: (SlugId) -> (Result_13) query;
-  getUserdetailsbycaller: () -> (Result_12) query;
-  getUserdetailsbyid: (principal) -> (Result_12) query;
-  getpaymentstatus: () -> (Result_11);
+  getCategory: (SlugId) -> (Result_17) query;
+  getContact: (ContactId) -> (Result_16) query;
+  getOrder: (text) -> (Result_15) query;
+  getProduct: (SlugId) -> (Result_14) query;
+  getUserdetailsbycaller: () -> (Result_13) query;
+  getUserdetailsbyid: (principal) -> (Result_13) query;
+  getpaymentstatus: () -> (Result_12);
+  getstatisticaldetailforadmin: () -> (Result_11);
   getvariant: (SlugId) -> (Result_10);
   isAdmin: (principal) -> (bool);
   listCategories: () -> (vec record {
