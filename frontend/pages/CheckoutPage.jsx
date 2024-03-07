@@ -64,11 +64,18 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [finalCart, setFinalCart] = useState(null);
-  const [checkedItems, setCheckedItems] = useState(new Set());
   const [userAddress, setUserAddress] = useState(null);
-  const cartItemDetails = getCartItemDetails(cartItems, productList);
-  // console.log(cartItemDetails);
+  const [isChecked, setIsChecked] = useState(null);
+  const [isFinalCartLoading, setIsFinalCartLoading] = useState(true);
+  const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
+  const [totalPriceNQty, setTotalPriceNQty] = useState(null);
 
+  // Get Cart Item details Object:
+  const cartItemDetails = getCartItemDetails(cartItems, productList);
+  console.log("cartItemDetails", cartItemDetails);
+  console.log("finalCart", finalCart);
+
+  // Increase quantity and price
   const handleIncrease = (index) => {
     const updatedCart = [...finalCart];
     updatedCart[index].quantity += 1;
@@ -77,8 +84,10 @@ const Checkout = () => {
     updatedCart[index].variantSellPriceBasedOnQty =
       updatedCart[index].variantSellPrice * updatedCart[index].quantity;
     setFinalCart(updatedCart);
+    setIsChecked(index);
   };
 
+  // Decrease quantity and price
   const handleDecrease = (index) => {
     if (finalCart[index].quantity > 1) {
       const updatedCart = [...finalCart];
@@ -87,50 +96,79 @@ const Checkout = () => {
         updatedCart[index].variantPrice * updatedCart[index].quantity;
       updatedCart[index].variantSellPriceBasedOnQty =
         updatedCart[index].variantSellPrice * updatedCart[index].quantity;
-
       setFinalCart(updatedCart);
+      setIsChecked(index);
     }
   };
 
-  const handleToggleChecked = (index) => {
-    setCheckedItems((prevCheckedItems) => {
-      const newCheckedItems = new Set(prevCheckedItems);
-      if (newCheckedItems.has(index)) {
-        newCheckedItems.delete(index);
-      } else {
-        newCheckedItems.add(index);
-      }
-      return newCheckedItems;
-    });
+  // Update Cart price and quantity on clicking check
+  const updateCart = () => {
+    setUpdatedPriceNQty(totalPriceNQty);
   };
 
+  // Effect on initial Load : productlist , cart items
   useEffect(() => {
     getProductList();
     getCallerCartItems(setIsLoading, setCartItems);
   }, []);
 
+  // Effect after getting cartItemDetails
   useEffect(() => {
     if (cartItemDetails) {
       const mergedCartItems = Object.values(
         cartItemDetails.reduce((acc, cartItem) => {
           const key = `${cartItem.product.slug}-${cartItem.size}-${cartItem.color}`;
           if (!acc[key]) {
-            acc[key] = { ...cartItem, quantity: 0 };
+            acc[key] = { ...cartItem, quantity: 0, orderIds: [] };
           }
           acc[key].quantity += cartItem.quantity;
           acc[key].variantPriceBasedOnQty =
             acc[key].variantPrice * acc[key].quantity;
           acc[key].variantSellPriceBasedOnQty =
             acc[key].variantSellPrice * acc[key].quantity;
+
+          if (
+            cartItem.orderId &&
+            !acc[key].orderIds.includes(cartItem.orderId)
+          ) {
+            acc[key].orderIds.push(cartItem.orderId);
+          }
+
           return acc;
         }, {})
       );
 
-      setFinalCart(mergedCartItems);
-    }
-  }, [isLoading]);
+      const { totalPrice, totalQuantity } = mergedCartItems.reduce(
+        (totals, cartItem) => {
+          totals.totalPrice += cartItem.variantSellPriceBasedOnQty;
+          totals.totalQuantity += cartItem.quantity;
+          return totals;
+        },
+        { totalPrice: 0, totalQuantity: 0 }
+      );
 
-  console.log(finalCart);
+      setUpdatedPriceNQty({ totalPrice, totalQuantity });
+      setFinalCart(mergedCartItems);
+      setIsFinalCartLoading(false);
+    }
+  }, [isLoading, isFinalCartLoading]);
+
+  // Effect on price and quantity
+  useEffect(() => {
+    if (finalCart && finalCart.length > 0) {
+      const { totalPrice, totalQuantity } = finalCart.reduce(
+        (totals, cartItem) => {
+          totals.totalPrice += cartItem.variantSellPriceBasedOnQty;
+          totals.totalQuantity += cartItem.quantity;
+          return totals;
+        },
+        { totalPrice: 0, totalQuantity: 0 }
+      );
+
+      setTotalPriceNQty({ totalPrice, totalQuantity });
+    }
+  }, [finalCart, isFinalCartLoading]);
+
   return (
     <div className="container mx-auto py-6 max-md:px-2">
       <div className="pb-4">
@@ -139,24 +177,25 @@ const Checkout = () => {
           Back to cart
         </Button>
       </div>
-      {isLoading ? (
+      {isFinalCartLoading ? (
         <div>Loading...</div>
       ) : (
         <>
-          {cartItemDetails && cartItemDetails.length > 0 ? (
+          {finalCart && finalCart.length > 0 ? (
             <div className="flex gap-4 tracking-wider max-md:flex-col">
               <div className="flex flex-col gap-4 flex-1">
                 <span className="bg-black rounded-xl text-white py-4 px-6 font-medium">
                   Checkout
                 </span>
-                {finalCart?.map((cartItem, index) => (
+                {finalCart.map((cartItem, index) => (
                   <CheckoutCard
                     key={index}
                     cartItem={cartItem}
                     handleIncrease={() => handleIncrease(index)}
                     handleDecrease={() => handleDecrease(index)}
-                    isChecked={checkedItems.has(index)}
-                    handleToggleChecked={() => handleToggleChecked(index)}
+                    isChecked={isChecked === index}
+                    setIsChecked={setIsChecked}
+                    updateCart={updateCart}
                   />
                 ))}
                 <AddressSection
@@ -170,7 +209,7 @@ const Checkout = () => {
                 />
               </div>
               <div className="border-2 rounded-2xl max-h-80 lg:min-w-96">
-                <BillSection />
+                <BillSection updatedPriceNQty={updatedPriceNQty} />
               </div>
             </div>
           ) : (
@@ -190,9 +229,14 @@ const CheckoutCard = ({
   handleIncrease,
   handleDecrease,
   isChecked,
-  handleToggleChecked,
+  setIsChecked,
+  updateCart,
 }) => {
-  console.log(isChecked);
+  const toggleUpdate = () => {
+    setIsChecked(false);
+    updateCart();
+  };
+
   return (
     <div className="border-2 rounded-2xl p-6 flex max-lg:flex-col">
       <div className="flex gap-4 flex-1">
@@ -204,7 +248,7 @@ const CheckoutCard = ({
           />
         </div>
         <div className="flex flex-col gap-2">
-          <span className="border border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
+          <span className="border-2 px-2 py-1 text-xs uppercase font-semibold rounded-full max-w-max">
             {cartItem.product.category}
           </span>
           <p className="text-lg font-semibold capitalize">
@@ -250,7 +294,7 @@ const CheckoutCard = ({
               color="green"
               size={24}
               className="cursor-pointer"
-              onClick={handleToggleChecked}
+              onClick={toggleUpdate}
             />
           )}
         </div>
@@ -373,7 +417,8 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
-const BillSection = () => {
+const BillSection = ({ updatedPriceNQty }) => {
+  // console.log(updatedPriceNQty);
   return (
     <div className="flex flex-col">
       <div className="border-b-2 py-6">
@@ -386,11 +431,13 @@ const BillSection = () => {
           <p className="text-slate-500">
             Price
             <span className="italic">
-              {/* ({totalQty} {totalQty > 1 ? "items" : "item"}) */}
-              (1Item)
+              ({updatedPriceNQty.totalQuantity}{" "}
+              {updatedPriceNQty.totalQuantity > 1 ? "items" : "item"})
             </span>
           </p>
-          <span className="font-bold">$20</span>
+          <span className="font-bold">
+            ${updatedPriceNQty.totalPrice?.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
           <p className="capitalize text-slate-500">Delivery charges</p>
@@ -402,7 +449,7 @@ const BillSection = () => {
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
         <div className="flex justify-between px-6 gap-2 font-bold">
           <p className="capitalize">Total Payable</p>
-          <span>$20</span>
+          <span>${updatedPriceNQty.totalPrice?.toFixed(2)}</span>
         </div>
       </div>
       <div className="p-6 flex w-full">
