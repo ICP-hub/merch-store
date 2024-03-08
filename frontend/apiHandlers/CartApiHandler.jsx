@@ -20,6 +20,7 @@ const CartApiHandler = () => {
     try {
       setIsLoading(true);
       const response = await backend.getCallerCartItems();
+      console.log("getCallerCartItems response ", response);
       setCartItems(response);
     } catch (err) {
       console.error("Error Fetching Cart", err);
@@ -44,6 +45,8 @@ const CartApiHandler = () => {
     }
 
     const userid = Principal.fromText(principal);
+    // Random payment address to avoid err PaymentAddressAlreadyUsed
+    const randomPaymentAddress = Math.floor(Math.random() * 100).toString();
     // const userid = principal;
     // Create Object Orderdetails
     const orderDetails = {
@@ -55,7 +58,7 @@ const CartApiHandler = () => {
       },
       orderStatus: "order placed",
       userid: userid,
-      paymentAddress: "testing",
+      paymentAddress: randomPaymentAddress,
       totalAmount: totalAmount,
       shippingAddress: shippingAddress,
       products: products,
@@ -65,12 +68,18 @@ const CartApiHandler = () => {
     // Call Backend
     try {
       setOrderPlaceMentLoad(true);
-      await backend.createOrder(orderDetails);
-      toast.success("Order successfully Placed");
-      // Navigate to OrderConfirmationPage
-      navigate("/order-confirm");
-      // Clear cart after successful order placement
-      // await backend.clearallcartitmesbyprincipal();
+      const response = await backend.createOrder(orderDetails);
+      console.log("orderPlacement response ", response);
+      if (response.ok) {
+        toast.success("Order successfully Placed");
+        // Navigate to OrderConfirmationPage
+        navigate("/order-confirm");
+        // Clear cart after successful order placement
+        await backend.clearallcartitmesbyprincipal();
+      } else {
+        toast.error(Object.keys(response.err));
+        return;
+      }
     } catch (err) {
       toast.error("Failed to place order");
       console.error("Error Order Placement", err);
@@ -84,7 +93,7 @@ const CartApiHandler = () => {
     try {
       setIsLoading(true);
       const response = await backend.listUserOrders();
-      // console.log(response);
+      console.log("getOrderList response ", response);
       setOrderList(response);
     } catch (err) {
       console.error("Failed to fetch user order list");
@@ -98,6 +107,7 @@ const CartApiHandler = () => {
     try {
       setIsLoading(true);
       const response = await backend.getOrder(id);
+      console.log("getOrderById response ", response);
       setOrderDetails(response.ok);
     } catch (err) {
       console.error("Error fetching order", err);

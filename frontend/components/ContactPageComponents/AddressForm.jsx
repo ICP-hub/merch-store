@@ -150,6 +150,7 @@ const AddressForm = ({
         <button
           type="submit"
           className="p-2 min-w-[126px] text-white border border-gray-700 bg-gray-700 rounded-full font-medium text-sm relative"
+          disabled={isLoading}
         >
           {isLoading ? (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

@@ -18,7 +18,11 @@ const UserAddressApiHandler = () => {
     // console.log(address);
     try {
       setIsLoading(true);
-      await backend.createAddress({ ...address, address_type: "default" });
+      const response = await backend.createAddress({
+        ...address,
+        address_type: "default",
+      });
+      console.log("Create Address Response ", response);
       toast.success("Address created successfully");
       setSuccessfulSubmit(true);
     } catch (err) {
@@ -35,6 +39,7 @@ const UserAddressApiHandler = () => {
     try {
       setIsLoading(true);
       const response = await backend.listUserAddresses();
+      console.log("getAddressList response", response);
       setUserAddressList(response);
     } catch (err) {
       console.error("Error fetching address list", err);
@@ -50,13 +55,19 @@ const UserAddressApiHandler = () => {
       setIsLoading(true);
       // Getting this error > Error updating address :  Error: Wrong number of message arguments
       // await backend.updateAddress({ ...address, address_type: "default" });
-      await backend.updateAddress(
+      const response = await backend.updateAddress(
         { ...address, address_type: "default" },
         "Address updated successfullty",
         Principal.fromText(principal)
       );
-      toast.success("Address updated successfully");
-      setSuccessfulSubmit(true);
+      console.log("updateAddressResponse ", response);
+      if (response.ok) {
+        toast.success("Address updated successfully");
+        setSuccessfulSubmit(true);
+      } else {
+        toast.error(Object.keys(response.err));
+        return;
+      }
     } catch (err) {
       toast.error("Failed to update address");
       console.error("Error updating address : ", err);

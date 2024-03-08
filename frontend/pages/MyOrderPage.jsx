@@ -65,7 +65,7 @@ const MyOrders = () => {
     getOrderList(setIsLoading, setOrderList);
   }, []);
 
-  console.log(myOrderList);
+  // console.log(myOrderList);
 
   useEffect(() => {
     const updatedMyOrderList = orderList?.map(

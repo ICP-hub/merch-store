@@ -498,6 +498,7 @@ const BillSection = ({ updatedPriceNQty, proceed, orderPlacementLoad }) => {
         <Button
           className="p-2 min-w-full min-h-10 text-white border bg-black rounded-md font-medium text-sm relative"
           onClick={() => proceed()}
+          disabled={orderPlacementLoad}
         >
           {orderPlacementLoad ? (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
