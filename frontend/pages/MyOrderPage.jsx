@@ -14,6 +14,7 @@ import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import CartApiHandler from "../apiHandlers/CartApiHandler";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
+import { useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -60,10 +61,11 @@ const MyOrders = () => {
   const [orderList, setOrderList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [myOrderList, setMyOrderList] = useState(null);
+  const { principal } = useConnect();
 
   useEffect(() => {
     getOrderList(setIsLoading, setOrderList);
-  }, []);
+  }, [principal]);
 
   // console.log(myOrderList);
 

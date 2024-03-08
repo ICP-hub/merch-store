@@ -12,8 +12,6 @@ const UserAddressApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
   const { principal } = useConnect();
-  const [loadComplete, setLoadComplete] = useState(true); //For get Request
-
   // {firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}
   // Create Address
   const createAddress = async (address, setIsLoading, setSuccessfulSubmit) => {
@@ -47,7 +45,6 @@ const UserAddressApiHandler = () => {
       console.error("Error fetching address list", err);
     } finally {
       setIsLoading(false);
-      setLoadComplete(false);
     }
   };
 
@@ -89,7 +86,6 @@ const UserAddressApiHandler = () => {
     createAddress,
     getAddressList,
     updateAddress,
-    loadComplete,
   };
 };
 

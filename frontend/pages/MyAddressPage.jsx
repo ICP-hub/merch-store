@@ -11,6 +11,8 @@ import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import AddressForm from "../components/ContactPageComponents/AddressForm";
 import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler";
+import { Principal } from "@dfinity/principal";
+import { useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base 
@@ -47,10 +49,11 @@ const MyAddress = () => {
   const [editMode, setEditMode] = useState(false);
   const [newAddress, setNewAddress] = useState(false);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
-  const { getAddressList, loadComplete } = UserAddressApiHandler();
+  const { getAddressList } = UserAddressApiHandler();
   const [userAddessList, setUserAddressList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
+  const { principal } = useConnect();
 
   const addressDetails = userAddessList?.map(([Principal, [...Address]]) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
@@ -75,7 +78,7 @@ const MyAddress = () => {
   // Effect getAddressList : re-render on successful submit
   useEffect(() => {
     getAddressList(setUserAddressList, setIsLoading);
-  }, [successfulSubmit, loadComplete]);
+  }, [successfulSubmit, principal]);
 
   // Swich to saved form after form
   useEffect(() => {

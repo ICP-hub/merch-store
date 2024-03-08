@@ -22,6 +22,7 @@ import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import toast from "react-hot-toast";
+import { useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main checkout Container
@@ -71,6 +72,7 @@ const Checkout = () => {
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
+  const { principal } = useConnect();
 
   // Get Cart Item details Object:
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -149,7 +151,7 @@ const Checkout = () => {
   useEffect(() => {
     getProductList();
     getCallerCartItems(setIsLoading, setCartItems);
-  }, []);
+  }, [principal]);
 
   // Effect after getting cartItemDetails
   useEffect(() => {
@@ -350,9 +352,10 @@ const CheckoutCard = ({
 /*  @ <Checkout /> : <AddressSection />
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressSection = ({ setUserAddress, userAddress }) => {
-  const { getAddressList, loadComplete } = UserAddressApiHandler();
+  const { getAddressList } = UserAddressApiHandler();
   const [isLoading, setIsLoading] = useState(false);
   const [userAddressList, setUserAddressList] = useState(null);
+  const { principal } = useConnect();
 
   const addressConfig = () => {
     const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
@@ -368,7 +371,7 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
   useEffect(() => {
     getAddressList(setUserAddressList, setIsLoading);
     addressConfig();
-  }, [loadComplete]);
+  }, [principal]);
 
   return (
     <div className="p-6 border-2 rounded-2xl">

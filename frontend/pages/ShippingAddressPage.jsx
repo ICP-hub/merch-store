@@ -17,6 +17,7 @@ import {
   totalCartSellPrice,
 } from "../apiHandlers/cartUtils.js";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
+import { useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -36,7 +37,7 @@ const ShippingAddressPage = () => {
 /*  @ <AddressDetail />.
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressDetail = () => {
-  const { getAddressList, loadComplete } = UserAddressApiHandler();
+  const { getAddressList } = UserAddressApiHandler();
   const { getCallerCartItems } = CartApiHandler();
   const [cartItems, setCartItems] = useState(null);
   const { productList, getProductList } = ProductApiHandler();
@@ -45,6 +46,7 @@ const AddressDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userAddessList, setUserAddressList] = useState();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
+  const { principal } = useConnect();
 
   // Get cart item details
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -61,7 +63,7 @@ const AddressDetail = () => {
     if (successfulSubmit) {
       setShowForm(false);
     }
-  }, [successfulSubmit, loadComplete]);
+  }, [successfulSubmit, principal]);
 
   // console.log(userAddessList);
 
