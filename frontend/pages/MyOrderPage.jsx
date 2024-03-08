@@ -65,22 +65,22 @@ const MyOrders = () => {
     getOrderList(setIsLoading, setOrderList);
   }, []);
 
+  console.log(myOrderList);
+
   useEffect(() => {
-    if (orderList) {
-      const updatedMyOrderList = orderList?.map(
-        ([id, { products, timeCreated, totalAmount }]) => {
-          const [{ title, img }] = products;
-          return {
-            id,
-            title,
-            timeCreated,
-            img,
-            totalAmount,
-          };
-        }
-      );
-      setMyOrderList(updatedMyOrderList);
-    }
+    const updatedMyOrderList = orderList?.map(
+      ([id, { products, timeCreated, totalAmount }]) => {
+        const [{ title, img }] = products;
+        return {
+          id,
+          title,
+          timeCreated,
+          img,
+          totalAmount,
+        };
+      }
+    );
+    setMyOrderList(updatedMyOrderList);
   }, [orderList]);
 
   // console.log(myOrderList);
