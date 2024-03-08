@@ -204,10 +204,11 @@ const Cart = () => {
         toast.success("All items are removed");
       } else {
         console.log("error while deleting all the items", res);
-        getCartlist;
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      getCartlist();
     }
   };
 

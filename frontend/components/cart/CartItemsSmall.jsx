@@ -125,7 +125,10 @@ const CartItemsSmall = () => {
       ) : (
         <div>
           {product.slice(0, 3).map((item, index) => (
-            <div className="rounded-xl flex justify-between  mt-2 items-center gap-2">
+            <div
+              className="rounded-xl flex justify-between  mt-2 items-center gap-2 "
+              key={index}
+            >
               <div className="flex justify-start items-start gap-2">
                 <div className="relative">
                   <img

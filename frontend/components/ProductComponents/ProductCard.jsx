@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import { useEffect } from "react";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
+
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component ProductCard.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -28,25 +29,64 @@ const ProductCard = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
+  const [carts, setCarts] = useState();
+
+  const listCarts = async () => {
+    try {
+      const cart = await backend.getCallerCartItems();
+      setCarts(cart);
+    } catch (error) {
+      console.error("Error listing carts:", error);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    listCarts();
+  }, [backend, product]);
 
   const AddToCart = async () => {
     try {
+      listCarts();
       setLoading(true);
-      const res1 = await backend.listCategories();
-      console.log(res1, "Hello catagories");
-      const res = await backend.addtoCartItems(
-        product[0],
-        product[1].variantSize[0].size,
-        product[1].variantColor[0].color,
-        quantity
-      );
-      setQuantity(0);
 
-      if ("ok" in res) {
-        toast.success("Item added to cart");
+      let cartId;
+      let isProductInCart;
+      let quantity1;
+
+      carts.some((item) => {
+        if (item[1]?.product_slug === product[0]) {
+          isProductInCart = true;
+          cartId = item[1]?.id;
+          quantity1 = item[1]?.quantity;
+          return true; // Stop iterating once the item is found
+        }
+        return false;
+      });
+
+      if (isProductInCart) {
+        const res = await backend.updateCartItems(
+          cartId,
+          quantity1 + 1,
+          product[1].variantSize[0].size,
+          product[1].variantColor[0].color
+        );
+        toast.success("item updated successfully");
+        console.log(res);
       } else {
-        // Log an error if the response does not have "ok" property
-        console.error("Unexpected response from backend:", res);
+        const res = await backend.addtoCartItems(
+          product[0],
+          product[1].variantSize[0].size,
+          product[1].variantColor[0].color,
+          quantity
+        );
+
+        if ("ok" in res) {
+          toast.success("Item added to cart");
+        } else {
+          // Log an error if the response does not have "ok" property
+          console.error("Unexpected response from backend:", res);
+        }
       }
     } catch (error) {
       // Log the error for debugging
@@ -57,7 +97,9 @@ const ProductCard = ({ product }) => {
   };
   const buyNowHandler = async () => {
     try {
+      setLoading(true);
       const res = await backend.clearallcartitmesbyprincipal();
+
       if ("ok" in res) {
         AddToCart();
       } else {
@@ -65,6 +107,10 @@ const ProductCard = ({ product }) => {
       }
     } catch (error) {
       console.log("Error while buying the product", error);
+    } finally {
+      setTimeout(() => {
+        navigate("/cart", { replace: true });
+      }, 4000);
     }
   };
   useEffect(() => {
@@ -263,48 +309,53 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
           <div className="flex justify-between gap-2 text-sm">
-            {!quantity ? ( //inventory>=quantity<=0
-              <Link
-                to="/cart"
-                className="w-full rounded-full text-black font-semibold bg-white border border-black px-4 py-2 flex items-center justify-center"
-              >
-                Go to Cart
-              </Link>
-            ) : (
-              <Button
-                onClick={() => {
-                  AddToCart();
-                  setClick(true);
-                }}
-                className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
-                  loading && " flex items-center justify-center"
-                } `}
-                disabled={loading && true}
-              >
-                {loading && click ? (
-                  <TailSpin
-                    height="20"
-                    width="20"
-                    color="black"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    visible={true}
-                  />
-                ) : (
-                  <p>Add to Cart</p>
-                )}
-              </Button>
-            )}
+            <Button
+              onClick={() => {
+                AddToCart();
+                setClick(true);
+              }}
+              className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
+                loading && " flex items-center justify-center"
+              } `}
+              disabled={loading && true}
+            >
+              {loading && click ? (
+                <TailSpin
+                  height="20"
+                  width="20"
+                  color="black"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  visible={true}
+                />
+              ) : (
+                <p>Add to Cart</p>
+              )}
+            </Button>
 
-            <Link
-              to="/cart"
-              className="w-full rounded-full text-white font-semibold bg-black border border-black px-4 py-2 flex items-center justify-center"
+            <Button
               onClick={() => {
                 buyNowHandler();
+                setClick(false);
               }}
+              className={`w-full rounded-full  font-semibold  bg-black border text-white border-black px-4 py-2 ${
+                loading && " flex items-center justify-center"
+              } `}
+              disabled={loading && true}
             >
-              Buy Now
-            </Link>
+              {loading && !click ? (
+                <TailSpin
+                  height="20"
+                  width="20"
+                  color="white"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  visible={true}
+                />
+              ) : (
+                <p>Buy Now</p>
+              )}
+            </Button>
           </div>
         </div>
       </div>
