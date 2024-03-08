@@ -92,6 +92,7 @@ actor {
         "jkssc-r7bft-rhxnv-xskty-gwy2y-nabjd-asvau-ijwcf-nyvbq-dcazp-zae",
         "h7yxq-n6yb2-6js2j-af5hk-h4inj-edrce-oevyj-kbs7a-76kft-vrqrw-nqe",
         "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
+        "mmi6f-vbi3x-r3ytg-dath5-qfi5s-rbq3r-75avw-q3ele-ajsft-llzwc-dae"
     ];
 
     public func isAdmin(userPrincipal : Principal) : async Bool {
