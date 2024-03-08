@@ -46,71 +46,85 @@ const ProductCard = ({ product }) => {
   }, [backend, product]);
 
   const AddToCart = async () => {
-    try {
-      listCarts();
-      setLoading(true);
+    if (isConnected) {
+      try {
+        listCarts();
+        setLoading(true);
 
-      let cartId;
-      let isProductInCart;
-      let quantity1;
+        let cartId;
+        let isProductInCart;
+        let quantity1;
 
-      carts.some((item) => {
-        if (item[1]?.product_slug === product[0]) {
-          isProductInCart = true;
-          cartId = item[1]?.id;
-          quantity1 = item[1]?.quantity;
-          return true; // Stop iterating once the item is found
-        }
-        return false;
-      });
+        carts.some((item) => {
+          if (item[1]?.product_slug === product[0]) {
+            isProductInCart = true;
+            cartId = item[1]?.id;
+            quantity1 = item[1]?.quantity;
+            return true; // Stop iterating once the item is found
+          }
+          return false;
+        });
+        quantity1 = quantity1 + 1;
 
-      if (isProductInCart) {
-        const res = await backend.updateCartItems(
-          cartId,
-          quantity1 + 1,
-          product[1].variantSize[0].size,
-          product[1].variantColor[0].color
-        );
-        toast.success("item updated successfully");
-        console.log(res);
-      } else {
-        const res = await backend.addtoCartItems(
-          product[0],
-          product[1].variantSize[0].size,
-          product[1].variantColor[0].color,
-          quantity
-        );
-
-        if ("ok" in res) {
-          toast.success("Item added to cart");
+        if (isProductInCart) {
+          const res = await backend.updateCartItems(
+            cartId,
+            quantity1,
+            product[1].variantSize[0].size,
+            product[1].variantColor[0].color
+          );
+          toast.success("item updated successfully");
+          console.log(res);
         } else {
-          // Log an error if the response does not have "ok" property
-          console.error("Unexpected response from backend:", res);
+          const res = await backend.addtoCartItems(
+            product[0],
+            product[1].variantSize[0].size,
+            product[1].variantColor[0].color,
+            quantity
+          );
+
+          if ("ok" in res) {
+            toast.success("Item added to cart");
+          } else {
+            // Log an error if the response does not have "ok" property
+            console.error("Unexpected response from backend:", res);
+          }
         }
+      } catch (error) {
+        // Log the error for debugging
+        console.error("An error occurred adding items to cart:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      // Log the error for debugging
-      console.error("An error occurred adding items to cart:", error);
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("please login first");
     }
   };
   const buyNowHandler = async () => {
-    try {
-      setLoading(true);
-      const res = await backend.clearallcartitmesbyprincipal();
+    if (isConnected) {
+      try {
+        setLoading(true);
+        const res = await backend.clearallcartitmesbyprincipal();
 
-      if ("ok" in res) {
-        AddToCart();
-      } else {
-        console.log(" error while clearing the cart", res);
+        if ("ok" in res) {
+          const res = await backend.addtoCartItems(
+            product[0],
+            product[1].variantSize[0].size,
+            product[1].variantColor[0].color,
+            quantity
+          );
+        } else {
+          console.log(" error while clearing the cart", res);
+        }
+      } catch (error) {
+        console.log("Error while buying the product", error);
+      } finally {
+        setTimeout(() => {
+          navigate("/cart", { replace: true });
+        }, 4000);
       }
-    } catch (error) {
-      console.log("Error while buying the product", error);
-    } finally {
-      setTimeout(() => {
-        navigate("/cart", { replace: true });
-      }, 4000);
+    } else {
+      toast.error("please login first");
     }
   };
   useEffect(() => {

@@ -550,7 +550,7 @@ const Header = ({ title }) => {
                   )}
                 </div>
 
-                {!isConnected ? (
+                {isConnected ? (
                   <div>
                     <Menu as="div" className="relative inline-block text-left">
                       <div className="mb-0">

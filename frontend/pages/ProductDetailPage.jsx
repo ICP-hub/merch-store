@@ -144,28 +144,32 @@ const ProductDetail = () => {
 
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
-    try {
-      setLoading4(true);
-      const res = await backend.addtoCartItems(
-        slug,
-        selectedSize,
-        selectedColor,
-        quantity
-      );
+    if (isConnected) {
+      try {
+        setLoading4(true);
+        const res = await backend.addtoCartItems(
+          slug,
+          selectedSize,
+          selectedColor,
+          quantity
+        );
 
-      if ("ok" in res) {
-        toast.success("item added to cart Successfully");
-        console.log("     Item added successfully     ", res);
-      } else {
-        // Log an error if the response does not have "ok" property
-        console.error("Unexpected response from backend:", res);
+        if ("ok" in res) {
+          toast.success("item added to cart Successfully");
+          console.log("     Item added successfully     ", res);
+        } else {
+          // Log an error if the response does not have "ok" property
+          console.error("Unexpected response from backend:", res);
+        }
+      } catch (error) {
+        // Log the error for debugging
+        console.error("An error occurred adding items to cart:", error);
+      } finally {
+        setLoading4(false);
+        listCarts();
       }
-    } catch (error) {
-      // Log the error for debugging
-      console.error("An error occurred adding items to cart:", error);
-    } finally {
-      setLoading4(false);
-      listCarts();
+    } else {
+      toast.error("please login first");
     }
   };
 
@@ -295,9 +299,11 @@ const ProductDetail = () => {
             {!loading ? (
               <div className="absolute top-2 left-2 w-12 h-6 animate-pulse bg-white py-2 px-2 rounded-full text-sm cursor-pointer font-semibold"></div>
             ) : (
-              <div className="absolute top-2 left-2 bg-white py-1 px-2 max:w-16 rounded-full text-xs text-center cursor-pointer font-semibold">
-                {data.category}
-              </div>
+              <Link to="/products">
+                <div className="absolute top-2 left-2 bg-white py-1 px-2 max:w-16 rounded-full text-xs text-center cursor-pointer font-semibold">
+                  {data.category}
+                </div>
+              </Link>
             )}
 
             {!loading ? (
@@ -380,13 +386,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          <div
-            className="lg:w-4/6 mt-4 ml-3 pl-3 md:h-[500px] lg:mt-0 md:overflow-y-scroll  "
-            style={{
-              scrollbarWidth: "thin",
-              scrollbarColor: "transparent transparent",
-            }}
-          >
+          <div className="lg:w-4/6 mt-4 ml-3 pl-3 md:h-[500px] lg:mt-0   ">
             {/* Product Details */}
 
             {!loading ? (

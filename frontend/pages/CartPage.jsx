@@ -15,13 +15,7 @@ import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 
 import NoImage from "../assets/product/p1-front.jpg";
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
+import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import Total from "../components/common/Total.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
