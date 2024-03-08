@@ -36,7 +36,7 @@ const ShippingAddressPage = () => {
 /*  @ <AddressDetail />.
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressDetail = () => {
-  const { getAddressList } = UserAddressApiHandler();
+  const { getAddressList, loadComplete } = UserAddressApiHandler();
   const { getCallerCartItems } = CartApiHandler();
   const [cartItems, setCartItems] = useState(null);
   const { productList, getProductList } = ProductApiHandler();
@@ -61,7 +61,7 @@ const AddressDetail = () => {
     if (successfulSubmit) {
       setShowForm(false);
     }
-  }, [successfulSubmit]);
+  }, [successfulSubmit, loadComplete]);
 
   // console.log(userAddessList);
 

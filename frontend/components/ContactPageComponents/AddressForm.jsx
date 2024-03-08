@@ -83,6 +83,7 @@ const AddressForm = ({
       phone_number: phone.getNumber(),
       ...locationInput,
     };
+    // console.log(updatedFormValues);
 
     updateAddress(updatedFormValues, setIsLoading, setSuccessfulSubmit);
   };

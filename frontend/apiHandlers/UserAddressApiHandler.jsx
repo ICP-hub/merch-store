@@ -1,5 +1,6 @@
 import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 // Custom hook : initialize the backend Canister
@@ -11,6 +12,7 @@ const UserAddressApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
   const { principal } = useConnect();
+  const [loadComplete, setLoadComplete] = useState(true); //For get Request
 
   // {firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}
   // Create Address
@@ -45,12 +47,17 @@ const UserAddressApiHandler = () => {
       console.error("Error fetching address list", err);
     } finally {
       setIsLoading(false);
+      setLoadComplete(false);
     }
   };
 
   // Update Address
   const updateAddress = async (address, setIsLoading, setSuccessfulSubmit) => {
     // console.log(address)
+    if (!principal) {
+      toast.error("You need to login first");
+      return;
+    }
     try {
       setIsLoading(true);
       // Getting this error > Error updating address :  Error: Wrong number of message arguments
@@ -82,6 +89,7 @@ const UserAddressApiHandler = () => {
     createAddress,
     getAddressList,
     updateAddress,
+    loadComplete,
   };
 };
 

@@ -11,7 +11,6 @@ import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import AddressForm from "../components/ContactPageComponents/AddressForm";
 import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler";
-import { Principal } from "@dfinity/principal";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base 
@@ -48,7 +47,7 @@ const MyAddress = () => {
   const [editMode, setEditMode] = useState(false);
   const [newAddress, setNewAddress] = useState(false);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
-  const { getAddressList } = UserAddressApiHandler();
+  const { getAddressList, loadComplete } = UserAddressApiHandler();
   const [userAddessList, setUserAddressList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
@@ -76,7 +75,7 @@ const MyAddress = () => {
   // Effect getAddressList : re-render on successful submit
   useEffect(() => {
     getAddressList(setUserAddressList, setIsLoading);
-  }, [successfulSubmit]);
+  }, [successfulSubmit, loadComplete]);
 
   // Swich to saved form after form
   useEffect(() => {

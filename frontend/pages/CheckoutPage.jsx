@@ -216,7 +216,7 @@ const Checkout = () => {
           Back to cart
         </Button>
       </div>
-      {isLoading || isFinalCartLoading ? (
+      {isFinalCartLoading ? (
         <div>Loading...</div>
       ) : (
         <>
@@ -350,7 +350,7 @@ const CheckoutCard = ({
 /*  @ <Checkout /> : <AddressSection />
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressSection = ({ setUserAddress, userAddress }) => {
-  const { getAddressList } = UserAddressApiHandler();
+  const { getAddressList, loadComplete } = UserAddressApiHandler();
   const [isLoading, setIsLoading] = useState(false);
   const [userAddressList, setUserAddressList] = useState(null);
 
@@ -368,7 +368,7 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
   useEffect(() => {
     getAddressList(setUserAddressList, setIsLoading);
     addressConfig();
-  }, []);
+  }, [loadComplete]);
 
   return (
     <div className="p-6 border-2 rounded-2xl">
