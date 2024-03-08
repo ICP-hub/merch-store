@@ -67,7 +67,7 @@ const MyOrders = () => {
 
   useEffect(() => {
     if (orderList) {
-      const updatedMyOrderList = orderList.map(
+      const updatedMyOrderList = orderList?.map(
         ([id, { products, timeCreated, totalAmount }]) => {
           const [{ title, img }] = products;
           return {
@@ -102,7 +102,7 @@ const MyOrders = () => {
 
       {!isLoading && myOrderList && myOrderList?.length > 0 && (
         <div className="flex flex-col">
-          {myOrderList.map((order, index) => (
+          {myOrderList?.map((order, index) => (
             <div
               key={index}
               className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"

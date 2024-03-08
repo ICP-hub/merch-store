@@ -44,15 +44,13 @@ const MyOrderDetailContainerMain = () => {
     getOrderById(id, setIsLoading, setOrderDetails);
   }, []);
 
-  // console.log(orderDetails);
+  console.log(orderDetails);
 
   return (
     <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
       {isLoading && <div>Loading....</div>}
 
-      {!isLoading && orderDetails && orderDetails === null && (
-        <div>Invalid Order ID</div>
-      )}
+      {!isLoading && orderDetails === undefined && <div>Invalid Order ID</div>}
 
       {!isLoading && orderDetails && orderDetails !== null && (
         <>
