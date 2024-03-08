@@ -93,11 +93,25 @@ const CartApiHandler = () => {
     }
   };
 
+  // Get individual Order
+  const getOrderById = async (id, setIsLoading, setOrderDetails) => {
+    try {
+      setIsLoading(true);
+      const response = await backend.getOrder(id);
+      setOrderDetails(response.ok);
+    } catch (err) {
+      console.error("Error fetching order", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Returns
   return {
     getCallerCartItems,
     orderPlacement,
     getOrderList,
+    getOrderById,
   };
 };
 

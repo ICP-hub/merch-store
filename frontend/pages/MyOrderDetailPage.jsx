@@ -35,73 +35,31 @@ const MyOrderDetailPage = () => {
 /*  @  MyOrderDetailPage : <MyOrderContainerMain />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrderDetailContainerMain = () => {
-  const { getOrderList, isLoading } = CartApiHandler();
+  const { getOrderById } = CartApiHandler();
+  const [isLoading, setIsLoading] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
   const { id } = useParams();
   // Filter orderList from params
-  const orderData = orderList?.find(([orderId, _]) => orderId === id);
-
-  const fetchOrderData = () => {
-    if (orderData) {
-      const {
-        awb,
-        orderStatus,
-        paymentAddress,
-        paymentMethod,
-        paymentStatus,
-        shippingAddress,
-        products,
-        shippingAmount,
-        subTotalAmount,
-        timeCreated,
-        timeUpdated,
-        totalAmount,
-        userid,
-      } = orderData[1];
-
-      return {
-        awb,
-        orderStatus,
-        paymentAddress,
-        paymentMethod,
-        paymentStatus,
-        shippingAddress,
-        products,
-        shippingAmount,
-        subTotalAmount,
-        timeCreated,
-        timeUpdated,
-        totalAmount,
-        userid,
-      };
-    }
-    return null; // If no match
-  };
-
-  const orderDetails = fetchOrderData();
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await getOrderList();
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+    getOrderById(id, setIsLoading, setOrderDetails);
   }, []);
+
+  // console.log(orderDetails);
 
   return (
     <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
-      {console.log(isLoading)}
-      {orderData === undefined ? (
+      {isLoading && <div>Loading....</div>}
+
+      {!isLoading && orderDetails && orderDetails === null && (
         <div>Invalid Order ID</div>
-      ) : (
+      )}
+
+      {!isLoading && orderDetails && orderDetails !== null && (
         <>
-          {" "}
           <TabChanges orderId={id} />
-          <DeliveryInfo shippingAddress={orderDetails?.shippingAddress} />
+          <DeliveryInfo shippingAddress={orderDetails.shippingAddress} />
           <DeliveryStepper />
-          <OrderItemComp products={orderDetails?.products} />
+          <OrderItemComp products={orderDetails.products} />
         </>
       )}
     </div>
@@ -286,7 +244,7 @@ const OrderItemComp = ({ products }) => {
               />
             </div>
             <div className="flex flex-col gap-1 overflow-hidden flex-1">
-              <p className="text-sm font-medium">
+              <p className="font-medium capitalize">
                 {product?.title.length > 60
                   ? `${product?.title.substring(0, 60)}...`
                   : product?.title}
@@ -298,19 +256,13 @@ const OrderItemComp = ({ products }) => {
                 Price: ${product?.sale_price.toLocaleString()}
               </p>
               <span className="text-xs text-gray-600 flex gap-4">
-                <p>Size: ${product?.size}</p>
-                <p>Color: ${product?.color}</p>
+                <p>Size: {product?.size}</p>
+                <p>Color: {product?.color}</p>
               </span>
               <span className="font-medium">
                 Total: $
                 {(product?.quantity * product?.sale_price)?.toLocaleString()}
               </span>
-            </div>
-            <div className="flex flex-col w-full sm:w-1/2 items-start">
-              <h3 className="font-medium sm:text-center">Order Status</h3>
-              {/* <p className="text-sm">{`Ordered on: ${product.orderedAt.toLocaleString()}`}</p> */}
-              {/* <p className="text-sm">{`Shipped on: ${product.shippedAt.toLocaleString()}`}</p>
-              <p className="text-sm">{`Delivered on: ${product.deliveredAt.toLocaleString()}`}</p> */}
             </div>
           </div>
         ))}

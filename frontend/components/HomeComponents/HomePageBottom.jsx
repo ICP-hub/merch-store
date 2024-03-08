@@ -66,7 +66,6 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
   }
 
   const { title, description, variantColor, slug } = newArrivalProd[1];
-
   const discount =
     ((variantColor[0].variant_price - variantColor[0].variant_sale_price) /
       variantColor[0].variant_price) *
@@ -120,7 +119,7 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
           className="order-1 sm:order-2 rounded-2xl bg-gray-200 justify-center items-center flex shadow-lg mb-4 md:mb-0"
         >
           <img
-            src={variantColor.img1 || placeholderImg}
+            src={variantColor[0].img1 || placeholderImg}
             alt="prod.name"
             className="h-80 w-80 object-contain"
           />
@@ -129,13 +128,7 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
     </div>
   );
 };
-{
-  /* <img
-src={NewIcon}
-alt="New arrival"
-className="max-w-16 max-h-16 absolute top-[-28px] left-[-8px] max-sm:left-[-3px]"
-/> */
-}
+
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Second Div: HomeBottom : ExploreCategories component.
 /* ----------------------------------------------------------------------------------------------------- */

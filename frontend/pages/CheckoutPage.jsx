@@ -21,6 +21,7 @@ import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler.jsx";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
+import toast from "react-hot-toast";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main checkout Container
@@ -65,7 +66,7 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [finalCart, setFinalCart] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
-  const [isChecked, setIsChecked] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
   const [isFinalCartLoading, setIsFinalCartLoading] = useState(true);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
@@ -105,6 +106,10 @@ const Checkout = () => {
 
   // Proceed order placement
   const proceed = () => {
+    if (isChecked !== false) {
+      toast.error("You need to update the cart before proceed");
+      return;
+    }
     const { totalPrice } = totalPriceNQty;
     const products = updateProductsForPlacement(finalCart);
     const shippingAddress = userAddress;
@@ -456,8 +461,6 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
 const BillSection = ({ updatedPriceNQty, proceed, orderPlacementLoad }) => {
-  // console.log(updatedPriceNQty);
-  console.log(orderPlacementLoad);
   return (
     <div className="flex flex-col">
       <div className="border-b-2 py-6">

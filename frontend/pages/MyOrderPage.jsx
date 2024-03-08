@@ -83,65 +83,67 @@ const MyOrders = () => {
     }
   }, [orderList]);
 
-  console.log(myOrderList);
+  // console.log(myOrderList);
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
       <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2 ">
         My recent orders({myOrderList?.length || 0})
       </h1>
-      {isLoading ? (
+      {isLoading && (
         <div className="p-8 capitalize font-medium">Loading...</div>
-      ) : myOrderList && myOrderList.length === 0 ? (
+      )}
+
+      {!isLoading && myOrderList && myOrderList?.length === 0 && (
         <div className="p-8 capitalize font-medium">
           You haven't ordered any items. Check out our products.
         </div>
-      ) : (
+      )}
+
+      {!isLoading && myOrderList && myOrderList?.length > 0 && (
         <div className="flex flex-col">
-          {myOrderList &&
-            myOrderList.map((order, index) => (
-              <div
-                key={index}
-                className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
-              >
-                <div className="flex max-md:flex-col gap-3">
-                  <div className="flex p-1 border border-gray-300 rounded-xl max-w-max">
-                    <img
-                      className="max-w-24 max-h-24 object-contain rounded-xl"
-                      src={order.img === "" ? NoImage : order.img}
-                      alt="_blank"
-                    />
-                  </div>
-                  <div className="flex flex-col lg:justify-center">
-                    <p className="text-lg capitalize font-medium">
-                      {order.title}
-                    </p>
-                    <p className="text-xs uppercase">Order Id: {order.id}</p>
-                    <p className="uppercase text-xs">
-                      {formatDate(order.timeCreated)}
-                    </p>
-                  </div>
+          {myOrderList.map((order, index) => (
+            <div
+              key={index}
+              className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
+            >
+              <div className="flex max-md:flex-col gap-3">
+                <div className="flex p-1 border border-gray-300 rounded-xl max-w-max">
+                  <img
+                    className="max-w-24 max-h-24 object-contain rounded-xl"
+                    src={order?.img === "" ? NoImage : order?.img}
+                    alt="_blank"
+                  />
                 </div>
-                <div className="flex max-lg:ml-auto max-md:ml-0 gap-6">
-                  <div className="flex flex-col justify-center">
-                    <span className="text-[12px] uppercase">Total amount</span>
-                    <p className="text-lg font-medium">${order.totalAmount}</p>
-                  </div>
-                  <div className="flex justify-center flex-col">
-                    {/* Keeping empty div for better alignment */}
-                    <div className="h-4 w-4"></div>
-                    <div className="flex gap-6">
-                      <Button className="hover:text-green-500">
-                        <BsTruck size={20} />
-                      </Button>
-                      <Link to={`/my-order-detail/${order?.id}`}>
-                        <BsArrowRightCircle size={20} />
-                      </Link>
-                    </div>
+                <div className="flex flex-col lg:justify-center">
+                  <p className="text-lg capitalize font-medium">
+                    {order?.title}
+                  </p>
+                  <p className="text-xs uppercase">Order Id: {order?.id}</p>
+                  <p className="uppercase text-xs">
+                    {formatDate(order?.timeCreated)}
+                  </p>
+                </div>
+              </div>
+              <div className="flex max-lg:ml-auto max-md:ml-0 gap-6">
+                <div className="flex flex-col justify-center">
+                  <span className="text-[12px] uppercase">Total amount</span>
+                  <p className="text-lg font-medium">${order?.totalAmount}</p>
+                </div>
+                <div className="flex justify-center flex-col">
+                  <div className="h-4 w-4"></div>
+                  <div className="flex gap-6">
+                    <Button className="hover:text-green-500">
+                      <BsTruck size={20} />
+                    </Button>
+                    <Link to={`/my-order-detail/${order?.id}`}>
+                      <BsArrowRightCircle size={20} />
+                    </Link>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       )}
     </div>
