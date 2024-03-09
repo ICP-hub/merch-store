@@ -14,9 +14,13 @@ const CartApiHandler = () => {
   const [backend] = useBackend();
   const { principal } = useConnect();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [cartItems, setCartItems] = useState(null);
+  const [orderList, setOrderList] = useState(null);
+  const [orderDetails, setOrderDetails] = useState(null);
 
   // Get caller cart items
-  const getCallerCartItems = async (setIsLoading, setCartItems) => {
+  const getCallerCartItems = async () => {
     try {
       setIsLoading(true);
       const response = await backend.getCallerCartItems();
@@ -89,7 +93,7 @@ const CartApiHandler = () => {
   };
 
   // Get Order List
-  const getOrderList = async (setIsLoading, setOrderList) => {
+  const getOrderList = async () => {
     try {
       setIsLoading(true);
       const response = await backend.listUserOrders();
@@ -103,7 +107,7 @@ const CartApiHandler = () => {
   };
 
   // Get individual Order
-  const getOrderById = async (id, setIsLoading, setOrderDetails) => {
+  const getOrderById = async (id) => {
     try {
       setIsLoading(true);
       const response = await backend.getOrder(id);
@@ -116,12 +120,37 @@ const CartApiHandler = () => {
     }
   };
 
+  // Delte Cart Item
+  const deleteCartItemById = async (id) => {
+    try {
+      setIsLoading(true);
+      const response = await backend.deleteCartItems(id);
+      console.log("Delte cart item response ", response);
+      if (response.ok) {
+        toast.success("Item removed successfully");
+      } else {
+        toast.error(Object.keys(response.err));
+        return;
+      }
+    } catch (err) {
+      toast.error("Failed to remove item");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Returns
   return {
     getCallerCartItems,
     orderPlacement,
     getOrderList,
     getOrderById,
+    isLoading,
+    cartItems,
+    orderList,
+    orderDetails,
+    deleteCartItemById,
   };
 };
 

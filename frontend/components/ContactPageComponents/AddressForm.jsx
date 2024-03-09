@@ -14,12 +14,10 @@ const AddressForm = ({
   onCancel,
   isNew,
   initialFormValues,
-  isLoading,
-  setIsLoading,
   setSuccessfulSubmit,
 }) => {
   const [formValues, setFormValues] = useState(initialFormValues || {});
-  const { createAddress, updateAddress } = UserAddressApiHandler();
+  const { createAddress, updateAddress, isLoading } = UserAddressApiHandler();
   const [phone, setPhone] = useState(null);
   // Get location from selected input : Country, State, City
   const [locationInput, setLocationInput] = useState({});
@@ -66,7 +64,7 @@ const AddressForm = ({
       ...locationInput,
     };
 
-    createAddress(updatedFormValues, setIsLoading, setSuccessfulSubmit);
+    createAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
   const handleUpdateSubmit = (e) => {
@@ -85,7 +83,7 @@ const AddressForm = ({
     };
     // console.log(updatedFormValues);
 
-    updateAddress(updatedFormValues, setIsLoading, setSuccessfulSubmit);
+    updateAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
   const formFields = [

@@ -37,16 +37,13 @@ const ShippingAddressPage = () => {
 /*  @ <AddressDetail />.
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressDetail = () => {
-  const { getAddressList } = UserAddressApiHandler();
-  const { getCallerCartItems } = CartApiHandler();
-  const [cartItems, setCartItems] = useState(null);
+  const { getAddressList, userAddressList } = UserAddressApiHandler();
+  const { getCallerCartItems, cartItems } = CartApiHandler();
   const { productList, getProductList } = ProductApiHandler();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [userAddessList, setUserAddressList] = useState();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
-  const { principal } = useConnect();
+  const [finalIsLoading, setFinalIsLoading] = useState(true);
 
   // Get cart item details
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -56,22 +53,26 @@ const AddressDetail = () => {
 
   // Fetch data parallelly when the component mounts
   useEffect(() => {
-    getAddressList(setUserAddressList, setIsLoading);
-    getProductList();
-    getCallerCartItems(setIsLoading, setCartItems);
-    // Hide the form on successful submit
-    if (successfulSubmit) {
-      setShowForm(false);
-    }
-  }, [successfulSubmit, principal]);
-
-  // console.log(userAddessList);
+    const fetchData = async () => {
+      await Promise.all([
+        getAddressList(),
+        getProductList(),
+        getCallerCartItems(),
+      ]);
+      // Hide the form on successful submit
+      if (successfulSubmit) {
+        setShowForm(false);
+      }
+      setFinalIsLoading(false);
+    };
+    fetchData();
+  }, [successfulSubmit]);
 
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
   };
   // console.log(selectedAddress);
-  const addressDetails = userAddessList?.map(([Principal, [...Address]]) => {
+  const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
     return Address;
   });
@@ -90,37 +91,39 @@ const AddressDetail = () => {
 
   return (
     <div className="container mx-auto py-6 max-md:px-2">
-      <div className="flex w-full max-md:flex-col gap-4">
-        <div className="flex-1 flex flex-col gap-4">
-          <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
-            Delivery address
-          </div>
-          {addressDetails?.flat().map((address, index) => (
-            <AddressCard
-              key={index}
-              address={address}
-              onSelect={() => handleAddressSelect(address)}
-              isSelected={address === selectedAddress}
+      {finalIsLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="flex w-full max-md:flex-col gap-4">
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
+              Delivery address
+            </div>
+            {addressDetails?.flat().map((address, index) => (
+              <AddressCard
+                key={index}
+                address={address}
+                onSelect={() => handleAddressSelect(address)}
+                isSelected={address === selectedAddress}
+              />
+            ))}
+            <NewAddressSection
+              showForm={showForm}
+              setShowForm={setShowForm}
+              handleCancel={handleCancel}
+              setSuccessfulSubmit={setSuccessfulSubmit}
             />
-          ))}
-          <NewAddressSection
-            showForm={showForm}
-            setShowForm={setShowForm}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            handleCancel={handleCancel}
-            setSuccessfulSubmit={setSuccessfulSubmit}
-          />
+          </div>
+          <div className="border-2 rounded-2xl max-h-96">
+            <BillSection
+              totalItem={cartItemDetails?.length}
+              totalPrice={totalPrice}
+              totalDiscount={totalDiscount}
+              selectedAddress={selectedAddress}
+            />
+          </div>
         </div>
-        <div className="border-2 rounded-2xl max-h-96">
-          <BillSection
-            totalItem={cartItemDetails?.length}
-            totalPrice={totalPrice}
-            totalDiscount={totalDiscount}
-            selectedAddress={selectedAddress}
-          />
-        </div>
-      </div>
+      )}
     </div>
   );
 };
@@ -191,8 +194,6 @@ const NewAddressSection = ({
   showForm,
   setShowForm,
   handleCancel,
-  isLoading,
-  setIsLoading,
   setSuccessfulSubmit,
 }) => {
   return (
@@ -213,8 +214,6 @@ const NewAddressSection = ({
       {showForm ? (
         <AddressForm
           onCancel={handleCancel}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
           setSuccessfulSubmit={setSuccessfulSubmit}
           isNew={true}
         />

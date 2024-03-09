@@ -14,7 +14,6 @@ import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import CartApiHandler from "../apiHandlers/CartApiHandler";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
-import { useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -57,15 +56,12 @@ const MyOrderPageContainerMain = () => {
 /*  @ MyOrderPage : MyOrderPageContainerMain : MyOrders Component.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrders = () => {
-  const { getOrderList } = CartApiHandler();
-  const [orderList, setOrderList] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { getOrderList, orderList, isLoading } = CartApiHandler();
   const [myOrderList, setMyOrderList] = useState(null);
-  const { principal } = useConnect();
 
   useEffect(() => {
-    getOrderList(setIsLoading, setOrderList);
-  }, [principal]);
+    getOrderList();
+  }, []);
 
   // console.log(myOrderList);
 
@@ -84,8 +80,6 @@ const MyOrders = () => {
     );
     setMyOrderList(updatedMyOrderList);
   }, [orderList]);
-
-  // console.log(myOrderList);
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">

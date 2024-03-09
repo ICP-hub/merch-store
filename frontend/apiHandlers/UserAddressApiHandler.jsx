@@ -12,9 +12,11 @@ const UserAddressApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
   const { principal } = useConnect();
+  const [isLoading, setIsLoading] = useState(false);
+  const [userAddressList, setUserAddressList] = useState(null);
   // {firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}
   // Create Address
-  const createAddress = async (address, setIsLoading, setSuccessfulSubmit) => {
+  const createAddress = async (address, setSuccessfulSubmit) => {
     // console.log(address);
     try {
       setIsLoading(true);
@@ -35,7 +37,7 @@ const UserAddressApiHandler = () => {
   };
 
   // Get Address List
-  const getAddressList = async (setUserAddressList, setIsLoading) => {
+  const getAddressList = async () => {
     try {
       setIsLoading(true);
       const response = await backend.listUserAddresses();
@@ -49,7 +51,7 @@ const UserAddressApiHandler = () => {
   };
 
   // Update Address
-  const updateAddress = async (address, setIsLoading, setSuccessfulSubmit) => {
+  const updateAddress = async (address, setSuccessfulSubmit) => {
     // console.log(address)
     if (!principal) {
       toast.error("You need to login first");
@@ -86,6 +88,8 @@ const UserAddressApiHandler = () => {
     createAddress,
     getAddressList,
     updateAddress,
+    isLoading,
+    userAddressList,
   };
 };
 

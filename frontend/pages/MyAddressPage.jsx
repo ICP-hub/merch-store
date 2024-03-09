@@ -49,13 +49,11 @@ const MyAddress = () => {
   const [editMode, setEditMode] = useState(false);
   const [newAddress, setNewAddress] = useState(false);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
-  const { getAddressList } = UserAddressApiHandler();
-  const [userAddessList, setUserAddressList] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { getAddressList, userAddressList, isLoading } =
+    UserAddressApiHandler();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
-  const { principal } = useConnect();
 
-  const addressDetails = userAddessList?.map(([Principal, [...Address]]) => {
+  const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
     // Extract required props
     return Address;
@@ -77,8 +75,8 @@ const MyAddress = () => {
 
   // Effect getAddressList : re-render on successful submit
   useEffect(() => {
-    getAddressList(setUserAddressList, setIsLoading);
-  }, [successfulSubmit, principal]);
+    getAddressList();
+  }, [successfulSubmit]);
 
   // Swich to saved form after form
   useEffect(() => {
@@ -103,8 +101,6 @@ const MyAddress = () => {
         <AddressForm
           onCancel={handleCancel}
           isNew={newAddress}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
           setSuccessfulSubmit={setSuccessfulSubmit}
           initialFormValues={
             editMode && addressDetails

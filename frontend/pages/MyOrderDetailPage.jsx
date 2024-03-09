@@ -35,13 +35,11 @@ const MyOrderDetailPage = () => {
 /*  @  MyOrderDetailPage : <MyOrderContainerMain />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyOrderDetailContainerMain = () => {
-  const { getOrderById } = CartApiHandler();
-  const [isLoading, setIsLoading] = useState(false);
-  const [orderDetails, setOrderDetails] = useState(null);
+  const { getOrderById, orderDetails, isLoading } = CartApiHandler();
   const { id } = useParams();
   // Filter orderList from params
   useEffect(() => {
-    getOrderById(id, setIsLoading, setOrderDetails);
+    getOrderById(id);
   }, []);
 
   return (
