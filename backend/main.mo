@@ -133,7 +133,7 @@ actor {
         return Result.fromOption(user, #UserNotFound);
     };
 
-    public query ({ caller }) func listUsers() : async [(Principal, Types.User)] {
+    public query func listUsers() : async [(Principal, Types.User)] {
         return Iter.toArray(Users.entries());
     };
 
@@ -179,7 +179,7 @@ actor {
     public shared ({ caller }) func updateAddress(address : Types.Address, id : Text, callerP : Principal) : async Result.Result<(Types.Address), Types.UpdateAddressError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };sudo sync; echo 3 > /proc/sys/vm/drop_caches
+        // };
         let address_id : Text = UUID.toText(await g.new());
         let userP : Principal = callerP;
         let userAddresses = usersaddresslist.get(userP);
@@ -201,7 +201,7 @@ actor {
                     };
                     case (?a) {
                         let newaddress : Types.Address = {
-                            id = address_id;
+                            id = id;
                             firstname = address.firstname;
                             lastname = address.lastname;
                             email = address.email;
