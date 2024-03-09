@@ -43,7 +43,7 @@ const Cart = () => {
   const [product, getProduct] = useState([]);
   const [id, setIds] = useState("");
   const [quantity, setQuantity] = useState();
-  const [changedItems, setChangedItems] = useState(false);
+  const [carts, setCarts] = useState([]);
   const [isQuantityChanged, setIsQuantityChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -83,8 +83,10 @@ const Cart = () => {
 
       // Update state with the formatted items array
       setCartItems(formattedItems);
+      console.log(item);
 
-      if (item.ok) {
+      if (item) {
+        setCarts(item.ok);
         console.log(item);
       }
     } catch (error) {
@@ -93,33 +95,37 @@ const Cart = () => {
     }
   };
 
-  useEffect(() => {
-    getCartlist();
-  }, [backend]);
-
   const getProductCartlist = async () => {
     try {
-      {
-        setLoading(true);
-        const productPromises = cartItems.map(async (productId) => {
-          const productResponse = await backend.getProduct(productId.slug);
-          return productResponse.ok; // Assuming `ok` property contains the product details
-        });
+      const productPromises = cartItems.map(async (productId) => {
+        const productResponse = await backend.getProduct(productId.slug);
+        return productResponse.ok; // Assuming `ok` property contains the product details
+      });
 
-        // Wait for all promises to resolve
-        const products = await Promise.all(productPromises);
+      // Wait for all promises to resolve
+      const products = await Promise.all(productPromises);
 
-        getProduct(products);
+      getProduct(products);
 
-        console.log(products);
-        // Access and log the title property for each product
-      }
+      console.log(products);
+      // Access and log the title property for each product
     } catch (error) {
       console.error("Error while getting wishlist ", error);
     } finally {
-      setLoading(false);
     }
   };
+  useEffect(() => {
+    getCartlist();
+  }, []);
+
+  useEffect(() => {
+    if (cartItems !== undefined) {
+      getProductCartlist();
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
+  }, [backend, cartItems]);
 
   const increment = (index) => {
     setQuantity((prevQuantities) => {
@@ -163,11 +169,6 @@ const Cart = () => {
       console.error("deletion cannot be performed", error);
     }
   };
-  useEffect(() => {
-    if (cartItems !== "") {
-      getProductCartlist();
-    }
-  }, [backend, cartItems]);
 
   const updateQuantity = async (id, quantity, color, size) => {
     try {
@@ -222,183 +223,186 @@ const Cart = () => {
 
   return (
     <>
-      {product.length === 0 ? (
-        <EmptyCart></EmptyCart>
-      ) : (
-        <div className="container mx-auto mt-4 px-6 flex items-center md:items-start justify-between md:flex-row flex-col">
-          <div className="md:w-[70%] w-[100%] ">
-            <div className="flex items-end justify-end border border-gray-300 mt-2   rounded-xl   p-5 w-[100%]">
-              <Button
-                className="bg-black rounded-full text-sm text-white px-3 py-2"
-                onClick={clearAll}
-              >
-                Clear All
-              </Button>
+      {" "}
+      {loading ? (
+        <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3 px-6 w-[70%]">
+          {[...Array(3)].map((_, index) => (
+            <div
+              className="rounded-xl xl:flex justify-between border-[1px] border-gray-200  items-center gap-2"
+              key={index}
+            >
+              <div className="flex justify-start items-start gap-2 mt-3">
+                <div className="w-24  h-24 mb-2  bg-gray-100 rounded-lg ml-2 animated-pulse"></div>
+                <div className="flex flex-col mt-2">
+                  <h4 className="w-[75px] h-[20px] rounded-full bg-gray-100 animated-pulse mb-1"></h4>
+                  <h4 className="w-[150px] h-[25px] rounded-full bg-gray-100 animated-pulse mb-2"></h4>
+                  <div className="flex gap-2">
+                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
+                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col justify-between xl:items-end h-full mt-12 mr-2 xl:mb-0 mb-2">
+                <div className="flex flex-col justify-end items-end gap-1">
+                  <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
+                  <div className="w-[130px] h-[30px] rounded-full bg-gray-100 animate-pulse"></div>
+                </div>
+              </div>
             </div>
-
-            <div>
-              {product.map((item, index) => (
-                <>
-                  {loading ? (
-                    <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3">
-                      {[...Array(3)].map((_, index) => (
-                        <div
-                          className="rounded-xl xl:flex justify-between border-[1px] border-gray-200  items-center gap-2"
-                          key={index}
-                        >
-                          <div className="flex justify-start items-start gap-2 mt-3">
-                            <div className="w-24  h-24 mb-2  bg-gray-100 rounded-lg ml-2 animated-pulse"></div>
-                            <div className="flex flex-col mt-2">
-                              <h4 className="w-[75px] h-[20px] rounded-full bg-gray-100 animated-pulse mb-1"></h4>
-                              <h4 className="w-[150px] h-[25px] rounded-full bg-gray-100 animated-pulse mb-2"></h4>
-                              <div className="flex gap-2">
-                                <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
-                                <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-between xl:items-end h-full mt-12 mr-2 xl:mb-0 mb-2">
-                            <div className="flex flex-col justify-end items-end gap-1">
-                              <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
-                              <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
-                              <div className="w-[130px] h-[30px] rounded-full bg-gray-100 animate-pulse"></div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className=" md:flex flex-wrap items-center m-0  xl: justify-between border border-gray-300 mt-4  rounded-xl  p-2 py-2 w-[100%]">
-                      <div>
-                        <div className="flex m-2">
-                          <img
-                            src={item.variantColor[0].img1}
-                            alt=""
-                            className="w-24  h-24 border border-gray-300 bg-gray-400 rounded-lg ml-2"
-                          />
-                          <div className="md:mt-6 md:ml-2 ml-4">
-                            <p className="border border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
-                              {item.category}
-                            </p>
-                            <p>{item.title}</p>
-                            <span className="text-xs xl:text:sm">
-                              <span className="text-gray-400 ">size:</span>
-                              {size[index]?.size}
-                            </span>
-                            <span className="text-xs xl:text:sm">
-                              {" "}
-                              <span className="text-gray-400  ">
-                                color:
-                              </span>{" "}
-                              {color[index]?.color}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="xl:mt-4 mt-2">
-                        <div className="flex flex-col items-end  ">
-                          <s className="text-gray-400 text-xs">
-                            $
-                            {(() => {
-                              const selectedVariant = item.variantColor.find(
-                                (variant) =>
-                                  variant.color === color[index]?.color
-                              );
-                              return selectedVariant
-                                ? (
-                                    selectedVariant.variant_price *
-                                    quantity[index]?.quantity
-                                  ).toFixed(2)
-                                : null;
-                            })()}
-                          </s>
-
-                          <p className="text-left">
-                            $
-                            {(() => {
-                              const selectedVariant = item.variantColor.find(
-                                (variant) =>
-                                  variant.color === color[index]?.color
-                              );
-                              return selectedVariant
-                                ? (
-                                    selectedVariant.variant_sale_price *
-                                    quantity[index]?.quantity
-                                  ).toFixed(2)
-                                : null;
-                            })()}
-                          </p>
-                        </div>
-                        <div className="xl:flex">
-                          <div className="flex items-center justify-end">
-                            <Button
-                              className=""
-                              onClick={() => deleteCart(id[index].id)}
-                            >
-                              <HiOutlineTrash className="w-5 h-5 text-gray-400 m-1 xl:m-4" />
-                            </Button>
-                          </div>
-
-                          <div className="flex items-center justify-end">
-                            <button
-                              className="bg-gray-100 py-2 px-4 border-t border-l border-b border-gray-300 rounded-l-md hover:bg-gray-200"
-                              onClick={() => decrement(index)}
-                            >
-                              <HiOutlineMinus />
-                            </button>
-                            <p className="w-16 text-center py-1 px-2 border-t border-b border-gray-300 bg-gray-100">
-                              {quantity[index]?.quantity}
-                            </p>
-                            <button
-                              className="bg-gray-100 py-2 px-4 border-t border-r border-b border-gray-300 rounded-r-md hover:bg-gray-200"
-                              onClick={() => increment(index)}
-                            >
-                              <HiOutlinePlus />
-                            </button>
-
-                            {isQuantityChanged &&
-                              selectedItemIndex === index && (
-                                <button
-                                  className="ml-2"
-                                  onClick={() =>
-                                    updateQuantity(
-                                      id[index].id,
-                                      quantity[index]?.quantity,
-                                      size[index]?.size,
-                                      color[index]?.color
-                                    )
-                                  }
-                                  disabled={isLoading}
-                                >
-                                  {isLoading &&
-                                  loadingItemId === id[index].id ? (
-                                    // Loading spinner
-                                    <TailSpin
-                                      height="10px"
-                                      width="10px"
-                                      color="black"
-                                      ariaLabel="tail-spin-loading"
-                                      radius="1"
-                                      visible={true}
-                                    />
-                                  ) : (
-                                    // Default icon
-                                    <FcOk />
-                                  )}
-                                </button>
-                              )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ))}
-            </div>
-          </div>
-
-          <Total totalPrice={totalPrice} />
+          ))}
         </div>
+      ) : (
+        <>
+          {!loading && product.length > 0 ? (
+            <div className="container mx-auto mt-4 px-6 flex items-center md:items-start justify-between md:flex-row flex-col">
+              <div className="md:w-[70%] w-[100%] ">
+                <div className="flex items-end justify-end border border-gray-300 mt-2   rounded-xl   p-5 w-[100%]">
+                  <Button
+                    className="bg-black rounded-full text-sm text-white px-3 py-2"
+                    onClick={clearAll}
+                  >
+                    Clear All
+                  </Button>
+                </div>
+
+                <div>
+                  {product.map((item, index) => (
+                    <>
+                      <div className=" md:flex flex-wrap items-center m-0  xl: justify-between border border-gray-300 mt-4  rounded-xl  p-2 py-2 w-[100%]">
+                        <div>
+                          <div className="flex m-2">
+                            <img
+                              src={item.variantColor[0].img1}
+                              alt=""
+                              className="w-24  h-24 border border-gray-300 bg-gray-400 rounded-lg ml-2"
+                            />
+                            <div className="md:mt-6 md:ml-2 ml-4">
+                              <p className="border border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
+                                {item.category}
+                              </p>
+                              <p>{item.title}</p>
+                              <span className="text-xs xl:text:sm">
+                                <span className="text-gray-400 ">size:</span>
+                                {size[index]?.size}
+                              </span>
+                              <span className="text-xs xl:text:sm">
+                                {" "}
+                                <span className="text-gray-400  ">
+                                  color:
+                                </span>{" "}
+                                {color[index]?.color}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="xl:mt-4 mt-2">
+                          <div className="flex flex-col items-end  ">
+                            <s className="text-gray-400 text-xs">
+                              $
+                              {(() => {
+                                const selectedVariant = item.variantColor.find(
+                                  (variant) =>
+                                    variant.color === color[index]?.color
+                                );
+                                return selectedVariant
+                                  ? (
+                                      selectedVariant.variant_price *
+                                      quantity[index]?.quantity
+                                    ).toFixed(2)
+                                  : null;
+                              })()}
+                            </s>
+
+                            <p className="text-left">
+                              $
+                              {(() => {
+                                const selectedVariant = item.variantColor.find(
+                                  (variant) =>
+                                    variant.color === color[index]?.color
+                                );
+                                return selectedVariant
+                                  ? (
+                                      selectedVariant.variant_sale_price *
+                                      quantity[index]?.quantity
+                                    ).toFixed(2)
+                                  : null;
+                              })()}
+                            </p>
+                          </div>
+                          <div className="xl:flex">
+                            <div className="flex items-center justify-end">
+                              <Button
+                                className=""
+                                onClick={() => deleteCart(id[index].id)}
+                              >
+                                <HiOutlineTrash className="w-5 h-5 text-gray-400 m-1 xl:m-4" />
+                              </Button>
+                            </div>
+
+                            <div className="flex items-center justify-end">
+                              <button
+                                className="bg-gray-100 py-2 px-4 border-t border-l border-b border-gray-300 rounded-l-md hover:bg-gray-200"
+                                onClick={() => decrement(index)}
+                              >
+                                <HiOutlineMinus />
+                              </button>
+                              <p className="w-16 text-center py-1 px-2 border-t border-b border-gray-300 bg-gray-100">
+                                {quantity[index]?.quantity}
+                              </p>
+                              <button
+                                className="bg-gray-100 py-2 px-4 border-t border-r border-b border-gray-300 rounded-r-md hover:bg-gray-200"
+                                onClick={() => increment(index)}
+                              >
+                                <HiOutlinePlus />
+                              </button>
+
+                              {isQuantityChanged &&
+                                selectedItemIndex === index && (
+                                  <button
+                                    className="ml-2"
+                                    onClick={() =>
+                                      updateQuantity(
+                                        id[index].id,
+                                        quantity[index]?.quantity,
+                                        size[index]?.size,
+                                        color[index]?.color
+                                      )
+                                    }
+                                    disabled={isLoading}
+                                  >
+                                    {isLoading &&
+                                    loadingItemId === id[index].id ? (
+                                      // Loading spinner
+                                      <TailSpin
+                                        height="10px"
+                                        width="10px"
+                                        color="black"
+                                        ariaLabel="tail-spin-loading"
+                                        radius="1"
+                                        visible={true}
+                                      />
+                                    ) : (
+                                      // Default icon
+                                      <FcOk />
+                                    )}
+                                  </button>
+                                )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ))}
+                </div>
+              </div>
+
+              <Total totalPrice={totalPrice} />
+            </div>
+          ) : (
+            <EmptyCart></EmptyCart>
+          )}
+        </>
       )}
     </>
   );

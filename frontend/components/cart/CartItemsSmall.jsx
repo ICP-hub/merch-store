@@ -68,7 +68,7 @@ const CartItemsSmall = () => {
   const getProductCartlist = async () => {
     try {
       {
-        setLoading(false);
+        setLoading(true);
         const productPromises = cartItems.map(async (productId) => {
           const productResponse = await backend.getProduct(productId.slug);
           return productResponse.ok; // Assuming `ok` property contains the product details
