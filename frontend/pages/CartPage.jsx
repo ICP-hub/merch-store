@@ -88,7 +88,7 @@ const Cart = () => {
         console.log(item);
       }
     } catch (error) {
-      console.error("Error listing user:", error);
+      console.error("Error listing cart:", error);
     } finally {
     }
   };
@@ -152,7 +152,6 @@ const Cart = () => {
 
   const deleteCart = async (id) => {
     try {
-      console.log(id);
       const remove = await backend.deleteCartItems(id);
       if (remove) {
         getCartlist();
@@ -218,7 +217,7 @@ const Cart = () => {
           quantity[index]?.quantity,
       0
     );
-    setTotalPrice(newTotalPrice);
+    setTotalPrice(newTotalPrice.toFixed(2));
   }, [product]);
 
   return (
@@ -273,7 +272,7 @@ const Cart = () => {
                       <div>
                         <div className="flex m-2">
                           <img
-                            src={NoImage}
+                            src={item.variantColor[0].img1}
                             alt=""
                             className="w-24  h-24 border border-gray-300 bg-gray-400 rounded-lg ml-2"
                           />
@@ -306,8 +305,10 @@ const Cart = () => {
                                   variant.color === color[index]?.color
                               );
                               return selectedVariant
-                                ? selectedVariant.variant_price *
+                                ? (
+                                    selectedVariant.variant_price *
                                     quantity[index]?.quantity
+                                  ).toFixed(2)
                                 : null;
                             })()}
                           </s>
@@ -320,8 +321,10 @@ const Cart = () => {
                                   variant.color === color[index]?.color
                               );
                               return selectedVariant
-                                ? selectedVariant.variant_sale_price *
+                                ? (
+                                    selectedVariant.variant_sale_price *
                                     quantity[index]?.quantity
+                                  ).toFixed(2)
                                 : null;
                             })()}
                           </p>

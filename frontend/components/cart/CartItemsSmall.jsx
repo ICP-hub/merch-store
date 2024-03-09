@@ -132,7 +132,7 @@ const CartItemsSmall = () => {
               <div className="flex justify-start items-start gap-2">
                 <div className="relative">
                   <img
-                    src={placeholderImg}
+                    src={item.variantColor[0].img1}
                     alt={"product image"}
                     className="w-[80px] bg-gray-100 rounded-xl "
                   />
@@ -171,7 +171,10 @@ const CartItemsSmall = () => {
                         (variant) => variant.color === color[index]?.color
                       );
                       return selectedVariant
-                        ? selectedVariant.variant_price
+                        ? (
+                            selectedVariant.variant_price *
+                            quantity[index]?.quantity
+                          ).toFixed(2)
                         : null;
                     })()}
                   </h4>
@@ -182,7 +185,10 @@ const CartItemsSmall = () => {
                         (variant) => variant.color === color[index]?.color
                       );
                       return selectedVariant
-                        ? selectedVariant.variant_sale_price
+                        ? (
+                            selectedVariant.variant_sale_price *
+                            quantity[index]?.quantity
+                          ).toFixed(2)
                         : null;
                     })()}
                   </h4>
