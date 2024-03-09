@@ -3,6 +3,7 @@ import React from "react";
 /*  @ Components Import.
 /* ----------------------------------------------------------------------------------------------------- */
 import AnimationView from "../components/common/AnimationView";
+import { Link } from "react-router-dom";
 import ScrollToTop from "../components/common/ScrollToTop";
 import Header from "../components/common/Header";
 import Hero from "../components/common/Hero";
@@ -81,7 +82,7 @@ const MyWishList = () => {
   const getWishlist = async () => {
     try {
       const item = await backend.listWishlistItems();
-      console.log(item[0][0], "hello ji");
+
       setId(item);
 
       const productSlugs = item.map((innerArray) => innerArray[1].product_slug);
@@ -136,6 +137,7 @@ const MyWishList = () => {
       console.error("Error while getting wishlist ", error);
     }
   };
+  console.log(product);
   useEffect(() => {
     // Call getProductWishlist only when wishlists have been updated
     if (wishlists !== "") {
@@ -193,7 +195,7 @@ const MyWishList = () => {
                   <img
                     draggable="false"
                     className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
-                    src={wishlist[0].image || placeholderImg}
+                    src={wishlists.variantColor[0].img1}
                     alt={wishlists.title}
                   />
                 </div>
@@ -213,7 +215,9 @@ const MyWishList = () => {
               <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
                 <div className="flex flex-col justify-center">
                   <span className="text-[12px] uppercase">Price</span>
-                  <p className="text-lg font-medium">${wishlists.price}</p>
+                  <p className="text-lg font-medium">
+                    ${wishlists.variantColor[0].variant_price}
+                  </p>
                 </div>
                 <div className="flex justify-center flex-col">
                   {/*keeping empty div for better alignment */}
@@ -226,7 +230,9 @@ const MyWishList = () => {
                       <BsTrash3 size={20} />
                     </Button>
                     <Button>
-                      <BsArrowRightCircle size={20} />
+                      <Link to={`/product/${wishlists.slug}`}>
+                        <BsArrowRightCircle size={20} />
+                      </Link>
                     </Button>
                   </div>
                 </div>
