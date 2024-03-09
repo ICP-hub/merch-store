@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlineXMark, HiTrash } from "react-icons/hi2";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { TailSpin } from "react-loader-spinner";
 
 const Modal1 = ({
@@ -11,12 +11,19 @@ const Modal1 = ({
   actName,
   closeModal,
   isLoading,
+  addOn,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const closeModalWithAnimation = () => {
     setIsVisible(false);
   };
+
+  useEffect(() => {
+    if (!addOn) {
+      setIsVisible(false);
+    }
+  }, [addOn]);
 
   return (
     <motion.div
@@ -27,7 +34,7 @@ const Modal1 = ({
       onAnimationComplete={() => !isVisible && closeModal()}
       className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]`}
     >
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl px-5 py-8 relative">
+      <div className="w-full max-w-md bg-gray-400 shadow-lg rounded-2xl px-5 py-8 relative">
         <div className="text-center">
           <div className="bg-gray-200 w-20 h-20 rounded-full p-5 mx-auto">
             {icon}
@@ -45,7 +52,7 @@ const Modal1 = ({
           </button>
           <button
             type="button"
-            className={`px-6 py-2.5 rounded-full w-full text-white text-sm font-semibold border-none outline-none bg-${btnClr}-600 hover:bg-${btnClr}-700 active:bg-${btnClr}-600`}
+            className={`px-6 py-2.5 rounded-full w-full text-white text-sm font-semibold border-none outline-none bg-${btnClr}-800 active:bg-${btnClr}-800 relative`}
             onClick={() => action()}
           >
             {isLoading ? (

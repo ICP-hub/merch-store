@@ -121,22 +121,18 @@ const CartApiHandler = () => {
   };
 
   // Delte Cart Item
-  const deleteCartItemById = async (id) => {
+  const deleteCartItemById = async (id, setDeleteLoad, setSuccessDelete) => {
     try {
-      setIsLoading(true);
+      setDeleteLoad(true);
       const response = await backend.deleteCartItems(id);
-      console.log("Delte cart item response ", response);
-      if (response.ok) {
-        toast.success("Item removed successfully");
-      } else {
-        toast.error(Object.keys(response.err));
-        return;
-      }
+      console.log("Delete cart item response ", response);
+      toast.success("Item removed successfully");
     } catch (err) {
       toast.error("Failed to remove item");
       console.error(err);
     } finally {
-      setIsLoading(false);
+      setDeleteLoad(false);
+      setSuccessDelete(false);
     }
   };
 

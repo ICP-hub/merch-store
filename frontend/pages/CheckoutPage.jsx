@@ -77,6 +77,7 @@ const Checkout = () => {
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
+  const [successDelete, setSuccessDelete] = useState(true);
 
   const cartItemDetails = getCartItemDetails(cartItems, productList);
   // console.log("cartItemDetails", cartItemDetails);
@@ -152,7 +153,7 @@ const Checkout = () => {
   useEffect(() => {
     getProductList();
     getCallerCartItems();
-  }, []);
+  }, [successDelete]);
 
   // Set Initial Prices
   useEffect(() => {
@@ -220,6 +221,8 @@ const Checkout = () => {
                     isChecked={isChecked === index}
                     setIsChecked={setIsChecked}
                     updateTotal={updateTotal}
+                    successDelete={successDelete}
+                    setSuccessDelete={setSuccessDelete}
                   />
                 ))}
                 <AddressSection
@@ -259,9 +262,12 @@ const CheckoutCard = ({
   isChecked,
   setIsChecked,
   updateTotal,
+  successDelete,
+  setSuccessDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteCartItemById, isLoading } = CartApiHandler();
+  const [deleteLoad, setDeleteLoad] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -272,7 +278,7 @@ const CheckoutCard = ({
   };
 
   const deleteCartItem = () => {
-    deleteCartItemById(cartItem.orderId);
+    deleteCartItemById(cartItem.orderId, setDeleteLoad, setSuccessDelete);
   };
 
   const toggleUpdate = () => {
@@ -325,11 +331,12 @@ const CheckoutCard = ({
             <Modal1
               closeModal={closeModal}
               title={"Are you sure you want to remove ?"}
-              icon={<HiTrash size={40} color="red" />}
+              icon={<HiTrash size={40} color="#880808" />}
               btnClr="red"
               actName="remove"
               action={deleteCartItem}
-              isLoading={isLoading}
+              isLoading={deleteLoad}
+              addOn={successDelete}
             />
           )}
           <div className="flex items-center border rounded-md border-gray-300">

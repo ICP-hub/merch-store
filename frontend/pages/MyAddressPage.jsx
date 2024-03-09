@@ -78,6 +78,8 @@ const MyAddress = () => {
     getAddressList();
   }, [successfulSubmit]);
 
+  console.log(userAddressList);
+
   // Swich to saved form after form
   useEffect(() => {
     if (!isLoading) {

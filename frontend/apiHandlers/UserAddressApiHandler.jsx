@@ -52,7 +52,6 @@ const UserAddressApiHandler = () => {
 
   // Update Address
   const updateAddress = async (address, setSuccessfulSubmit) => {
-    // console.log(address)
     if (!principal) {
       toast.error("You need to login first");
       return;
@@ -63,7 +62,7 @@ const UserAddressApiHandler = () => {
       // await backend.updateAddress({ ...address, address_type: "default" });
       const response = await backend.updateAddress(
         { ...address, address_type: "default" },
-        "Address updated successfullty",
+        address.id,
         Principal.fromText(principal)
       );
       console.log("updateAddressResponse ", response);
