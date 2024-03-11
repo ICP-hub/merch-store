@@ -129,50 +129,7 @@ const AdminHome = () => {
             )}
           </div>
         </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
-          <CiViewBoard className="w-24 h-24 mr-2 absolute -right-6 -top-4 opacity-20" />
-          <div className="">
-            <h1 className="text-thin text-sm mb-1">Total Courses</h1>
-            {loading ? (
-              <TailSpin
-                height="24"
-                width="24"
-                color="#512E5F"
-                ariaLabel="tail-spin-loading"
-                radius="1"
-                visible={true}
-              />
-            ) : (
-              <CountUp
-                delay={2}
-                end={(courses && courses?.length) || 0}
-                className="font-semibold text-2xl"
-              />
-            )}
-          </div>
-        </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
-          <CiVideoOn className="w-24 h-24 mr-2 absolute -right-5 -top-5 opacity-20 rotate-180" />
-          <div className="">
-            <h1 className="text-thin text-sm mb-1">Total Videos</h1>
-            {loading ? (
-              <TailSpin
-                height="24"
-                width="24"
-                color="#512E5F"
-                ariaLabel="tail-spin-loading"
-                radius="1"
-                visible={true}
-              />
-            ) : (
-              <CountUp
-                delay={2}
-                end={(videos && videos?.length) || 0}
-                className="font-semibold text-2xl"
-              />
-            )}
-          </div>
-        </div>
+
         <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
           <CiReceipt className="w-24 h-24 mr-2 absolute -right-8 -top-4 opacity-20" />
           <div className="">
@@ -212,28 +169,6 @@ const AdminHome = () => {
               <CountUp
                 delay={2}
                 end={(contacts && contacts?.length) || 0}
-                className="font-semibold text-2xl"
-              />
-            )}
-          </div>
-        </div>
-        <div className="relative overflow-hidden flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-6 font-medium uppercase tracking-wider text-sm">
-          <PiImagesSquareThin className="w-24 h-24 mr-2 absolute -right-5 -top-5 opacity-20" />
-          <div>
-            <h1 className="text-thin text-sm mb-1">Total NFT</h1>
-            {loading ? (
-              <TailSpin
-                height={24}
-                width={24}
-                color="#512E5F"
-                ariaLabel="tail-spin-loading"
-                radius={1}
-                visible={true}
-              />
-            ) : (
-              <CountUp
-                delay={2}
-                end={(Nftes && Nftes.length) || 0}
                 className="font-semibold text-2xl"
               />
             )}
