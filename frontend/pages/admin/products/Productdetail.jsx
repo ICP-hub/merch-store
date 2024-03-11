@@ -21,26 +21,23 @@ const ProductDetail = () => {
 
   const [formData, setFormData] = useState({
     title: "",
-    status: "active",
+    status: "",
     description: "",
+    trending: "",
+    newArrival: "",
+
     category: "",
-    price: 0,
-    inventory: 0,
-    img1: "",
-    img2: "",
-    img3: "",
-    img4: "",
-    sale_price: 0,
+
     variants: [
       {
         img1: "",
         img2: "",
         img3: "",
-        img4: "",
-        inventory: 0,
+
+        inventory: "",
         color: "",
-        variant_price: 0,
-        variant_sale_price: 0,
+        variant_price: "",
+        variant_sale_price: "",
       },
     ],
     sizes: [{ size: "" }],
@@ -51,8 +48,10 @@ const ProductDetail = () => {
       if (item.ok) {
         setFormData({
           title: item.ok.title,
-          status: item.ok.active ? "active" : "inactive",
+          status: item.ok.active,
           description: item.ok.description,
+          trending: item.ok.trending,
+          newArrival: item.ok.newArrival,
           category: item.ok.category,
           price: item.ok.price,
           inventory: item.ok.inventory,
@@ -65,7 +64,7 @@ const ProductDetail = () => {
           sizes: item.ok.variantSize || [],
         });
         setProduct(item.ok);
-        console.log(item.ok);
+        console.log(item);
       }
     } catch (error) {
       console.error("Error listing user:", error);
@@ -91,11 +90,15 @@ const ProductDetail = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, type, checked } = e.target;
+
+    // If the input is a checkbox, use the 'checked' property as the value
+    const value = type === "checkbox" ? checked : e.target.value;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
   const handleVariantChange = (index, e) => {
     const { name, value } = e.target;
@@ -165,16 +168,15 @@ const ProductDetail = () => {
       }
 
       //const existingProduct = await backend.getProduct(param.slug);
-      console.log("hello");
 
       const requestData = {
         title: formData.title,
-        active: formData.status === "active" ? true : false,
+        active: formData.status,
 
-        category: formData.category,
         description: formData.description,
-        trending: true,
-        newArrival: true,
+        trending: formData.trending,
+        newArrival: formData.newArrival,
+        category: formData.category,
       };
       const variantColors = formData.variants.map((variant) => ({
         img1: variant.img1,
@@ -260,7 +262,7 @@ const ProductDetail = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col bg-[#330000]/20  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
           <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
             Product Detail : {loading2 ? "loading..." : product.title}
@@ -544,16 +546,6 @@ const ProductDetail = () => {
                     className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
                     disabled={loading}
                   />
-                  <input
-                    type="text"
-                    value={loading2 ? "loading... " : variant.img4}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    id={`img4`}
-                    name={`img4`}
-                    placeholder="Varient Image Four Url"
-                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                    disabled={loading}
-                  />
 
                   <button
                     type="button"
@@ -634,23 +626,83 @@ const ProductDetail = () => {
               )}
             </div> */}
 
-            <div className="my-2">
-              <label
-                htmlFor="title"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Select Product status
-              </label>
-              <select
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                disabled={loading}
-                value={formData.status}
-                onChange={handleInputChange}
-                name="status" // Ensure you have a name attribute
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+            <div className="flex">
+              <div className="m-2">
+                <input
+                  id="statusCheckbox"
+                  name="status"
+                  type="checkbox"
+                  checked={formData.status}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="statusCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.status ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Active</span>
+                </label>
+              </div>
+
+              <div className="m-2">
+                <input
+                  id="trendingCheckbox"
+                  name="trending"
+                  type="checkbox"
+                  checked={formData.trending}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="trendingCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.trending ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Trending</span>
+                </label>
+              </div>
+
+              <div className="m-2">
+                <input
+                  id="newArrivalsCheckbox"
+                  name="newArrival"
+                  type="checkbox"
+                  checked={formData.newArrival}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="newArrivalsCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.newArrival
+                          ? "translate-x-full"
+                          : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">New Arrivals</span>
+                </label>
+              </div>
             </div>
 
             <div className="flex flex-col items-end justify-end gap-4 mt-6">

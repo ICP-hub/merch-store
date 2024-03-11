@@ -386,7 +386,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          <div className="lg:w-4/6 mt-4 ml-3 pl-3 md:h-[500px] lg:mt-0   ">
+          <div className="lg:w-4/6 mt-4 ml-3 pl-3  lg:mt-0   ">
             {/* Product Details */}
 
             {!loading ? (

@@ -99,6 +99,7 @@ const MessageDetail = () => {
   const handleDelete = async (id) => {
     try {
       setLoading(true);
+      console.log(id);
 
       const res = await backend.deleteContact(id);
 

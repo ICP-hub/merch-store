@@ -16,7 +16,8 @@ const CategoryDetail = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    status: "active",
+    image: "",
+    status: "",
   });
   const [isActive, setIsActive] = useState(false);
 
@@ -28,15 +29,15 @@ const CategoryDetail = () => {
     try {
       setLoading2(true);
 
-      console.log(param.slug, "hello");
       const item = await backend.getCategory(param.slug);
       if (item.ok) {
         setFormData({
           name: item.ok.name,
-          status: item.ok.featured ? "active" : "inactive",
+          image: item.ok.category_img,
+          status: item.ok.featured ? true : false,
         });
         setCategory(item.ok);
-        console.log(item.ok);
+        console.log(item.ok.category_img);
       }
     } catch (error) {
       console.error("Error listing user:", error);
@@ -58,12 +59,14 @@ const CategoryDetail = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: name === "status" ? checked : value,
+    }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,9 +79,9 @@ const CategoryDetail = () => {
       const res = await backend.updateCategory(
         category.slug,
         formData.name,
-        "image",
+        formData.image,
 
-        formData.status === "active" ? true : false
+        formData.status
       );
 
       console.log(res);
@@ -156,31 +159,42 @@ const CategoryDetail = () => {
             </div>
 
             <div className="my-2">
-              <label
-                htmlFor="title"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Select Cetegory Status
+              <label className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
+                Upload Image
               </label>
-              <select
+              <input
+                type="text"
+                id="image"
+                name="image"
+                value={formData.image}
                 className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
-                disabled={loading}
-                value={formData.status}
                 onChange={handleInputChange}
-                name="status" // Ensure you have a name attribute
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+                placeholder="image"
+                disabled={loading}
+              />
             </div>
-            <div>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={isActive}
-                  onChange={toggleSwitch}
-                />
-                {isActive ? "Active" : "Inactive"}
+            <div className="my-2">
+              <input
+                id="statusCheckbox"
+                name="status"
+                type="checkbox"
+                checked={formData.status}
+                onChange={handleInputChange}
+                className="hidden"
+                disabled={loading}
+              />
+              <label
+                htmlFor="statusCheckbox"
+                className="cursor-pointer flex items-center text-gray-700"
+              >
+                <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                  <span
+                    className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                      formData.status ? "translate-x-full" : "translate-x-0"
+                    } bg-white border rounded-full`}
+                  ></span>
+                </span>
+                <span className="ml-2">Active</span>
               </label>
             </div>
 

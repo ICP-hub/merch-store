@@ -12,6 +12,7 @@ const CreateCategory = () => {
 
   const [formData, setFormData] = useState({
     name: "",
+    img: "",
     status: true,
   });
 
@@ -24,12 +25,14 @@ const CreateCategory = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: name === "status" ? checked : value,
+    }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,7 +44,7 @@ const CreateCategory = () => {
 
       const res = await backend.createCategory(
         formData.name,
-        "",
+        formData.img,
         formData.status
       );
 
@@ -101,11 +104,39 @@ const CreateCategory = () => {
                 Upload Image
               </label>
               <input
-                type="file"
+                type="text"
+                id="image"
+                name="img"
+                value={formData.img}
                 className="border-2 p-2 outline-none border-[#F5EEF8] w-full rounded-lg"
-                placeholder="Enter Category Title"
+                onChange={handleInputChange}
+                placeholder="image"
                 disabled={loading}
               />
+            </div>
+            <div className="my-2">
+              <input
+                id="statusCheckbox"
+                name="status"
+                type="checkbox"
+                checked={formData.status}
+                onChange={handleInputChange}
+                className="hidden"
+                disabled={loading}
+              />
+              <label
+                htmlFor="statusCheckbox"
+                className="cursor-pointer flex items-center text-gray-700"
+              >
+                <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                  <span
+                    className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                      formData.status ? "translate-x-full" : "translate-x-0"
+                    } bg-white border rounded-full`}
+                  ></span>
+                </span>
+                <span className="ml-2">Active</span>
+              </label>
             </div>
 
             <div className="flex justify-end mt-6">

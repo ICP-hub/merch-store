@@ -57,6 +57,7 @@ const Products = () => {
     try {
       const items = await backend.listallProducts();
       setProducts(items);
+      console.log(items);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {

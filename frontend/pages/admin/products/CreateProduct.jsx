@@ -18,26 +18,22 @@ const CreateCategory = () => {
 
   const [formData, setFormData] = useState({
     title: "",
-    status: "active",
+    status: false, // Assuming status is a boolean
     description: "",
+    trending: false, // Assuming trending is a boolean
+    newArrival: false, // Assuming newArrival is a boolean
     category: "",
-    price: 0,
-    inventory: 0,
-    img1: "",
-    img2: "",
-    img3: "",
-    img4: "",
-    sale_price: 0,
+
     variants: [
       {
         img1: "",
         img2: "",
         img3: "",
-        img4: "",
-        inventory: 0,
+
+        inventory: "",
         color: "",
-        variant_price: 0,
-        variant_sale_price: 0,
+        variant_price: "",
+        variant_sale_price: "",
       },
     ],
     sizes: [{ size: "" }],
@@ -61,30 +57,17 @@ const CreateCategory = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-  // const handleAddCategory = () => {
-  //   const selectedCategories = Array.from(
-  //     document.getElementById("categories").selectedOptions
-  //   ).map((option) => option.value);
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     categories: [...prevState.categories, ...selectedCategories],
-  //   }));
-  // };
+    const { name, type, checked } = e.target;
 
-  // const handleRemoveCategory = (categoryToRemove) => {
-  //   setFormData({
-  //     ...formData,
-  //     categories: formData.categories.filter(
-  //       (category) => category !== categoryToRemove
-  //     ),
-  //   });
-  // };
+    // If the input is a checkbox, use the 'checked' property as the value
+    const value = type === "checkbox" ? checked : e.target.value;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
   const handleVariantChange = (index, e) => {
     const { name, value } = e.target;
     const newVariants = [...formData.variants];
@@ -113,11 +96,11 @@ const CreateCategory = () => {
           img1: "",
           img2: "",
           img3: "",
-          img4: "",
-          inventory: 0,
+
+          inventory: "",
           color: "",
-          variant_price: 0,
-          variant_sale_price: 0,
+          variant_price: "",
+          variant_sale_price: "",
         },
       ],
     });
@@ -172,12 +155,12 @@ const CreateCategory = () => {
 
       const requestData = {
         title: formData.title,
-        active: true,
+        active: formData.status,
 
-        category: formData.category,
         description: formData.description,
-        trending: true,
-        newArrival: true,
+        trending: formData.trending,
+        newArrival: formData.newArrival,
+        category: formData.category,
       };
       const variantColors = formData.variants.map((variant) => ({
         img1: variant.img1,
@@ -219,26 +202,23 @@ const CreateCategory = () => {
 
         setFormData({
           title: "",
-          status: "active",
+          status: "",
           description: "",
-          price: 0,
-          inventory: 0,
+          trending: "",
+          newArrival: "",
+
           category: "",
-          img1: "",
-          img2: "",
-          img3: "",
-          img4: "",
-          sale_price: 0,
+
           variants: [
             {
               img1: "",
               img2: "",
               img3: "",
-              img4: "",
-              inventory: 0,
+
+              inventory: "",
               color: "",
-              variant_price: 0,
-              variant_sale_price: 0,
+              variant_price: "",
+              variant_sale_price: "",
             },
           ],
           sizes: [
@@ -260,7 +240,7 @@ const CreateCategory = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col  bg-[#330000]/20  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
           <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
             Create a Product
@@ -336,186 +316,7 @@ const CreateCategory = () => {
                 ))}
               </select>
             </div>
-            {/* <div className="my-2">
-              <label
-                htmlFor="categories"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Select Product Category
-              </label>
 
-              <div className="flex items-center mt-2">
-                <select
-                  name="categories"
-                  id="categories"
-                  className="border-2 p-2 outline-none border-[#F4F2F2] rounded-lg mr-2"
-                  value={formData.categories.name}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                >
-                  <option value="">Select Product Category</option>
-                  {categorylist.map((item, index) => (
-                    <option
-                      value={item[1].name}
-                      key={index}
-                      selected={formData.categories.includes(item.name)}
-                    >
-                      {item[1].name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={handleAddCategory}
-                  className="bg-[#671a1a] text-white py-2 px-4 rounded hover:bg-[#671a1ae2]"
-                >
-                  Add Category
-                </button>
-              </div>
-              <div className="selected-categories mt-2">
-                <p>Selected Categories:</p>
-                <ul>
-                  {formData.categories.map((category, index) => (
-                    <li key={index} className="flex items-center">
-                      {category.name}
-                      <button
-                        className="remove-button bg-red-500 text-white mr-2 mb-2 px-3 py-2 rounded hover:bg-red-600"
-                        onClick={() => handleRemoveCategory(category)}
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div> */}
-
-            <div className="my-2">
-              <label
-                htmlFor="title"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Product Price
-              </label>
-              <input
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                type="number"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter product price"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="sale_price"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Product Sale Price
-              </label>
-              <input
-                id="sale_price"
-                name="sale_price"
-                value={formData.sale_price}
-                onChange={handleInputChange}
-                type="number"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Sale  product price"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="title"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Product Inventory
-              </label>
-              <input
-                id="inventory"
-                name="inventory"
-                value={formData.inventory}
-                onChange={handleInputChange}
-                type="number"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Product Inventory"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="img1"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Image One Url
-              </label>
-              <input
-                id="img1"
-                name="img1"
-                value={formData.img1}
-                onChange={handleInputChange}
-                type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Image One Url"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="img2"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Image Two Url
-              </label>
-              <input
-                id="img2"
-                name="img2"
-                value={formData.img2}
-                onChange={handleInputChange}
-                type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Image Two Url"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="img3"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Image Three Url
-              </label>
-              <input
-                id="img3"
-                name="img3"
-                value={formData.img3}
-                onChange={handleInputChange}
-                type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Image Three Url"
-                disabled={loading}
-              />
-            </div>
-            <div className="my-2">
-              <label
-                htmlFor="img4"
-                className="uppercase text-sm text-black font-medium mb-0 tracking-wide"
-              >
-                Enter Image Four Url
-              </label>
-              <input
-                id="img4"
-                name="img4"
-                value={formData.img4}
-                onChange={handleInputChange}
-                type="text"
-                className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                placeholder="Enter Image Four Url"
-                disabled={loading}
-              />
-            </div>
             <div className="mb-6 ">
               <h3 className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
                 Color Variants
@@ -592,16 +393,6 @@ const CreateCategory = () => {
                     className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
                     disabled={loading}
                   />
-                  <input
-                    type="text"
-                    value={variant.img4}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    id={`img4`}
-                    name={`img4`}
-                    placeholder="Varient Image Four Url"
-                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                    disabled={loading}
-                  />
 
                   <button
                     type="button"
@@ -648,6 +439,7 @@ const CreateCategory = () => {
                   </div>
                 ))}
               </div>
+
               <button
                 type="button"
                 onClick={handleAddSize}
@@ -655,6 +447,84 @@ const CreateCategory = () => {
               >
                 <IoMdAddCircleOutline className="w-5 h-5 text-2xl" />
               </button>
+            </div>
+            <div className="flex">
+              <div className="m-2">
+                <input
+                  id="statusCheckbox"
+                  name="status"
+                  type="checkbox"
+                  checked={formData.status}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="statusCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.status ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Active</span>
+                </label>
+              </div>
+
+              <div className="m-2">
+                <input
+                  id="trendingCheckbox"
+                  name="trending"
+                  type="checkbox"
+                  checked={formData.trending}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="trendingCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.trending ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Trending</span>
+                </label>
+              </div>
+
+              <div className="m-2">
+                <input
+                  id="newArrivalsCheckbox"
+                  name="newArrival"
+                  type="checkbox"
+                  checked={formData.newArrival}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="newArrivalsCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.newArrival
+                          ? "translate-x-full"
+                          : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">New Arrivals</span>
+                </label>
+              </div>
             </div>
 
             <div className="flex justify-end mt-6">

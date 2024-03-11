@@ -116,16 +116,7 @@ const Cart = () => {
   };
   useEffect(() => {
     getCartlist();
-  }, []);
-
-  useEffect(() => {
-    if (cartItems !== undefined) {
-      getProductCartlist();
-      setTimeout(() => {
-        setLoading(false);
-      }, 3000);
-    }
-  }, [backend, cartItems]);
+  }, [backend]);
 
   const increment = (index) => {
     setQuantity((prevQuantities) => {
@@ -169,6 +160,14 @@ const Cart = () => {
       console.error("deletion cannot be performed", error);
     }
   };
+  useEffect(() => {
+    if (cartItems !== undefined) {
+      getProductCartlist();
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
+  }, [backend, cartItems]);
 
   const updateQuantity = async (id, quantity, color, size) => {
     try {
