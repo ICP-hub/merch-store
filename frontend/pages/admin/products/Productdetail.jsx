@@ -85,7 +85,28 @@ const ProductDetail = () => {
     if (!formData.title.trim()) {
       toast.error("Please enter Product title");
       return false;
+    } else if (!formData.description.trim()) {
+      toast.error("Please enter Product description");
+      return false;
+    } else if (!formData.category.trim()) {
+      toast.error("Please enter Product category");
+      return false;
+    } else if (!formData.variantColor || formData.variantColor.length === 0) {
+      toast.error("Please add at least one variant color");
+      return false;
+    } else if (
+      formData.variantColor.some(
+        (variant) => !variant.price || !variant.sellingPrice
+      )
+    ) {
+      toast.error("Please fill in all fields for each variant color");
+      return false;
+    } else if (!formData.sizes || formData.sizes.length === 0) {
+      toast.error("Please select at least one variant size");
+      return false;
     }
+
+    // If all validations pass, return true
     return true;
   };
 
@@ -262,7 +283,7 @@ const ProductDetail = () => {
 
   return (
     <div className="w-full">
-      <div className="styled-scrollbar flex flex-col bg-[#330000]/20  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+      <div className="styled-scrollbar flex flex-col bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
         <div className="mb-5 flex justify-between items-center gap-2">
           <h1 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
             Product Detail : {loading2 ? "loading..." : product.title}

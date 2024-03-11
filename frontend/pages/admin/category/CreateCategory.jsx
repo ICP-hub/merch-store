@@ -20,6 +20,9 @@ const CreateCategory = () => {
     if (!formData.name.trim()) {
       toast.error("Please enter category title");
       return false;
+    } else if (!formData.img.trim()) {
+      toast.error("Please enter category image");
+      return false;
     }
     return true;
   };
@@ -101,7 +104,7 @@ const CreateCategory = () => {
             </div>
             <div className="my-2">
               <label className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
-                Upload Image
+                Category Image
               </label>
               <input
                 type="text"

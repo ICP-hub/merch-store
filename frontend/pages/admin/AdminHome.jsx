@@ -27,28 +27,15 @@ const AdminHome = () => {
 
   useEffect(() => {
     listAll();
-  }, []);
+  }, [backend]);
 
   const listAll = async () => {
     try {
       setLoading(true);
-      const item = await backend.listCategories();
-      setCategories(item);
-      const item2 = await backend.listProducts();
-      setProducts(item2);
-      const item3 = await backend.listCourse();
-      setCourses(item3);
-      const item4 = await backend.listVideos();
-      setVideos(item4);
-      const item5 = await backend.listOrders();
-      setOrders(item5);
-      const item6 = await backend.listContacts();
-      setContacts(item6);
-      const item7 = await backend.listnfts();
-      setNftes(item7);
-      const item8 = await backend.listUsers();
-      setUsers(item8);
-    } catch (error) {
+      console.log("hello form admin dashboard");
+      const item = await backend.getstatisticaldetailforadmin();
+      console.log(item, "hello");
+    } catch (item) {
       console.error("Error listing all:", error);
     } finally {
       setLoading(false);

@@ -54,6 +54,9 @@ const CategoryDetail = () => {
     if (!formData.name.trim()) {
       toast.error("Please enter category title");
       return false;
+    } else if (!formData.image.trim()) {
+      toast.error("Please enter category image");
+      return false;
     }
     return true;
   };
