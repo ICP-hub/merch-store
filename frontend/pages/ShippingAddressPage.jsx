@@ -17,7 +17,7 @@ import {
   totalCartSellPrice,
 } from "../apiHandlers/cartUtils.js";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
-import { useConnect } from "@connect2ic/react";
+import { useCanister, useConnect } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -44,6 +44,7 @@ const AddressDetail = () => {
   const [showForm, setShowForm] = useState(false);
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   const [finalIsLoading, setFinalIsLoading] = useState(true);
+  const [backend] = useCanister("backend");
 
   // Get cart item details
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -66,7 +67,7 @@ const AddressDetail = () => {
       setFinalIsLoading(false);
     };
     fetchData();
-  }, [successfulSubmit]);
+  }, [successfulSubmit, backend]);
 
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);

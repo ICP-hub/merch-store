@@ -52,6 +52,7 @@ const MyAddress = () => {
   const { getAddressList, userAddressList, isLoading } =
     UserAddressApiHandler();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
+  const [backend] = useCanister("backend");
 
   const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
@@ -76,9 +77,9 @@ const MyAddress = () => {
   // Effect getAddressList : re-render on successful submit
   useEffect(() => {
     getAddressList();
-  }, [successfulSubmit]);
+  }, [successfulSubmit, backend]);
 
-  console.log(userAddressList);
+  // console.log(userAddressList);
 
   // Swich to saved form after form
   useEffect(() => {
@@ -86,7 +87,7 @@ const MyAddress = () => {
       setEditMode(false);
       setNewAddress(false);
     }
-  }, [isLoading]);
+  }, [isLoading, backend]);
 
   return (
     <div className="w-full rounded-2xl border border-gray-300">

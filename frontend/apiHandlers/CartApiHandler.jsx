@@ -1,23 +1,50 @@
-import { useCanister, useConnect } from "@connect2ic/react";
+import { useCanister, useConnect, useTransfer } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 // Custom hook : initialize the backend Canister
 const useBackend = () => {
   return useCanister("backend");
 };
 
+// Payment Address
+const usePaymentTransfer = (totalAmount) => {
+  // Receiver address will be in .env file : for now dev id
+  const [transfer] = useTransfer({
+    to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
+    amount: Number(totalAmount),
+  });
+  return transfer;
+};
+
+// CartApiHandler : main
 const CartApiHandler = () => {
   // Init backend
   const [backend] = useBackend();
   const { principal } = useConnect();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [cartItems, setCartItems] = useState(null);
   const [orderList, setOrderList] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [totalAmountForTransfer, setTotalAmountForTransfer] = useState(null);
+  const [paymentAddress, setPaymentAddress] = useState(null);
+  const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
+
+  useEffect(() => {
+    const paymentAddressProcess = async () => {
+      if (totalAmountForTransfer !== null) {
+        try {
+          const response = await paymentAddressForTransfer();
+          console.log(response);
+          setPaymentAddress(response);
+        } catch (error) {
+          console.error("Error getting payment address:", error);
+        }
+      }
+    };
+    paymentAddressProcess();
+  }, [totalAmountForTransfer]);
 
   // Get caller cart items
   const getCallerCartItems = async () => {
@@ -47,10 +74,8 @@ const CartApiHandler = () => {
       toast.error("You need to login first");
       return;
     }
-
+    setTotalAmountForTransfer(totalAmount);
     const userid = Principal.fromText(principal);
-    // Random payment address to avoid err PaymentAddressAlreadyUsed
-    const randomPaymentAddress = Math.floor(Math.random() * 100).toString();
     // const userid = principal;
     // Create Object Orderdetails
     const orderDetails = {
@@ -62,34 +87,34 @@ const CartApiHandler = () => {
       },
       orderStatus: "order placed",
       userid: userid,
-      paymentAddress: randomPaymentAddress,
+      paymentAddress: paymentAddress,
       totalAmount: totalAmount,
       shippingAddress: shippingAddress,
       products: products,
       subTotalAmount: subTotal,
     };
-    // console.log(orderDetails);
+    console.log(orderDetails);
     // Call Backend
-    try {
-      setOrderPlaceMentLoad(true);
-      const response = await backend.createOrder(orderDetails);
-      console.log("orderPlacement response ", response);
-      if (response.ok) {
-        toast.success("Order successfully Placed");
-        // Navigate to OrderConfirmationPage
-        navigate("/order-confirm");
-        // Clear cart after successful order placement
-        await backend.clearallcartitmesbyprincipal();
-      } else {
-        toast.error(Object.keys(response.err));
-        return;
-      }
-    } catch (err) {
-      toast.error("Failed to place order");
-      console.error("Error Order Placement", err);
-    } finally {
-      setOrderPlaceMentLoad(false);
-    }
+    // try {
+    //   setOrderPlaceMentLoad(true);
+    //   // const response = await backend.createOrder(orderDetails);
+    //   console.log("orderPlacement response ", response);
+    //   if (response.ok) {
+    //     toast.success("Order successfully Placed");
+    //     // Navigate to OrderConfirmationPage
+    //     navigate("/order-confirm");
+    //     // Clear cart after successful order placement
+    //     await backend.clearallcartitmesbyprincipal();
+    //   } else {
+    //     toast.error(Object.keys(response.err));
+    //     return;
+    //   }
+    // } catch (err) {
+    //   toast.error("Failed to place order");
+    //   console.error("Error Order Placement", err);
+    // } finally {
+    //   setOrderPlaceMentLoad(false);
+    // }
   };
 
   // Get Order List

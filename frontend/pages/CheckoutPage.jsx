@@ -78,6 +78,7 @@ const Checkout = () => {
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
   const [successDelete, setSuccessDelete] = useState(true);
+  const [backend] = useCanister("backend");
 
   const cartItemDetails = getCartItemDetails(cartItems, productList);
   // console.log("cartItemDetails", cartItemDetails);
@@ -153,7 +154,7 @@ const Checkout = () => {
   useEffect(() => {
     getProductList();
     getCallerCartItems();
-  }, [successDelete]);
+  }, [successDelete, backend]);
 
   // Set Initial Prices
   useEffect(() => {
@@ -171,7 +172,7 @@ const Checkout = () => {
 
       setUpdatedPriceNQty({ totalPrice, totalQuantity });
     }
-  }, [cartItems, productList]);
+  }, [cartItems, productList, backend]);
 
   // Effect on price and quantity
   useEffect(() => {
@@ -187,7 +188,7 @@ const Checkout = () => {
 
       setTotalPriceNQty({ totalPrice, totalQuantity });
     }
-  }, [finalCart, isFinalCartLoading]);
+  }, [finalCart, isFinalCartLoading, backend]);
 
   // console.log("finalcart", finalCart);
 
@@ -389,6 +390,7 @@ const CheckoutCard = ({
 const AddressSection = ({ setUserAddress, userAddress }) => {
   const { getAddressList, userAddressList, isLoading } =
     UserAddressApiHandler();
+  const [backend] = useCanister("backend");
 
   const addressConfig = () => {
     const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
@@ -404,7 +406,7 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
 
   useEffect(() => {
     getAddressList();
-  }, []);
+  }, [backend]);
 
   useEffect(() => {
     addressConfig();
