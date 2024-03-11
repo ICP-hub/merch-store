@@ -52,7 +52,7 @@ const Modal1 = ({
           </button>
           <button
             type="button"
-            className={`px-6 py-2.5 rounded-full w-full text-white text-sm font-semibold border-none outline-none bg-${btnClr}-800 active:bg-${btnClr}-800 relative`}
+            className={`px-6 py-2.5 rounded-full w-full text-white text-sm font-semibold border-none outline-none bg-${btnClr}-600 active:bg-${btnClr}-600 relative`}
             onClick={() => action()}
           >
             {isLoading ? (
