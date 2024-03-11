@@ -120,3 +120,12 @@ export const totalCartVariantPrice = (cartItemDetails) =>
   cartItemDetails?.reduce((acc, cartItem) => {
     return acc + cartItem.variantPriceBasedOnQty;
   }, 0);
+
+// DelayedLoading : 3sec
+// export const setLoadingTimeout = (setLoadingFunction, delay = 3000) => {
+//   const loadComplete = setTimeout(() => {
+//     setLoadingFunction(false);
+//   }, delay);
+
+//   return () => clearTimeout(loadComplete);
+// };

@@ -34,7 +34,7 @@ const Modal1 = ({
       onAnimationComplete={() => !isVisible && closeModal()}
       className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]`}
     >
-      <div className="w-full max-w-md bg-gray-400 shadow-lg rounded-2xl px-5 py-8 relative">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl px-5 py-8 relative">
         <div className="text-center">
           <div className="bg-gray-200 w-20 h-20 rounded-full p-5 mx-auto">
             {icon}

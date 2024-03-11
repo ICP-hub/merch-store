@@ -160,7 +160,6 @@ const Checkout = () => {
   useEffect(() => {
     if (cartItemDetails !== undefined) {
       setFinalCart(cartItemDetails);
-      setIsFinalCartLoading(false);
       const { totalPrice, totalQuantity } = cartItemDetails.reduce(
         (totals, cartItem) => {
           totals.totalPrice += cartItem.variantSellPriceBasedOnQty;
@@ -171,6 +170,11 @@ const Checkout = () => {
       );
 
       setUpdatedPriceNQty({ totalPrice, totalQuantity });
+      // Loading : till all the data gather from backend
+      const timeoutLoad = setTimeout(() => {
+        setIsFinalCartLoading(false);
+      }, 3000);
+      return () => clearTimeout(timeoutLoad);
     }
   }, [cartItems, productList, backend]);
 
@@ -193,7 +197,7 @@ const Checkout = () => {
   // console.log("finalcart", finalCart);
 
   return (
-    <div className="container mx-auto py-6 max-md:px-2">
+    <div className="container mx-auto p-6 max-md:px-2">
       <div className="pb-4">
         <Link
           to="/cart"
@@ -332,7 +336,7 @@ const CheckoutCard = ({
             <Modal1
               closeModal={closeModal}
               title={"Are you sure you want to remove ?"}
-              icon={<HiTrash size={40} color="#880808" />}
+              icon={<HiTrash size={40} color="red" />}
               btnClr="red"
               actName="remove"
               action={deleteCartItem}
@@ -414,10 +418,9 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
 
   return (
     <div className="p-6 border-2 rounded-2xl">
-      {isLoading && <p>Loading...</p>}
-      {!isLoading && !userAddress && (
+      {!userAddress && (
         <div className="flex gap-4">
-          <p>No address found! Please select an addres to proceed</p>
+          <p>No address found! Please select an address to proceed</p>
           <Link
             to="/shipping-address"
             className="text-xs font-medium border-2 rounded-md px-4 py-2 min-w-max flex items-center"
@@ -426,7 +429,7 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
           </Link>
         </div>
       )}
-      {!isLoading && userAddress && (
+      {userAddress && (
         <div className="flex max-md:flex-col justify-between gap-4">
           <div className="flex flex-col">
             <h1 className="text-lg font-medium capitalize flex gap-2">

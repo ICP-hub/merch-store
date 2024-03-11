@@ -5,14 +5,13 @@ import React, { useEffect, useState } from "react";
 import AnimationView from "../components/common/AnimationView";
 import ScrollToTop from "../components/common/ScrollToTop";
 import Header from "../components/common/Header";
-import Hero from "../components/common/Hero";
 import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import AddressForm from "../components/ContactPageComponents/AddressForm";
 import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler";
-import { Principal } from "@dfinity/principal";
-import { useConnect } from "@connect2ic/react";
+import { useCanister } from "@connect2ic/react";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base 
@@ -51,7 +50,9 @@ const MyAddress = () => {
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
   const { getAddressList, userAddressList, isLoading } =
     UserAddressApiHandler();
+  const { MyAddressLoadingScreen } = LoadingScreen();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
+  const [finalIsLoadig, setFinalIsLoading] = useState(true);
   const [backend] = useCanister("backend");
 
   const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
@@ -77,6 +78,11 @@ const MyAddress = () => {
   // Effect getAddressList : re-render on successful submit
   useEffect(() => {
     getAddressList();
+    // Loading : gather all backend data
+    const timeoutLoad = setTimeout(() => {
+      setFinalIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timeoutLoad);
   }, [successfulSubmit, backend]);
 
   // console.log(userAddressList);
@@ -93,7 +99,7 @@ const MyAddress = () => {
     <div className="w-full rounded-2xl border border-gray-300">
       <div className="flex justify-between px-2 sm:px-8 py-4 font-medium ">
         <h1 className="text-lg">My Address</h1>
-        {/*Hide button if form is open */}
+        {/* Hide button if form is open */}
         {!newAddress && !editMode ? (
           <Button onClick={handleNewAddress} className="text-sm">
             + Add a new Address
@@ -111,6 +117,12 @@ const MyAddress = () => {
               : {}
           }
         />
+      ) : finalIsLoadig ? (
+        <MyAddressLoadingScreen />
+      ) : addressDetails?.length === 0 ? (
+        <div className="px-2 sm:px-8 py-4 font-medium">
+          You haven't saved an address yet
+        </div>
       ) : (
         addressDetails?.flat().map((address, index) => (
           <MyAddressSaved
