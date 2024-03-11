@@ -182,6 +182,7 @@ module {
         slug : SlugId;
         category_img : Text;
         featured : Bool;
+        active : Bool;
     };
 
     public type VariantSize = {

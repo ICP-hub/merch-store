@@ -613,7 +613,7 @@ actor {
 
     // ------------------------------------  CATEGORY_FUNCTIONS  ---------------------------------------------
 
-    public shared (msg) func createCategory(name : Text, cat_img : Text, featured : Bool) : async Result.Result<(Types.Category), Types.CreateCategoryError> {
+    public shared (msg) func createCategory(name : Text, cat_img : Text, featured : Bool, active : Bool) : async Result.Result<(Types.Category), Types.CreateCategoryError> {
 
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
@@ -631,6 +631,7 @@ actor {
                     slug = new_slug;
                     category_img = cat_img;
                     featured = featured;
+                    active = active;
                 };
 
                 categories.put(new_slug, category);
@@ -648,6 +649,7 @@ actor {
         name : Text,
         cat_img : Text,
         feaured : Bool,
+        active : Bool
     ) : async Result.Result<(Types.Category), Types.UpdateCategoryError> {
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
@@ -670,6 +672,8 @@ actor {
                     slug = v.slug;
                     category_img = cat_img;
                     featured = feaured;
+                    active = active;
+
                 };
                 categories.put(id, category);
                 return #ok(category);
@@ -1260,10 +1264,10 @@ actor {
     };
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         let totalOrders = Iter.toArray(orders.entries()).size();
         let totalProducts = Iter.toArray(products.entries()).size();
