@@ -14,6 +14,7 @@ import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import CartApiHandler from "../apiHandlers/CartApiHandler";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
+import { useCanister } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -58,10 +59,12 @@ const MyOrderPageContainerMain = () => {
 const MyOrders = () => {
   const { getOrderList, orderList, isLoading } = CartApiHandler();
   const [myOrderList, setMyOrderList] = useState(null);
+  const [finalIsLoading, setFinalIsLoading] = useState(true);
+  const [backend] = useCanister("backend");
 
   useEffect(() => {
     getOrderList();
-  }, []);
+  }, [backend]);
 
   // console.log(myOrderList);
 
@@ -79,26 +82,32 @@ const MyOrders = () => {
       }
     );
     setMyOrderList(updatedMyOrderList);
-  }, [orderList]);
+    // Loading : gather all backend data
+    const timeoutLoad = setTimeout(() => {
+      setFinalIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timeoutLoad);
+  }, [orderList, backend]);
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
-      <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2 ">
-        My recent orders({myOrderList?.length || 0})
+      <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2">
+        My recent orders ({myOrderList?.length || 0})
       </h1>
-      {isLoading && (
+
+      {finalIsLoading && (
         <div className="p-8 capitalize font-medium">Loading...</div>
       )}
 
-      {!isLoading && myOrderList && myOrderList?.length === 0 && (
+      {!finalIsLoading && myOrderList?.length === 0 && (
         <div className="p-8 capitalize font-medium">
           You haven't ordered any items. Check out our products.
         </div>
       )}
 
-      {!isLoading && myOrderList && myOrderList?.length > 0 && (
+      {!finalIsLoading && myOrderList?.length > 0 && (
         <div className="flex flex-col">
-          {myOrderList?.map((order, index) => (
+          {myOrderList.map((order, index) => (
             <div
               key={index}
               className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"

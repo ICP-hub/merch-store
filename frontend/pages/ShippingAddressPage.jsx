@@ -18,6 +18,7 @@ import {
 } from "../apiHandlers/cartUtils.js";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import { useCanister, useConnect } from "@connect2ic/react";
+import LoadingScreen from "../components/common/LoadingScreen.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -45,6 +46,7 @@ const AddressDetail = () => {
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   const [finalIsLoading, setFinalIsLoading] = useState(true);
   const [backend] = useCanister("backend");
+  const { ShippingAddressPageLoader } = LoadingScreen();
 
   // Get cart item details
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -64,9 +66,14 @@ const AddressDetail = () => {
       if (successfulSubmit) {
         setShowForm(false);
       }
-      setFinalIsLoading(false);
     };
     fetchData();
+
+    // Set time out for data load complete from backend
+    const timeoutLoad = setTimeout(() => {
+      setFinalIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timeoutLoad);
   }, [successfulSubmit, backend]);
 
   const handleAddressSelect = (address) => {
@@ -91,23 +98,29 @@ const AddressDetail = () => {
   };
 
   return (
-    <div className="container mx-auto py-6 max-md:px-2">
+    <div className="container mx-auto p-6 max-md:px-2">
       {finalIsLoading ? (
-        <div>Loading...</div>
+        <ShippingAddressPageLoader />
       ) : (
         <div className="flex w-full max-md:flex-col gap-4">
           <div className="flex-1 flex flex-col gap-4">
             <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
               Delivery address
             </div>
-            {addressDetails?.flat().map((address, index) => (
-              <AddressCard
-                key={index}
-                address={address}
-                onSelect={() => handleAddressSelect(address)}
-                isSelected={address === selectedAddress}
-              />
-            ))}
+            {cartItemDetails?.length === 0 ? (
+              <EmptyCart />
+            ) : (
+              addressDetails
+                ?.flat()
+                .map((address, index) => (
+                  <AddressCard
+                    key={index}
+                    address={address}
+                    onSelect={() => handleAddressSelect(address)}
+                    isSelected={address === selectedAddress}
+                  />
+                ))
+            )}
             <NewAddressSection
               showForm={showForm}
               setShowForm={setShowForm}
@@ -116,12 +129,14 @@ const AddressDetail = () => {
             />
           </div>
           <div className="border-2 rounded-2xl max-h-96">
-            <BillSection
-              totalItem={cartItemDetails?.length}
-              totalPrice={totalPrice}
-              totalDiscount={totalDiscount}
-              selectedAddress={selectedAddress}
-            />
+            {cartItemDetails?.length === 0 ? null : (
+              <BillSection
+                totalItem={cartItemDetails?.length}
+                totalPrice={totalPrice}
+                totalDiscount={totalDiscount}
+                selectedAddress={selectedAddress}
+              />
+            )}
           </div>
         </div>
       )}
