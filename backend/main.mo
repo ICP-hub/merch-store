@@ -180,6 +180,9 @@ actor {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
+        if (Result.isErr(await getUserdetailsbyid(callerP))) {
+            return #err(#AddressNotFound);
+        };
         let address_id : Text = UUID.toText(await g.new());
         let userP : Principal = callerP;
         let userAddresses = usersaddresslist.get(userP);
