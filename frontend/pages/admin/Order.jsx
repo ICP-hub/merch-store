@@ -53,6 +53,7 @@ const Order = () => {
   const listAllOrders = async () => {
     try {
       const items = await backend.listallOrders();
+      console.log(items);
       setOrders(items);
     } catch (error) {
       console.error("Error listing all Orders:", error);
@@ -63,7 +64,13 @@ const Order = () => {
 
   const data = useMemo(() => orders, [orders]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => data);
+  const extractedData = data.map(([key, data]) => ({
+    userId: data.userid.toText(),
+    paymentAddress: data.paymentAddress,
+    paymentStatus: data.paymentStatus,
+    orderStatus: data.orderStatus,
+    id: data.id,
+  }));
   console.log(extractedData);
 
   return (

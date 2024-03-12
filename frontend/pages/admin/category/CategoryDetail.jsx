@@ -18,23 +18,21 @@ const CategoryDetail = () => {
     name: "",
     image: "",
     status: "",
+    active: "",
   });
-  const [isActive, setIsActive] = useState(false);
-
-  const toggleSwitch = () => {
-    setIsActive(!isActive);
-  };
 
   const getCategory = async () => {
     try {
       setLoading2(true);
 
       const item = await backend.getCategory(param.slug);
+      console.log(item.ok);
       if (item.ok) {
         setFormData({
           name: item.ok.name,
           image: item.ok.category_img,
           status: item.ok.featured ? true : false,
+          active: item.ok.active ? true : false,
         });
         setCategory(item.ok);
         console.log(item.ok.category_img);
@@ -62,11 +60,14 @@ const CategoryDetail = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, type, checked } = e.target;
+
+    // If the input is a checkbox, use the 'checked' property as the value
+    const value = type === "checkbox" ? checked : e.target.value;
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: name === "status" ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -84,7 +85,8 @@ const CategoryDetail = () => {
         formData.name,
         formData.image,
 
-        formData.status
+        formData.status,
+        formData.active
       );
 
       console.log(res);
@@ -163,7 +165,7 @@ const CategoryDetail = () => {
 
             <div className="my-2">
               <label className="uppercase text-sm text-black font-medium mb-0 tracking-wide">
-                Upload Image
+                Category Image
               </label>
               <input
                 type="text"
@@ -176,29 +178,55 @@ const CategoryDetail = () => {
                 disabled={loading}
               />
             </div>
-            <div className="my-2">
-              <input
-                id="statusCheckbox"
-                name="status"
-                type="checkbox"
-                checked={formData.status}
-                onChange={handleInputChange}
-                className="hidden"
-                disabled={loading}
-              />
-              <label
-                htmlFor="statusCheckbox"
-                className="cursor-pointer flex items-center text-gray-700"
-              >
-                <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
-                  <span
-                    className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
-                      formData.status ? "translate-x-full" : "translate-x-0"
-                    } bg-white border rounded-full`}
-                  ></span>
-                </span>
-                <span className="ml-2">Active</span>
-              </label>
+            <div className="flex">
+              <div className="m-2">
+                <input
+                  id="statusCheckbox"
+                  name="status"
+                  type="checkbox"
+                  checked={formData.status}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="statusCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.status ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Featured</span>
+                </label>
+              </div>
+              <div className="m-2">
+                <input
+                  id="activeCheckbox"
+                  name="active"
+                  type="checkbox"
+                  checked={formData.active}
+                  onChange={handleInputChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="activeCheckbox"
+                  className="cursor-pointer flex items-center text-gray-700"
+                >
+                  <span className="relative inline-block w-8 h-4 transition duration-200 ease-in-out bg-gray-300 rounded-full cursor-pointer">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-4 h-4 transition duration-200 ease-in-out transform ${
+                        formData.active ? "translate-x-full" : "translate-x-0"
+                      } bg-white border rounded-full`}
+                    ></span>
+                  </span>
+                  <span className="ml-2">Active</span>
+                </label>
+              </div>
             </div>
 
             <div className="flex flex-col items-end justify-end gap-4 mt-6">

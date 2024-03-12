@@ -91,18 +91,11 @@ const ProductDetail = () => {
     } else if (!formData.category.trim()) {
       toast.error("Please enter Product category");
       return false;
-    } else if (!formData.variantColor || formData.variantColor.length === 0) {
-      toast.error("Please add at least one variant color");
+    } else if (formData.variants.some((color) => !color.color.trim())) {
+      toast.error("Please enter a valid value for all variant colors");
       return false;
-    } else if (
-      formData.variantColor.some(
-        (variant) => !variant.price || !variant.sellingPrice
-      )
-    ) {
-      toast.error("Please fill in all fields for each variant color");
-      return false;
-    } else if (!formData.sizes || formData.sizes.length === 0) {
-      toast.error("Please select at least one variant size");
+    } else if (formData.sizes.some((size) => !size.size.trim())) {
+      toast.error("Please enter a valid value for all variant sizes");
       return false;
     }
 
@@ -149,10 +142,10 @@ const ProductDetail = () => {
           img2: "",
           img3: "",
 
-          inventory: 0,
+          inventory: "",
           color: "",
-          variant_price: 0,
-          variant_sale_price: 0,
+          variant_price: "",
+          variant_sale_price: "",
         },
       ],
     });

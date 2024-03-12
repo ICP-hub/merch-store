@@ -29,6 +29,7 @@ export interface CartItem {
 }
 export interface Category {
   'featured' : boolean,
+  'active' : boolean,
   'category_img' : string,
   'name' : string,
   'slug' : SlugId,
@@ -360,7 +361,7 @@ export interface _SERVICE {
   'addtoWishlist' : ActorMethod<[string], Result_32>,
   'clearallcartitmesbyprincipal' : ActorMethod<[], Result_26>,
   'createAddress' : ActorMethod<[UserAddress], Result_31>,
-  'createCategory' : ActorMethod<[string, string, boolean], Result_30>,
+  'createCategory' : ActorMethod<[string, string, boolean, boolean], Result_30>,
   'createContact' : ActorMethod<[UserContact], Result_29>,
   'createOrder' : ActorMethod<[NewOrder], Result_15>,
   'createProduct' : ActorMethod<
@@ -403,7 +404,10 @@ export interface _SERVICE {
   'searchproductsbytitle' : ActorMethod<[string], Array<[SlugId, Product]>>,
   'updateAddress' : ActorMethod<[Address, string, Principal], Result_9>,
   'updateCartItems' : ActorMethod<[CartId, number, string, string], Result_8>,
-  'updateCategory' : ActorMethod<[SlugId, string, string, boolean], Result_7>,
+  'updateCategory' : ActorMethod<
+    [SlugId, string, string, boolean, boolean],
+    Result_7
+  >,
   'updateContact' : ActorMethod<[ContactId, boolean], Result_6>,
   'updateOrderStatus' : ActorMethod<[OrderId, string], Result_3>,
   'updatePaymentstatus' : ActorMethod<[OrderId, string], Result_5>,

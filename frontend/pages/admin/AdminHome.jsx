@@ -17,7 +17,7 @@ const AdminHome = () => {
   const [backend] = useCanister("backend");
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [statistics, setStatistics] = useState([]);
   const [videos, setVideos] = useState([]);
   const [orders, setOrders] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -34,6 +34,7 @@ const AdminHome = () => {
       setLoading(true);
       console.log("hello form admin dashboard");
       const item = await backend.getstatisticaldetailforadmin();
+      setStatistics(item.ok);
       console.log(item, "hello");
     } catch (item) {
       console.error("Error listing all:", error);
@@ -66,7 +67,7 @@ const AdminHome = () => {
             ) : (
               <CountUp
                 delay={2}
-                end={(users && users?.length) || 0}
+                end={(statistics && statistics.totalUsers) || 0}
                 className="font-semibold text-2xl"
               />
             )}
@@ -88,7 +89,7 @@ const AdminHome = () => {
             ) : (
               <CountUp
                 delay={2}
-                end={(categories && categories?.length) || 0}
+                end={(statistics && statistics.totalCategories) || 0}
                 className="font-semibold text-2xl"
               />
             )}
@@ -110,7 +111,7 @@ const AdminHome = () => {
             ) : (
               <CountUp
                 delay={2}
-                end={(products && products?.length) || 0}
+                end={(statistics && statistics.totalProducts) || 0}
                 className="font-semibold text-2xl"
               />
             )}
@@ -133,7 +134,7 @@ const AdminHome = () => {
             ) : (
               <CountUp
                 delay={2}
-                end={(orders && orders?.length) || 0}
+                end={(statistics && statistics.totalOrders) || 0}
                 className="font-semibold text-2xl"
               />
             )}
@@ -155,7 +156,7 @@ const AdminHome = () => {
             ) : (
               <CountUp
                 delay={2}
-                end={(contacts && contacts?.length) || 0}
+                end={(statistics && statistics.totalContacts) || 0}
                 className="font-semibold text-2xl"
               />
             )}

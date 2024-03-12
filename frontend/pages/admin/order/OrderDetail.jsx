@@ -203,7 +203,7 @@ const OrderDetail = () => {
                         {loading2 ? (
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
-                          order?.userId
+                          order?.userid.toText()
                         )}
                       </h6>
                     </div>

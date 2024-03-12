@@ -92,6 +92,7 @@ export const idlFactory = ({ IDL }) => {
   const SlugId = IDL.Text;
   const Category = IDL.Record({
     'featured' : IDL.Bool,
+    'active' : IDL.Bool,
     'category_img' : IDL.Text,
     'name' : IDL.Text,
     'slug' : SlugId,
@@ -433,7 +434,7 @@ export const idlFactory = ({ IDL }) => {
     'clearallcartitmesbyprincipal' : IDL.Func([], [Result_26], []),
     'createAddress' : IDL.Func([UserAddress], [Result_31], []),
     'createCategory' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Bool],
+        [IDL.Text, IDL.Text, IDL.Bool, IDL.Bool],
         [Result_30],
         [],
       ),
@@ -534,7 +535,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'updateCategory' : IDL.Func(
-        [SlugId, IDL.Text, IDL.Text, IDL.Bool],
+        [SlugId, IDL.Text, IDL.Text, IDL.Bool, IDL.Bool],
         [Result_7],
         [],
       ),

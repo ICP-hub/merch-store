@@ -4,6 +4,7 @@ import placeholderImg from "../../../assets/placeholderImg.png";
 import { FiDollarSign } from "react-icons/fi";
 
 const ProductCard = ({ loading, product }) => {
+  console.log(product);
   return (
     <div className="w-full p-4 grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-4 bg-white rounded-none">
       <div className="flex justify-start items-center gap-4">
@@ -13,7 +14,7 @@ const ProductCard = ({ loading, product }) => {
           ) : (
             <Link to={`/product/${product?.slug}`}>
               <img
-                src={product?.img1 ? product?.img1 : placeholderImg}
+                src={product?.img ? product?.img : placeholderImg}
                 alt={"product"}
                 className="w-[100px] h-[100px] rounded-xl shadow-sm"
               />
@@ -28,14 +29,28 @@ const ProductCard = ({ loading, product }) => {
               product?.title
             )}
           </h6>
-          <h6 className="text-xs  text-black font-semibold line-clamp-2 leading-tight">
+          <h6 className=" text-xs uppercase text-black font-light mb-0">
+            Color :
             {loading ? (
               <div className="flex flex-cols  gap-1">
                 <div className="w-[250px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
+              </div>
+            ) : (
+              <span className=" uppercase text-black font-semibold tracking-widest">
+                {product?.color}
+              </span>
+            )}
+          </h6>
+          <h6 className="text-xs uppercase text-black font-light mb-0">
+            Size :
+            {loading ? (
+              <div className="flex flex-cols  gap-1">
                 <div className="w-[250px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
               </div>
             ) : (
-              product?.description
+              <span className=" uppercase text-black font-semibold tracking-widest">
+                {product?.size}
+              </span>
             )}
           </h6>
         </div>

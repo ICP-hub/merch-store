@@ -42,7 +42,7 @@ const CreateCategory = () => {
   useEffect(() => {
     listAllCategories();
     listAllProducts();
-  }, []);
+  }, [backend, formData]);
 
   const listAllCategories = async () => {
     try {
@@ -138,22 +138,22 @@ const CreateCategory = () => {
     } else if (!formData.category.trim()) {
       toast.error("Please enter Product category");
       return false;
-    } else if (!formData.variantColor || formData.variantColor.length === 0) {
-      toast.error("Please add at least one variant color");
-      return false;
     } else if (
-      formData.variantColor.some(
-        (variant) =>
-          !variant.colors ||
-          !variant.inventory ||
-          !variant.price ||
-          !variant.sellingPrice
+      formData.variants.some(
+        (color) =>
+          !color.color.trim() ||
+          !color.inventory.trim() ||
+          !color.variant_price.trim() ||
+          !color.variant_sale_price.trim() ||
+          !color.img1.trim() ||
+          !color.img2.trim() ||
+          !color.img2.trim()
       )
     ) {
-      toast.error("Please fill in all fields for each variant color");
+      toast.error("Please enter a valid value for all variant colors");
       return false;
-    } else if (!formData.sizes || formData.sizes.length === 0) {
-      toast.error("Please select at least one variant size");
+    } else if (formData.sizes.some((size) => !size.size.trim())) {
+      toast.error("Please enter a valid value for all variant sizes");
       return false;
     }
 
@@ -164,6 +164,7 @@ const CreateCategory = () => {
   const listAllProducts = async () => {
     try {
       const items = await backend.listallProducts();
+
       return items;
     } catch (error) {
       console.error("Error listing all products:", error);
@@ -176,86 +177,89 @@ const CreateCategory = () => {
     try {
       if (!validateForm()) {
         return;
+      } else {
+        console.log("hello");
+
+        const requestData = {
+          title: formData.title,
+          active: formData.status,
+
+          description: formData.description,
+          trending: formData.trending,
+          newArrival: formData.newArrival,
+          category: formData.category,
+        };
+        const variantColors = formData.variants.map((variant) => ({
+          img1: variant.img1,
+          img2: variant.img2,
+          img3: variant.img3,
+
+          inventory: parseInt(variant.inventory),
+          color: variant.color,
+          variant_price: parseFloat(variant.variant_price),
+          variant_sale_price: parseFloat(variant.variant_sale_price),
+        }));
+        const variantSizes = formData.sizes.map((size) => ({
+          size: size.size,
+        }));
+        // const categories = formData.categories.map((category) => ({
+        //   status: category.status,
+        //   name: category.name,
+        //   slug: category.slug,
+        // }));
+        // const products = await listAllProducts();
+        // console.log(products);
+        // const existingProduct = products.some(
+        //   (product) => product.title === requestData.title
+        // );
+
+        // if (existingProduct) {
+        //   console.log();
+        //   toast.error(
+        //     "Product with this title already exists. Please choose a different title."
+        //   );
+        // } else {
+        setLoading(true);
+        const res = await backend.createProduct(
+          requestData,
+          variantSizes,
+          variantColors
+        );
+
+        console.log(res);
+        if ("ok" in res) {
+          toast.success("Product Added Successfully");
+
+          setFormData({
+            title: "",
+            status: "",
+            description: "",
+            trending: "",
+            newArrival: "",
+
+            category: "",
+
+            variants: [
+              {
+                img1: "",
+                img2: "",
+                img3: "",
+
+                inventory: "",
+                color: "",
+                variant_price: "",
+                variant_sale_price: "",
+              },
+            ],
+            sizes: [
+              {
+                size: "",
+              },
+            ],
+          });
+        }
       }
-      setLoading(true);
-
-      const requestData = {
-        title: formData.title,
-        active: formData.status,
-
-        description: formData.description,
-        trending: formData.trending,
-        newArrival: formData.newArrival,
-        category: formData.category,
-      };
-      const variantColors = formData.variants.map((variant) => ({
-        img1: variant.img1,
-        img2: variant.img2,
-        img3: variant.img3,
-
-        inventory: parseInt(variant.inventory),
-        color: variant.color,
-        variant_price: parseFloat(variant.variant_price),
-        variant_sale_price: parseFloat(variant.variant_sale_price),
-      }));
-      const variantSizes = formData.sizes.map((size) => ({
-        size: size.size,
-      }));
-      // const categories = formData.categories.map((category) => ({
-      //   status: category.status,
-      //   name: category.name,
-      //   slug: category.slug,
-      // }));
-      // const products = await listAllProducts();
-      // const existingProduct = products.find(
-      //   (product) => product.title === requestData.title
-      // );
-
-      // if (existingProduct) {
-      //   toast.error(
-      //     "Product with this title already exists. Please choose a different title."
-      //   );
-      // } else {
-      const res = await backend.createProduct(
-        requestData,
-        variantSizes,
-        variantColors
-      );
-
-      console.log(res);
-      if ("ok" in res) {
-        toast.success("Product Added Successfully");
-
-        setFormData({
-          title: "",
-          status: "",
-          description: "",
-          trending: "",
-          newArrival: "",
-
-          category: "",
-
-          variants: [
-            {
-              img1: "",
-              img2: "",
-              img3: "",
-
-              inventory: "",
-              color: "",
-              variant_price: "",
-              variant_sale_price: "",
-            },
-          ],
-          sizes: [
-            {
-              size: "",
-            },
-          ],
-          // categories: [{ status: "active", name: "", slug: "" }],
-        });
-      }
-      // }
+      //}
     } catch (error) {
       toast.error("An error occurred while creating the product.");
       console.error("An error occurred:", error);

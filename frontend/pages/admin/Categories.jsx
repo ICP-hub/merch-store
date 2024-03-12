@@ -18,7 +18,7 @@ const Categories = () => {
       },
       {
         Header: "Status",
-        accessor: "featured",
+        accessor: "active",
         Filter: SelectColumnFilter, // new
         Cell: StatusPill,
       },
@@ -58,7 +58,7 @@ const Categories = () => {
   const extractedData = data.map(([key, data]) => ({
     name: data.name,
     slug: data.slug,
-    featured: data.featured ? "active" : "inactive",
+    active: data.active ? "active" : "inactive",
   }));
   console.log(extractedData);
 

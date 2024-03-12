@@ -32,10 +32,10 @@ const Products = () => {
         Header: "PRICE",
         accessor: "price",
       },
-      {
-        Header: "INVENTORY",
-        accessor: "inventory",
-      },
+      // {
+      //   Header: "INVENTORY",
+      //   accessor: "inventory",
+      // },
       {
         Header: "Detail",
         accessor: "slug",

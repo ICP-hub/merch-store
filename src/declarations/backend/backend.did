@@ -518,6 +518,7 @@ type Contact =
  };
 type Category = 
  record {
+   active: bool;
    category_img: text;
    featured: bool;
    name: text;
@@ -555,7 +556,7 @@ service : {
   addtoWishlist: (text) -> (Result_32);
   clearallcartitmesbyprincipal: () -> (Result_26);
   createAddress: (UserAddress) -> (Result_31);
-  createCategory: (text, text, bool) -> (Result_30);
+  createCategory: (text, text, bool, bool) -> (Result_30);
   createContact: (UserContact) -> (Result_29);
   createOrder: (NewOrder) -> (Result_15);
   createProduct: (UserProduct, vec VariantSize, vec VariantColor) ->
@@ -626,7 +627,7 @@ service : {
                                         }) query;
   updateAddress: (Address, text, principal) -> (Result_9);
   updateCartItems: (CartId, nat8, text, text) -> (Result_8);
-  updateCategory: (SlugId, text, text, bool) -> (Result_7);
+  updateCategory: (SlugId, text, text, bool, bool) -> (Result_7);
   updateContact: (ContactId, bool) -> (Result_6);
   updateOrderStatus: (OrderId, text) -> (Result_3);
   updatePaymentstatus: (OrderId, text) -> (Result_5);
