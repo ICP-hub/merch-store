@@ -56,10 +56,10 @@ const pMethod = [
     name: "Fiat Payment",
     value: "fiat-payment",
   }, */
-  {
-    name: "Pay with paypal",
-    value: "paypal-payment",
-  },
+  // {
+  //   name: "Pay with paypal",
+  //   value: "paypal-payment",
+  // },
 ];
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -76,7 +76,6 @@ const Checkout = () => {
   const [isFinalCartLoading, setIsFinalCartLoading] = useState(true);
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
-  const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
   const [successDelete, setSuccessDelete] = useState(true);
   const [backend] = useCanister("backend");
 
@@ -140,14 +139,7 @@ const Checkout = () => {
     const totalAmount = totalPrice;
     const subTotal = totalPrice;
     const payment = paymentMethod.value;
-    orderPlacement(
-      products,
-      shippingAddress,
-      totalAmount,
-      subTotal,
-      payment,
-      setOrderPlaceMentLoad
-    );
+    orderPlacement(products, shippingAddress, totalAmount, subTotal, payment);
   };
 
   // Effect on initial Load : productlist , cart items
@@ -244,7 +236,6 @@ const Checkout = () => {
                 <BillSection
                   updatedPriceNQty={updatedPriceNQty}
                   proceed={proceed}
-                  orderPlacementLoad={orderPlacementLoad}
                 />
               </div>
             </div>
@@ -505,7 +496,8 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
-const BillSection = ({ updatedPriceNQty, proceed, orderPlacementLoad }) => {
+const BillSection = ({ updatedPriceNQty, proceed }) => {
+  const { orderPlacementLoad } = CartApiHandler();
   return (
     <div className="flex flex-col">
       <div className="border-b-2 py-6">

@@ -28,16 +28,28 @@ const CartApiHandler = () => {
   const [orderList, setOrderList] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
   const [totalAmountForTransfer, setTotalAmountForTransfer] = useState(null);
-  const [paymentAddress, setPaymentAddress] = useState(null);
   const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
+  const [orderPlacementData, setOrderPlacementData] = useState(null);
+  const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
 
+  // Effect arraning final data for payment
   useEffect(() => {
     const paymentAddressProcess = async () => {
       if (totalAmountForTransfer !== null) {
         try {
           const response = await paymentAddressForTransfer();
-          console.log(response);
-          setPaymentAddress(response);
+          // If response undefined return
+          if (response === undefined) {
+            toast.error("Something went wrong");
+            return;
+          }
+          // Proceed : get height
+          const { height } = response;
+          const paymentId = height.toString();
+          setOrderPlacementData((prev) => ({
+            ...prev,
+            paymentAddress: paymentId,
+          }));
         } catch (error) {
           console.error("Error getting payment address:", error);
         }
@@ -45,6 +57,43 @@ const CartApiHandler = () => {
     };
     paymentAddressProcess();
   }, [totalAmountForTransfer]);
+
+  // Effect hook for final placement : Call backend
+  useEffect(() => {
+    if (orderPlacementData) {
+      const proceedFinalPayment = async () => {
+        setOrderPlaceMentLoad(true);
+        if (orderPlacementData.paymentAddress === null) return;
+        // Second verification : required???
+        if (orderPlacementData.paymentAddress === "") {
+          toast.error("Invalid payment Id!");
+          return;
+        }
+        // Proceed backend
+        try {
+          setOrderPlaceMentLoad(true);
+          const response = await backend.createOrder(orderPlacementData);
+          console.log("orderPlacement response ", response);
+          if (response.ok) {
+            toast.success("Order successfully Placed");
+            // Navigate to OrderConfirmationPage
+            navigate("/order-confirm");
+            // Clear cart after successful order placement
+            await backend.clearallcartitmesbyprincipal();
+          } else {
+            toast.error(Object.keys(response.err));
+            return;
+          }
+        } catch (err) {
+          toast.error("Failed to place order");
+          console.error("Error Order Placement", err);
+        } finally {
+          setOrderPlaceMentLoad(false);
+        }
+      };
+      proceedFinalPayment();
+    }
+  }, [orderPlacementData]);
 
   // Get caller cart items
   const getCallerCartItems = async () => {
@@ -60,13 +109,13 @@ const CartApiHandler = () => {
     }
   };
 
+  // Gether order placement data for proceed
   const orderPlacement = async (
     products,
     shippingAddress,
     totalAmount,
     subTotal,
-    payment,
-    setOrderPlaceMentLoad
+    payment
   ) => {
     // {awb:text; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64}) → (variant {ok:record {id:text; awb:text; timeUpdated:int; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; timeCreated:int; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64};
     // If user not logged in :
@@ -87,13 +136,14 @@ const CartApiHandler = () => {
       },
       orderStatus: "order placed",
       userid: userid,
-      paymentAddress: paymentAddress,
+      paymentAddress: null,
       totalAmount: totalAmount,
       shippingAddress: shippingAddress,
       products: products,
       subTotalAmount: subTotal,
     };
-    console.log(orderDetails);
+    setOrderPlacementData(orderDetails);
+
     // Call Backend
     // try {
     //   setOrderPlaceMentLoad(true);
@@ -172,6 +222,7 @@ const CartApiHandler = () => {
     orderList,
     orderDetails,
     deleteCartItemById,
+    orderPlacementLoad,
   };
 };
 
