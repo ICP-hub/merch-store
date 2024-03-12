@@ -338,7 +338,7 @@ const CheckoutCard = ({
               title={"Are you sure you want to remove ?"}
               icon={<HiTrash size={40} color="red" />}
               btnClr="red"
-              actName="remove"
+              actName="Remove"
               action={deleteCartItem}
               isLoading={deleteLoad}
               addOn={successDelete}

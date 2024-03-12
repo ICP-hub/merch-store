@@ -12,10 +12,12 @@ import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 /* ----------------------------------------------------------------------------------------------------- */
 const CategoriesVertical = ({ searchProductByCategory, state }) => {
   const { categoryList, getCategoryList } = ProductApiHandler();
-  const [focusedIndex, setFocusedIndex] = useState(0);
-  // Extract categories using a loop
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [initialRender, setInitialRender] = useState(true);
+
   const categories = ["all"];
-  // Show category name from category list:
+
+  // Category name from category list:
   if (categoryList !== null) {
     categoryList.map(([cateSlug, { name }]) => categories.push(name));
   }
@@ -25,7 +27,16 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
     // If navigating from the HomePage
     searchProductByCategory(category);
     setFocusedIndex(index);
+    setInitialRender(false);
   };
+
+  useEffect(() => {
+    if (initialRender && state === null) {
+      setFocusedIndex(0);
+    } else {
+      setFocusedIndex(-1);
+    }
+  }, [state, initialRender]);
 
   // Call getCategoryList at page reload
   useEffect(() => {
@@ -42,13 +53,10 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
         <Button
           key={index}
           className={`focus:outline-none py-2 px-4 rounded-full ${
-            state === category || focusedIndex === index
+            (initialRender && state === category) || focusedIndex === index
               ? "bg-black text-white"
               : ""
           } focus:bg-black hover:text-white hover:bg-black focus:text-white flex items-start font-semibold max-md:text-sm w-full max-md:justify-center capitalize`}
-          autoFocus={
-            state !== null ? state === category : focusedIndex === index
-          }
           onClick={() => handleCategoryFilter(category, index)}
         >
           {category}
@@ -68,7 +76,13 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
   const categories = ["all"];
   // Show category name from category list:
   if (categoryList !== null) {
-    categoryList.map(([cateSlug, { name }]) => categories.push(name));
+    // categoryList.map(([cateSlug, { name }]) => categories.push(name));
+    // Display only featured categories for HomePage ???
+    categoryList.forEach(([cateSlug, { name, featured }]) => {
+      if (featured) {
+        categories.push(name);
+      }
+    });
   }
 
   // ApplyFilter based on category

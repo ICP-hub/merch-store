@@ -17,6 +17,8 @@ import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import NoImage from "../assets/product/p1-front.jpg";
 import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import Total from "../components/common/Total.jsx";
+import Modal1 from "../components/common/Styles/Modal1.jsx";
+import { LuTrash } from "react-icons/lu";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ main cartpage Container
@@ -55,6 +57,16 @@ const Cart = () => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   const [backend] = useCanister("backend");
+  // States for modal : ClearAll
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [successClearAll, setSuccessClearAll] = useState(true);
+  const [clearCartLoad, setClearCartLoad] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const getCartlist = async () => {
     try {
@@ -116,7 +128,7 @@ const Cart = () => {
   };
   useEffect(() => {
     getCartlist();
-  }, [backend]);
+  }, [backend, successClearAll]);
 
   const increment = (index) => {
     setQuantity((prevQuantities) => {
@@ -189,6 +201,7 @@ const Cart = () => {
 
   const clearAll = async () => {
     try {
+      setClearCartLoad(true);
       const res = await backend.clearallcartitmesbyprincipal();
 
       if ("ok" in res) {
@@ -201,6 +214,8 @@ const Cart = () => {
     } catch (error) {
       console.log(error);
     } finally {
+      setClearCartLoad(false);
+      setSuccessClearAll(false);
       getCartlist();
     }
   };
@@ -259,10 +274,22 @@ const Cart = () => {
                 <div className="flex items-end justify-end border border-gray-300 mt-2   rounded-xl   p-5 w-[100%]">
                   <Button
                     className="bg-black rounded-full text-sm text-white px-3 py-2"
-                    onClick={clearAll}
+                    onClick={openModal}
                   >
                     Clear All
                   </Button>
+                  {isModalOpen && (
+                    <Modal1
+                      closeModal={closeModal}
+                      title={"Are you sure you want to clear cart ?"}
+                      icon={<LuTrash size={40} color="red" />}
+                      btnClr="red"
+                      actName="Yes,Clear!"
+                      action={clearAll}
+                      isLoading={clearCartLoad}
+                      addOn={successClearAll}
+                    />
+                  )}
                 </div>
 
                 <div>

@@ -188,6 +188,11 @@ const ExpCategories = () => {
     getCategoryList();
   }, []);
 
+  // Filter featured categories : Display only featured categories
+  const featuredCategories = categoryList?.filter(
+    ([_, { featured }]) => featured
+  );
+
   return (
     <div className="md:container md:mx-auto px-6 my-8 ">
       <h1
@@ -206,7 +211,7 @@ const ExpCategories = () => {
       <SmoothList delay={200}>
         <div className="grid-category">
           {/* render 6 category card at max */}
-          {categoryList
+          {featuredCategories
             ?.slice(0, 6)
             .map(([cateSlug, { name, category_img }], index) => (
               <CategoryCard
