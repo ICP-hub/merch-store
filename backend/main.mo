@@ -36,6 +36,10 @@ actor {
     private var products = Map.HashMap<Types.SlugId, Types.Product>(0, Text.equal, Text.hash);
     private stable var stableproducts : [(Types.SlugId, Types.Product)] = [];
 
+    private stable var shippingamount : Types.ShippingAmount = {
+        shipping_amount = 50.0;
+    };
+
     // -----------------For keeping track of the size and color of the products-------------------
 
     // private var size = Map.HashMap<Types.SlugId, Types.Size>(0, Text.equal, Text.hash);
@@ -99,7 +103,7 @@ actor {
         );
         switch (foundAdmin) {
             case (null) { return false };
-            case (_) { return true };
+            case (?v) { return true };
         };
     };
 
@@ -123,12 +127,12 @@ actor {
         return #ok(user);
     };
 
-    public query ({ caller }) func getUserdetailsbycaller() : async Result.Result<Types.User, Types.GetUserError> {
+    public shared query ({ caller }) func getUserdetailsbycaller() : async Result.Result<Types.User, Types.GetUserError> {
         let user = Users.get(caller);
         return Result.fromOption(user, #UserNotFound);
     };
 
-    public query ({ caller }) func getUserdetailsbyid(id : Principal) : async Result.Result<Types.User, Types.GetUserError> {
+    public shared query ({ caller }) func getUserdetailsbyid(id : Principal) : async Result.Result<Types.User, Types.GetUserError> {
         let user = Users.get(id);
         return Result.fromOption(user, #UserNotFound);
     };
@@ -649,7 +653,7 @@ actor {
         name : Text,
         cat_img : Text,
         feaured : Bool,
-        active : Bool
+        active : Bool,
     ) : async Result.Result<(Types.Category), Types.UpdateCategoryError> {
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
@@ -888,6 +892,23 @@ actor {
 
     //  -----------------------------------   Orders_Functions --------------------------------------------------------------------------------------------
 
+    public shared ({ caller }) func updateshippingamount(s : Types.ShippingAmount) : async Result.Result<(Types.ShippingAmount), Types.UpdateShippingAmountError> {
+        let adminstatus = await isAdmin(caller);
+        if (adminstatus == false) {
+            return #err(#UserNotAdmin); // We require the user to be admin
+        };
+
+        if (s.shipping_amount == 0.00) {
+            return #err(#EmptyShippingAmount);
+        };
+        shippingamount := s;
+        return #ok(s);
+    };
+
+    public shared query func getshippingamount() : async Types.ShippingAmount {
+        return shippingamount;
+    };
+
     public shared (msg) func createOrder(order : Types.NewOrder) : async Result.Result<Types.Order, Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
@@ -904,7 +925,7 @@ actor {
                     userid = msg.caller;
                     totalAmount = order.totalAmount;
                     subTotalAmount = order.subTotalAmount;
-                    shippingAmount = order.shippingAmount;
+                    shippingAmount = shippingamount;
                     orderStatus = order.orderStatus;
                     paymentStatus = order.paymentStatus;
                     paymentAddress = order.paymentAddress;
@@ -942,7 +963,7 @@ actor {
                     userid = v.userid;
                     totalAmount = v.totalAmount;
                     subTotalAmount = v.subTotalAmount;
-                    shippingAmount = v.shippingAmount;
+                    shippingAmount = shippingamount;
                     orderStatus = v.orderStatus;
                     paymentStatus = v.paymentStatus;
                     paymentAddress = v.paymentAddress;
@@ -979,7 +1000,7 @@ actor {
                     userid = v.userid;
                     totalAmount = v.totalAmount;
                     subTotalAmount = v.subTotalAmount;
-                    shippingAmount = v.shippingAmount;
+                    shippingAmount = shippingamount;
                     orderStatus = orderStatus;
                     paymentStatus = v.paymentStatus;
                     paymentAddress = v.paymentAddress;
@@ -1077,7 +1098,7 @@ actor {
                     userid = v.userid;
                     totalAmount = v.totalAmount;
                     subTotalAmount = v.subTotalAmount;
-                    shippingAmount = v.shippingAmount;
+                    shippingAmount = shippingamount;
                     orderStatus = v.orderStatus;
                     paymentStatus = paymentStatus;
                     paymentAddress = v.paymentAddress;
@@ -1111,7 +1132,6 @@ actor {
             time_created = Time.now();
             time_updated = Time.now();
         };
-
         contacts.put(contactId, contact);
         return #ok(contact);
     };
