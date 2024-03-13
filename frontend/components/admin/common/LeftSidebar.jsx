@@ -75,7 +75,7 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   <CiShop className="w-5 h-5 mr-2" />
                   Products
                 </NavLink>
-           
+
                 <NavLink
                   to="/admin/orders"
                   className={({ isActive }) =>
@@ -87,9 +87,7 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                   <CiReceipt className="w-5 h-5 mr-2" />
                   Orders
                 </NavLink>
-              
 
-               
                 <NavLink
                   to="/admin/messages"
                   end
@@ -113,6 +111,17 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                 >
                   <CiMail className="w-5 h-5 mr-2" />
                   Users
+                </NavLink>
+                <NavLink
+                  to="/admin/shipping"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex justify-start items-center text-lg bg-[#512E5F]/20  hover:bg-[#512E5F]/20  text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                      : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
+                  }
+                >
+                  <CiSettings className="w-5 h-5 mr-2" />
+                  Shipping
                 </NavLink>
                 {/* <NavLink
                   to="/admin/settings"
