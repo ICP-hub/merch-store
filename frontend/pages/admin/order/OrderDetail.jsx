@@ -147,13 +147,12 @@ const OrderDetail = () => {
                   <Invoice
                     ref={componentRef}
                     userId={order.userId}
-                    userName={`${order.shippingAddress?.firstName || ""} ${
-                      order.shippingAddress?.lastName || ""
+                    userName={`${order?.shippingAddress?.firstname || ""} ${
+                      order.shippingAddress?.lastname || ""
                     }`}
-                    usermobile={order.shippingAddress?.mobile || ""}
-                    useraddress={order.shippingAddress?.street || ""}
-                    userlandmark=""
-                    userpincode={order.shippingAddress?.postCode || ""}
+                    usermobile={order.shippingAddress?.phone_number || ""}
+                    useraddress={order.shippingAddress?.addressline1 || ""}
+                    userpincode={order.shippingAddress?.pincode || ""}
                     usercity={order.shippingAddress?.city || ""}
                     userstate={order.shippingAddress?.state || ""}
                     usercountry={order.shippingAddress?.country || ""}

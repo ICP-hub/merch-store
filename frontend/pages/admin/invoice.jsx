@@ -79,7 +79,7 @@ const Invoice = ({
           >
             Mode: Prepaid
           </div>
-          <div style={{ flex: 1 }}>Courier Partner: COFFEECULTURE</div>
+          <div style={{ flex: 1 }}>Courier Partner: MERCH STORE</div>
         </div>
       </div>
 
@@ -88,15 +88,20 @@ const Invoice = ({
           {userName} (M) {usermobile}
         </h3>
         <p>Address: {useraddress}</p>
-        <p>Landmark: {userlandmark}</p>
+
         <p>
           Pincode: {userpincode}, {usercity}, {userstate}, {usercountry}
         </p>
       </div>
       <div style={{ borderTop: "1px solid black", padding: "0px" }}>
-        <div style={{ textAlign: "center", height: "100px" }}>
-          <h2 style={{ fontWeight: 700 }}>AWB: {awb} </h2>
-          <Barcode value={awb} />
+        <div
+          style={{ textAlign: "center", height: "170px" }}
+          className="flex justify-center"
+        >
+          <div>
+            <h2 style={{ fontWeight: 700 }}>AWB: {awb} </h2>
+            <Barcode value={awb} />
+          </div>
         </div>
         {/* Table */}
         <table
@@ -182,11 +187,18 @@ const Invoice = ({
             </tr>
           </tbody>
         </table>
-      </div>
-      <div style={{ padding: "0px" }}>
-        <div style={{ textAlign: "center", height: "100px", width: "full" }}>
-          <h5 style={{ fontWeight: "bold" }}>{orderId}</h5>
-          <Barcode value={orderId} />
+
+        <div style={{ padding: "0px" }}>
+          <div
+            style={{
+              textAlign: "center",
+              height: "140px",
+              width: "full",
+            }}
+            className="flex justify-center items-center mx-[3px]"
+          >
+            <Barcode value={orderId} />
+          </div>
         </div>
       </div>
       <div style={{ borderTop: "1px solid black", padding: "6px" }}>

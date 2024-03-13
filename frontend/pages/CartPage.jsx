@@ -239,32 +239,67 @@ const Cart = () => {
     <>
       {" "}
       {loading ? (
-        <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3 px-6 w-[70%]">
-          {[...Array(3)].map((_, index) => (
-            <div
-              className="rounded-xl xl:flex justify-between border-[1px] border-gray-200  items-center gap-2"
-              key={index}
-            >
-              <div className="flex justify-start items-start gap-2 mt-3">
-                <div className="w-24  h-24 mb-2  bg-gray-100 rounded-lg ml-2 animated-pulse"></div>
-                <div className="flex flex-col mt-2">
-                  <h4 className="w-[75px] h-[20px] rounded-full bg-gray-100 animated-pulse mb-1"></h4>
-                  <h4 className="w-[150px] h-[25px] rounded-full bg-gray-100 animated-pulse mb-2"></h4>
-                  <div className="flex gap-2">
-                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
-                    <h4 className="w-[60px] h-[15px] rounded-full bg-gray-100 animated-pulse"></h4>
+        <div className="md:flex px-6">
+          <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3  md:w-[70%]">
+            {[...Array(3)].map((_, index) => (
+              <div
+                className="rounded-xl xl:flex justify-between  border-2 border-gray-200  items-center gap-2"
+                key={index}
+              >
+                <div className="flex justify-start items-start gap-2 mt-3">
+                  <div className="w-24  h-24 mb-2  bg-gray-300 rounded-lg ml-2 animated-pulse"></div>
+                  <div className="flex flex-col mt-2">
+                    <h4 className="w-[75px] h-[20px] rounded-full bg-gray-300 animated-pulse mb-1"></h4>
+                    <h4 className="w-[150px] h-[25px] rounded-full bg-gray-300 animated-pulse mb-2"></h4>
+                    <div className="flex gap-2">
+                      <h4 className="w-[60px] h-[15px] rounded-full bg-gray-300 animated-pulse"></h4>
+                      <h4 className="w-[60px] h-[15px] rounded-full bg-gray-300 animated-pulse"></h4>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-between xl:items-end h-full mt-12 mr-2 xl:mb-0 mb-2">
+                  <div className="flex flex-col justify-end items-end gap-1">
+                    <h4 className="w-[80px] h-[20px] rounded-full bg-gray-300 animated-pulse"></h4>
+                    <h4 className="w-[80px] h-[20px] rounded-full bg-gray-300 animated-pulse"></h4>
+                    <div className="w-[130px] h-[30px] rounded-full bg-gray-300 animate-pulse"></div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col justify-between xl:items-end h-full mt-12 mr-2 xl:mb-0 mb-2">
-                <div className="flex flex-col justify-end items-end gap-1">
-                  <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
-                  <h4 className="w-[80px] h-[20px] rounded-full bg-gray-100 animated-pulse"></h4>
-                  <div className="w-[130px] h-[30px] rounded-full bg-gray-100 animate-pulse"></div>
+            ))}
+          </div>
+          <div className="border-2 rounded-2xl  md:ml-4 mt-4 md:h-[30%] ">
+            <div className="flex flex-col">
+              <div className="border-b-2 py-6">
+                <span className="uppercase font-semibold px-6 text-xl text-slate-500">
+                  Price details
+                </span>
+              </div>
+              <div className="border-b-2 py-2 flex flex-col gap-4 border-dashed">
+                <div className="flex justify-between px-6 gap-2 font-medium">
+                  <p className="bg-gray-300 h-6 w-28 animate-pulse rounded-xl"></p>
+                  <span className="bg-gray-300 h-6 w-12 animate-pulse rounded-xl"></span>
+                </div>
+                <div className="flex justify-between px-6 gap-2 font-medium">
+                  <p className="bg-gray-300 h-6 w-36 animate-pulse rounded-xl"></p>
+                  <span className="flex gap-2">
+                    <p className="bg-gray-300 h-6 w-12 animate-pulse rounded-xl"></p>
+                  </span>
                 </div>
               </div>
+              <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
+                <div className="flex justify-between px-6 gap-2 font-bold">
+                  <p className="bg-gray-300 h-6 w-28 animate-pulse rounded-xl"></p>
+                  <span className="bg-gray-300 h-6 w-12 animate-pulse rounded-xl"></span>
+                </div>
+              </div>
+              <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
+                <div className="px-6">
+                  <div className="bg-gray-300 h-6 w-72 animate-pulse rounded-xl"></div>
+                </div>
+              </div>
+              <div className="p-6"></div>
             </div>
-          ))}
+          </div>
         </div>
       ) : (
         <>
@@ -426,7 +461,9 @@ const Cart = () => {
               <Total totalPrice={totalPrice} />
             </div>
           ) : (
-            <EmptyCart></EmptyCart>
+            <div className="px-6 mt-4">
+              <EmptyCart></EmptyCart>
+            </div>
           )}
         </>
       )}

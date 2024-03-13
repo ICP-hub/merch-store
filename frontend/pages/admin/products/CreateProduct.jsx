@@ -202,11 +202,7 @@ const CreateCategory = () => {
         const variantSizes = formData.sizes.map((size) => ({
           size: size.size,
         }));
-        // const categories = formData.categories.map((category) => ({
-        //   status: category.status,
-        //   name: category.name,
-        //   slug: category.slug,
-        // }));
+
         // const products = await listAllProducts();
         // console.log(products);
         // const existingProduct = products.some(
@@ -259,7 +255,7 @@ const CreateCategory = () => {
           });
         }
       }
-      //}
+      //   }
     } catch (error) {
       toast.error("An error occurred while creating the product.");
       console.error("An error occurred:", error);
