@@ -239,7 +239,7 @@ const Cart = () => {
     <>
       {" "}
       {loading ? (
-        <div className="md:flex px-6">
+        <div className="container mx-auto mt-4 px-6 flex items-center md:items-start justify-between md:flex-row flex-col">
           <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3  md:w-[70%]">
             {[...Array(3)].map((_, index) => (
               <div
@@ -461,7 +461,7 @@ const Cart = () => {
               <Total totalPrice={totalPrice} />
             </div>
           ) : (
-            <div className="px-6 mt-4">
+            <div className="px-6 mt-4 m-auto container">
               <EmptyCart></EmptyCart>
             </div>
           )}
