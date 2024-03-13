@@ -101,8 +101,13 @@ module {
         #fivestar;
     };
 
-    public type shippingAmount = {
+    public type ShippingAmount = {
         shipping_amount : Float;
+    };
+
+    public type UpdateShippingAmountError = {
+        #UserNotAdmin;
+        #EmptyShippingAmount;
     };
 
     public type ReviewRatings = {
@@ -280,7 +285,7 @@ module {
         userid : Principal;
         totalAmount : Float;
         subTotalAmount : Float;
-        shippingAmount : shippingAmount;
+        shippingAmount : ShippingAmount;
         paymentMethod : Text;
         orderStatus : Text;
         paymentStatus : Text;
