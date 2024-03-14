@@ -16,6 +16,7 @@ import {
 import CartApiHandler from "../apiHandlers/CartApiHandler";
 import { useParams } from "react-router-dom";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
+import TabChanges from "../components/Tabchanges";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  Base : MyOrderDetailPage.
@@ -37,43 +38,27 @@ const MyOrderDetailPage = () => {
 const MyOrderDetailContainerMain = () => {
   const { getOrderById, orderDetails, isLoading } = CartApiHandler();
   const { id } = useParams();
+
+  const pathsForTabChanges = ["Home", "my-profile", "my-order", id];
   // Filter orderList from params
   useEffect(() => {
     getOrderById(id);
   }, []);
 
+  console.log("orderDetails", orderDetails);
+
   return (
     <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
       {isLoading && <div>Loading....</div>}
-
       {!isLoading && orderDetails === undefined && <div>Invalid Order ID</div>}
-
       {!isLoading && orderDetails && orderDetails !== null && (
         <>
-          <TabChanges orderId={id} />
+          <TabChanges paths={pathsForTabChanges} />
           <DeliveryInfo shippingAddress={orderDetails.shippingAddress} />
           <DeliveryStepper />
           <OrderItemComp products={orderDetails.products} />
         </>
       )}
-    </div>
-  );
-};
-
-/* ----------------------------------------------------------------------------------------------------- */
-/*  @  MyOrderDetailPage : MyOrderContainerMain: <TabChanges /> > top bar 
-/* ----------------------------------------------------------------------------------------------------- */
-const TabChanges = ({ orderId }) => {
-  const paths = ["Home", "My Account", "My Orders", orderId];
-
-  return (
-    <div className="text-gray-600 gap-2 flex text-xs font-medium py-6 items-center">
-      {paths.map((path, index) => (
-        <React.Fragment key={index}>
-          <Button className="min-w-max">{path}</Button>
-          {index < paths.length - 1 && <span>{">"}</span>}
-        </React.Fragment>
-      ))}
     </div>
   );
 };
@@ -113,6 +98,12 @@ const DeliveryInfo = ({ shippingAddress }) => {
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
 const MoreActions = () => {
+  if (id) {
+    console.log("id", id);
+  }
+  // useEffect(() => {
+  //   getOrderById(id);
+  // }, []);
   return (
     <div className="sm:w-1/2 ">
       <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">

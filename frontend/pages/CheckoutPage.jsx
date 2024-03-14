@@ -18,10 +18,7 @@ import Button from "../components/common/Button.jsx";
 import { Link } from "react-router-dom";
 import CartApiHandler from "../apiHandlers/CartApiHandler.jsx";
 import ProductApiHandler from "../apiHandlers/ProductApiHandler.jsx";
-import {
-  getCartItemDetails,
-  totalCartSellPrice,
-} from "../apiHandlers/cartUtils.js";
+import { getCartItemDetails } from "../apiHandlers/cartUtils.js";
 import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler.jsx";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { TailSpin } from "react-loader-spinner";
@@ -29,6 +26,7 @@ import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import toast from "react-hot-toast";
 import { useCanister } from "@connect2ic/react";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
+import TabChanges from "../components/Tabchanges.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main checkout Container
@@ -38,7 +36,7 @@ const CheckoutPage = () => {
     <>
       <AnimationView>
         <ScrollToTop />
-        <Header title={"CheckOut"} />
+        <Header title={"Checkout"} />
         <Checkout />
         <Footer></Footer>
       </AnimationView>
@@ -82,6 +80,7 @@ const Checkout = () => {
   const cartItemDetails = getCartItemDetails(cartItems, productList);
   // console.log("cartItemDetails", cartItemDetails);
   // console.log("finalCart", finalCart);
+  const pathsForTabChanges = ["Home", "cart", "shipping-address", "checkout"];
 
   // Increase quantity and price
   const handleIncrease = (index) => {
@@ -190,15 +189,7 @@ const Checkout = () => {
 
   return (
     <div className="container mx-auto p-6 max-md:px-2">
-      <div className="pb-4">
-        <Link
-          to="/cart"
-          className="flex items-center px-4 py-2 bg-black text-white gap-2 rounded-xl uppercase text-sm font-medium max-w-max"
-        >
-          <FaArrowLeft />
-          Back to cart
-        </Link>
-      </div>
+      <TabChanges paths={pathsForTabChanges} />
       {isFinalCartLoading ? (
         <div>Loading...</div>
       ) : (

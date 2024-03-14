@@ -2,6 +2,7 @@ import { useCanister, useConnect, useTransfer } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 // Custom hook : initialize the backend Canister
 const useBackend = () => {
@@ -31,6 +32,8 @@ const CartApiHandler = () => {
   const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
   const [orderPlacementData, setOrderPlacementData] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
+
+  const navigate = useNavigate();
 
   // Effect arraning final data for payment
   useEffect(() => {
@@ -143,28 +146,6 @@ const CartApiHandler = () => {
       subTotalAmount: subTotal,
     };
     setOrderPlacementData(orderDetails);
-
-    // Call Backend
-    // try {
-    //   setOrderPlaceMentLoad(true);
-    //   // const response = await backend.createOrder(orderDetails);
-    //   console.log("orderPlacement response ", response);
-    //   if (response.ok) {
-    //     toast.success("Order successfully Placed");
-    //     // Navigate to OrderConfirmationPage
-    //     navigate("/order-confirm");
-    //     // Clear cart after successful order placement
-    //     await backend.clearallcartitmesbyprincipal();
-    //   } else {
-    //     toast.error(Object.keys(response.err));
-    //     return;
-    //   }
-    // } catch (err) {
-    //   toast.error("Failed to place order");
-    //   console.error("Error Order Placement", err);
-    // } finally {
-    //   setOrderPlaceMentLoad(false);
-    // }
   };
 
   // Get Order List

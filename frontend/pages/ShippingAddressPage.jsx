@@ -19,6 +19,7 @@ import {
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import { useCanister, useConnect } from "@connect2ic/react";
 import LoadingScreen from "../components/common/LoadingScreen.jsx";
+import TabChanges from "../components/Tabchanges.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -53,6 +54,8 @@ const AddressDetail = () => {
   // console.log("Cart Item Details", cartItemDetails);
   const totalPrice = totalCartSellPrice(cartItemDetails);
   // console.log(cartItemDetails);
+
+  const pathsForTabChanges = ["Home", "cart", "shipping-address"];
 
   // Fetch data parallelly when the component mounts
   useEffect(() => {
@@ -99,6 +102,7 @@ const AddressDetail = () => {
 
   return (
     <div className="container mx-auto p-6 max-md:px-2">
+      <TabChanges paths={pathsForTabChanges} />
       {finalIsLoading ? (
         <ShippingAddressPageLoader />
       ) : (

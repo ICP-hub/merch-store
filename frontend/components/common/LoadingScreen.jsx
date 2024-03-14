@@ -55,9 +55,6 @@ const LoadingScreen = () => {
     return (
       <div className="flex w-full max-md:flex-col gap-4">
         <div className="flex-1 flex flex-col gap-4">
-          <div className="uppercase text-sm font-bold bg-black text-white p-6 rounded-xl">
-            Delivery address
-          </div>
           <div class="md:flex border border-gray-300 rounded-xl p-2 w-full bg-gray-100">
             <div class="flex flex-col p-2 animate-pulse">
               <div class="flex gap-2 items-center w-full">

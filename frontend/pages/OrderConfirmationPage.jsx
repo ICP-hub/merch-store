@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 import Button from "../components/common/Button.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const OrderConfirmationPage = () => {
   const [showCheckIcon, setShowCheckIcon] = useState(true);
   const [showConfetti, setShowConfetti] = useState(true);
   const [paymentFailed, setPaymentFailed] = useState(false);
   const { width, height } = useWindowSize();
+  const [count, setCount] = useState(5);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showConfetti) {
@@ -18,11 +21,27 @@ const OrderConfirmationPage = () => {
     }
   }, [showConfetti]);
 
+  // Effect hook for time out count : navigate after timeout
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (count > 0) {
+        setCount(count - 1);
+      } else {
+        // Navigate to homepage
+        setTimeout(() => {
+          navigate("/");
+        }, 100);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [count, navigate]);
+
   return (
     <>
       <div
         className="flex flex-col items-center justify-center h-screen w-screen "
-        style={{ backgroundColor: "#EDBB99" }}
+        style={{ backgroundColor: "#5D6D7E" }}
       >
         {paymentFailed ? (
           <div className="flex items-center justify-center h-screen">
@@ -88,6 +107,20 @@ const OrderConfirmationPage = () => {
                   {" "}
                   continue shopping
                 </Button>
+              </div>
+              <div className="flex gap-2 items-center font-semibold min-w-max text-xs">
+                You are about to redirect to the homepage in
+                <motion.span
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                  }}
+                  className="font-bold text-2xl"
+                >
+                  {count}
+                </motion.span>
+                seconds
               </div>
             </div>
           </>

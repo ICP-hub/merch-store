@@ -19,6 +19,7 @@ import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import Total from "../components/common/Total.jsx";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import { LuTrash } from "react-icons/lu";
+import TabChanges from "../components/Tabchanges.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ main cartpage Container
@@ -67,6 +68,9 @@ const Cart = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  /************ Modal End */
+
+  const pathsForTabChanges = ["Home", "cart"];
 
   const getCartlist = async () => {
     try {
@@ -237,7 +241,9 @@ const Cart = () => {
 
   return (
     <>
-      {" "}
+      <div className="container mx-auto px-6">
+        <TabChanges paths={pathsForTabChanges} />
+      </div>
       {loading ? (
         <div className="container mx-auto mt-4 px-6 flex items-center md:items-start justify-between md:flex-row flex-col">
           <div className="   rounded-xl mb-3 mt-4 grid grid-cols-1 gap-3  md:w-[70%]">
