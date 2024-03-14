@@ -4,7 +4,14 @@ import React from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 const IcpLogo = ({ size }) => {
   return (
-    <div style={{ height: size + "px", width: size + "px" }}>
+    <div
+      style={{
+        height: size + "px",
+        width: size + "px",
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
       <svg
         version="1.1"
         id="Layer_1"

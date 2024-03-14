@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import { useEffect } from "react";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
+import IcpLogo from "../../assets/IcpLogo";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component ProductCard.
@@ -309,9 +310,10 @@ const ProductCard = ({ product }) => {
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-2 items-center">
-              <span className="font-medium text-lg">
-                ${productInfo.variantInfo.variant_sale_price}
-              </span>
+              <div className="font-medium text-lg flex items-center">
+                <IcpLogo size={24} />
+                <p>{productInfo.variantInfo.variant_sale_price}</p>
+              </div>
               <span className="text-sm line-through font-light">
                 ${productInfo.variantInfo.variant_price}
               </span>
