@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [loading3, setLoading3] = useState(true);
+  const [loading4, setLoading4] = useState(false);
   const [product, setProduct] = useState([]);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -180,6 +181,7 @@ const ProductDetail = () => {
       if (!validateForm()) {
         return;
       }
+      setLoading4(true);
 
       //const existingProduct = await backend.getProduct(param.slug);
 
@@ -235,7 +237,7 @@ const ProductDetail = () => {
       toast.error("An error occurred while processing the product.");
       console.error("An error occurred:", error);
     } finally {
-      setLoading(false);
+      setLoading4(false);
     }
   };
 
@@ -721,16 +723,25 @@ const ProductDetail = () => {
 
             <div className="flex flex-col items-end justify-end gap-4 mt-6">
               <button
-                onClick={() => {
-                  handleSubmit();
-                }}
+                onClick={handleSubmit}
                 type="submit"
-                className={`bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
-                  loading && "opacity-50"
+                className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                  loading4 && "opacity-50"
                 }`}
-                disabled={loading}
+                disabled={loading4}
               >
-                <CiCircleCheck className="w-5 h-5" />
+                {loading4 ? (
+                  <TailSpin
+                    height="20"
+                    width="20"
+                    color="white"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    visible={true}
+                  />
+                ) : (
+                  <CiCircleCheck className="w-5 h-5" />
+                )}
                 UPDATE PRODUCT
               </button>
             </div>

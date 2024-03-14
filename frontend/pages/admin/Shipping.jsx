@@ -1,7 +1,49 @@
 import React from "react";
-import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
+import { useState, useEffect } from "react";
+import { CiCircleCheck } from "react-icons/ci";
+import { useCanister } from "@connect2ic/react";
+import { TailSpin } from "react-loader-spinner";
+import toast from "react-hot-toast";
 
 const Shipping = () => {
+  const [amount, setAmount] = useState("");
+  const [backend] = useCanister("backend");
+  const [loading, setLoading] = useState(false);
+
+  const shippingAmount = async () => {
+    try {
+      const items = await backend.getshippingamount();
+      console.log(items);
+      setAmount(items.shipping_amount);
+    } catch (error) {
+      console.error("Error listing Amount:", error);
+    }
+  };
+  const updateAmount = async () => {
+    try {
+      setLoading(true);
+
+      const parsedAmount = parseFloat(amount);
+      const items = await backend.updateshippingamount({
+        shipping_amount: parsedAmount,
+      });
+      console.log(items);
+      if ("ok" in items) {
+        setAmount(items.shipping_amount);
+        toast.success("Shipping Amount updated successfully");
+      } else {
+        toast.error("Failed to update the shipping Amount");
+      }
+    } catch (error) {
+      console.error("Error while updating Amount:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    shippingAmount();
+  }, [backend]);
+
   return (
     <>
       <div>
@@ -15,17 +57,32 @@ const Shipping = () => {
                 <input
                   id="title"
                   type="text"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
                   className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
                   placeholder="Enter Shipping Amount"
                 />
                 <div className="flex flex-col items-end justify-end gap-4 mt-6">
                   <button
-                    className="bg-[#330000] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
-                      
-                    "
+                    onClick={updateAmount}
+                    className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
+                      loading && "opacity-50"
+                    }`}
+                    disabled={loading}
                   >
-                    <CiCircleCheck className="w-5 h-5" />
-                    UPDATE PRODUCT
+                    {loading ? (
+                      <TailSpin
+                        height="20"
+                        width="20"
+                        color="white"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        visible={true}
+                      />
+                    ) : (
+                      <CiCircleCheck className="w-5 h-5" />
+                    )}
+                    UPDATE AMOUNT
                   </button>
                 </div>
               </div>
