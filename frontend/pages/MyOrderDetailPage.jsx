@@ -98,9 +98,6 @@ const DeliveryInfo = ({ shippingAddress }) => {
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
 const MoreActions = () => {
-  // useEffect(() => {
-  //   getOrderById(id);
-  // }, []);
   return (
     <div className="sm:w-1/2 ">
       <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">

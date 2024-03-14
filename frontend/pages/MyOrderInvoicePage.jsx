@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const MyOrderInvoicePage = () => {
-  return (
-    <div>MyOrderInvoicePage</div>
-  )
-}
+  return <div>MyOrderInvoicePage</div>;
+};
 
-export default MyOrderInvoicePage
+export default MyOrderInvoicePage;

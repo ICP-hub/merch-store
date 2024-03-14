@@ -75,9 +75,7 @@ const LoadingScreen = () => {
             </div>
           </div>
           <div className="border-2 rounded-xl">
-            <button className="font-semibold px-8 py-4" tabindex="0">
-              + New Address
-            </button>
+            <button className="font-semibold px-8 py-4">+ New Address</button>
           </div>
         </div>
         <div className="border-2 rounded-2xl max-h-96">
