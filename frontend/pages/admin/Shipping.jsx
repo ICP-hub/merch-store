@@ -4,6 +4,7 @@ import { CiCircleCheck } from "react-icons/ci";
 import { useCanister } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
+import IcpLogo from "../../assets/IcpLogo";
 
 const Shipping = () => {
   const [amount, setAmount] = useState("");
@@ -54,14 +55,18 @@ const Shipping = () => {
                 Shipping amount
               </h1>
               <div className="my-2">
-                <input
-                  id="title"
-                  type="text"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                  placeholder="Enter Shipping Amount"
-                />
+                <div className="border-2 p-1 items-center outline-none border-[#F4F2F2] w-full rounded-lg flex">
+                  <IcpLogo size={24} />
+                  <input
+                    id="title"
+                    type="text"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="  pl-2 outline-none border-none w-full rounded-lg"
+                    placeholder="Enter Shipping Amount"
+                  />
+                </div>
+
                 <div className="flex flex-col items-end justify-end gap-4 mt-6">
                   <button
                     onClick={updateAmount}

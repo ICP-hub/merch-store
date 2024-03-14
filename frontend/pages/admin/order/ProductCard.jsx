@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import placeholderImg from "../../../assets/placeholderImg.png";
 import { FiDollarSign } from "react-icons/fi";
+import IcpLogo from "../../../assets/IcpLogo";
 
 const ProductCard = ({ loading, product }) => {
   console.log(product);
@@ -57,20 +58,19 @@ const ProductCard = ({ loading, product }) => {
       </div>
       <div className="flex">
         <div className="w-2/6">
-          <h6 className="text-xs uppercase text-black font-light mb-0">
+          <h6 className="text-xs uppercase text-black   font-light mb-0">
             {loading ? (
               <div className="w-[80px] h-[20px] rounded-xl bg-gray-100 animate-pulse mb-1"></div>
             ) : (
               "Price"
             )}
           </h6>
-          <h6 className="text-xl uppercase text-black font-semibold tracking-widest">
+          <h6 className="text-sm uppercase text-black font-semibold tracking-widest">
             {loading ? (
               <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
             ) : (
               <span className="flex items-center gap-1">
-                <FiDollarSign className="w-5 h-5" />{" "}
-                {product?.sale_price?.toFixed(2)}
+                <IcpLogo size={16} /> {product?.sale_price?.toFixed(2)}
               </span>
             )}
           </h6>
@@ -87,7 +87,7 @@ const ProductCard = ({ loading, product }) => {
             <div className="w-[100px] h-[25px] rounded-xl bg-gray-100 animate-pulse "></div>
           ) : (
             <div className="flex justify-start items-center gap-2">
-              <h6 className="text-xl text-black font-semibold tracking-widest">
+              <h6 className="text-sm text-black font-semibold tracking-widest">
                 {product?.quantity}
               </h6>
             </div>
@@ -95,7 +95,7 @@ const ProductCard = ({ loading, product }) => {
         </div>
         <div className="w-1/6 flex justify-between items-center">
           <div>
-            <h6 className="text-xs uppercase text-black font-light mb-0">
+            <h6 className="text-xs uppercase flex items-center  text-black font-light mb-0">
               {loading ? (
                 <div className="w-[80px] h-[20px] rounded-xl bg-gray-100 animate-pulse mb-1"></div>
               ) : (
@@ -103,12 +103,12 @@ const ProductCard = ({ loading, product }) => {
               )}
             </h6>
 
-            <h6 className="text-xl text-black font-semibold tracking-widest">
+            <h6 className="text-sm text-black font-semibold tracking-widest">
               {loading ? (
                 <div className="w-[100px] h-[25px] rounded-xl bg-gray-100 animate-pulse"></div>
               ) : (
                 <span className="flex items-center gap-1">
-                  <FiDollarSign className="w-5 h-5" />{" "}
+                  <IcpLogo size={16} />{" "}
                   {(product?.sale_price * product?.quantity).toFixed(2)}{" "}
                 </span>
               )}

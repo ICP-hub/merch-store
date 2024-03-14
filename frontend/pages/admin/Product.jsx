@@ -10,6 +10,7 @@ import Table, {
  */ import { useCanister } from "@connect2ic/react";
 import { CiCirclePlus } from "react-icons/ci";
 import { InfinitySpin } from "react-loader-spinner";
+import IcpLogo from "../../assets/IcpLogo";
 const Products = () => {
   const columns = React.useMemo(
     () => [
@@ -31,7 +32,15 @@ const Products = () => {
       {
         Header: "PRICE",
         accessor: "price",
+        Cell: ({ value }) => (
+          <div className="flex items-center">
+            <IcpLogo size={24} /> {/* Include the IcpLogo component */}
+            <span className=" ml-1">{value}</span>{" "}
+            {/* Display the price value */}
+          </div>
+        ),
       },
+      ,
       // {
       //   Header: "INVENTORY",
       //   accessor: "inventory",
@@ -77,7 +86,7 @@ const Products = () => {
   }));
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll overflow-x-hidden">
       <div className="">
         <div className="mb-5 flex justify-between items-center">
           <h1 className="uppercase text-xl font-semibold text-gray-900 ">

@@ -63,7 +63,7 @@ const Categories = () => {
   console.log(extractedData);
 
   return (
-    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll">
+    <div className="styled-scrollbar  flex flex-col bg-white  rounded-2xl h-[calc(100vh-100px)] p-4 overflow-y-scroll overflow-x-hidden">
       <div className="">
         <div className="mb-6 flex justify-between items-center gap-2">
           <h1 className="uppercase text-xl font-semibold text-gray-900 ">

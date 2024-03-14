@@ -17,6 +17,7 @@ import { BsArrowRightCircle, BsTrash3 } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import NoDataFound from "../components/common/NoDataFound";
+
 import {
   ConnectButton,
   ConnectDialog,
@@ -24,6 +25,7 @@ import {
   useConnect,
   useDialog,
 } from "@connect2ic/react";
+import IcpLogo from "../assets/IcpLogo";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -195,28 +197,29 @@ const MyWishList = () => {
                   <img
                     draggable="false"
                     className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
-                    src={wishlists.variantColor[0].img1}
-                    alt={wishlists.title}
+                    src={wishlists?.variantColor[0]?.img1}
+                    alt={wishlists?.title}
                   />
                 </div>
                 <div className="flex flex-col lg:justify-center">
                   <p className="text-lg capitalize font-medium">
-                    {wishlists.title}
+                    {wishlists?.title}
                   </p>
                   <p className="text-xs uppercase">
                     {" "}
-                    Categgory: {wishlists.category}
+                    Categgory: {wishlists?.category}
                   </p>
                   <p className="uppercase text-xs">
-                    Added On : {wishlist[0].addedOn}
+                    Added On : {wishlist[0]?.addedOn}
                   </p>
                 </div>
               </div>
               <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
                 <div className="flex flex-col justify-center">
                   <span className="text-[12px] uppercase">Price</span>
-                  <p className="text-lg font-medium">
-                    ${wishlists.variantColor[0].variant_price}
+                  <p className="text-lg font-medium flex  items-center">
+                    <IcpLogo size={16} className="mr-2" />
+                    {wishlists?.variantColor[0]?.variant_price}
                   </p>
                 </div>
                 <div className="flex justify-center flex-col">
@@ -230,7 +233,7 @@ const MyWishList = () => {
                       <BsTrash3 size={20} />
                     </Button>
                     <Button>
-                      <Link to={`/product/${wishlists.slug}`}>
+                      <Link to={`/product/${wishlists?.slug}`}>
                         <BsArrowRightCircle size={20} />
                       </Link>
                     </Button>

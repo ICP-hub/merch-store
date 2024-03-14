@@ -22,6 +22,7 @@ import img2 from "../assets/product/p1-back.jpg";
 import img3 from "../assets/product/p2-back.jpeg";
 
 import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+import IcpLogo from "../assets/IcpLogo.jsx";
 
 const ProductDetailPage = () => {
   return (
@@ -422,11 +423,15 @@ const ProductDetail = () => {
             {!loading ? (
               <div className=" w-1/3 h-8  mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
-              <div className="mb-4 flex items-center  text-gray-700">
+              <div className="mb-4 flex items-center  text-gray-700 ">
                 Price:
-                <p className="text-gray-600">${price}</p>
-                <p className="text-gray-500 mx-2 text-xs">
-                  <s>${sellingPrice}</s>
+                <p className="text-gray-800 flex items-center ml-2">
+                  {" "}
+                  <IcpLogo size={20} />
+                  {price}
+                </p>
+                <p className="text-gray-500 mx-2 text-xs ">
+                  <s className="flex"> {sellingPrice}</s>
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 max-w-max">

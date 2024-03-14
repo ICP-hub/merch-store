@@ -20,6 +20,7 @@ const UserDetails = () => {
       {
         Header: "Principal",
         accessor: "id",
+        Cell: ({ value }) => <ShortText text={value} />,
       },
       {
         Header: "FIRST NAME",

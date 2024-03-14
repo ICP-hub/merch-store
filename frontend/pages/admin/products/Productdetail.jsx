@@ -7,6 +7,7 @@ import { TailSpin } from "react-loader-spinner";
 import { TiDeleteOutline } from "react-icons/ti";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
+import IcpLogo from "../../../assets/IcpLogo";
 
 const ProductDetail = () => {
   const [backend] = useCanister("backend");
@@ -509,29 +510,41 @@ const ProductDetail = () => {
                     id={`inventory`}
                     name={`inventory`}
                     placeholder="Inventory"
-                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
+                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg remove-arrow"
                     disabled={loading}
                   />
-                  <input
-                    type="number"
-                    value={loading2 ? "loading " : variant.variant_price}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    id={`variant_price`}
-                    name={`variant_price`}
-                    placeholder="Variant Price"
-                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                    disabled={loading}
-                  />
-                  <input
-                    type="number"
-                    value={loading2 ? "loading " : variant.variant_sale_price}
-                    onChange={(e) => handleVariantChange(index, e)}
-                    id={`variant_sale_price`}
-                    name={`variant_sale_price`}
-                    placeholder="Variant Sale Price"
-                    className="mr-2 mb-2 px-3 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg"
-                    disabled={loading}
-                  />
+                  <div className="mr-2 mb-2 px-1 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg flex ">
+                    <IcpLogo size={24} />
+                    <input
+                      type="number"
+                      value={
+                        loading2
+                          ? "loading..."
+                          : parseInt(variant.variant_price)
+                      }
+                      onChange={(e) => handleVariantChange(index, e)}
+                      id={`variant_price`}
+                      name={`variant_price`}
+                      placeholder="Variant Price"
+                      className="w-[80%] ml-2  outline-none   border-transparent focus:border-transparent remove-arrow"
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="mr-2 mb-2 px-1 py-2 md:w-auto border-2 p-2 outline-none border-[#F4F2F2] w-full rounded-lg flex ">
+                    <IcpLogo size={24} />
+                    <input
+                      type="number"
+                      value={
+                        loading2 ? "loading..." : variant.variant_sale_price
+                      }
+                      onChange={(e) => handleVariantChange(index, e)}
+                      id={`variant_sale_price`}
+                      name={`variant_sale_price`}
+                      placeholder="Variant Sale Price"
+                      className="w-[80%] ml-2  outline-none   border-transparent focus:border-transparent remove-arrow"
+                      disabled={loading}
+                    />
+                  </div>
                   <input
                     type="text"
                     value={loading2 ? "loading... " : variant.img1}

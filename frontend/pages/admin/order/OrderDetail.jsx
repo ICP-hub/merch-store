@@ -7,6 +7,7 @@ import {
   CiTrash,
 } from "react-icons/ci";
 import { useReactToPrint } from "react-to-print";
+import IcpLogo from "../../../assets/IcpLogo";
 
 import ProductCard from "./ProductCard";
 import { useCanister } from "@connect2ic/react";
@@ -374,7 +375,7 @@ const OrderDetail = () => {
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
                           <span className="flex items-center gap-1">
-                            <FiDollarSign className="w-5 h-5" />{" "}
+                            <IcpLogo size={24} />{" "}
                             {order?.subTotalAmount.toFixed(2)}
                           </span>
                         )}
@@ -389,7 +390,7 @@ const OrderDetail = () => {
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
                           <span className="flex items-center gap-1">
-                            <FiDollarSign className="w-5 h-5" />{" "}
+                            <IcpLogo size={24} />{" "}
                             {order?.shippingAmount.shipping_amount}
                           </span>
                         )}
@@ -406,7 +407,7 @@ const OrderDetail = () => {
                           <div className="w-[100px] h-[20px] rounded-xl bg-gray-100 animate-pulse"></div>
                         ) : (
                           <span className="flex items-center gap-1">
-                            <FiDollarSign className="w-5 h-5" />{" "}
+                            <IcpLogo size={24} />{" "}
                             {order?.totalAmount.toFixed(2)}
                           </span>
                         )}

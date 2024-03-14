@@ -20,6 +20,7 @@ import Total from "../components/common/Total.jsx";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import { LuTrash } from "react-icons/lu";
 import TabChanges from "../components/Tabchanges.jsx";
+import IcpLogo from "../assets/IcpLogo.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ main cartpage Container
@@ -366,7 +367,6 @@ const Cart = () => {
                         <div className="xl:mt-4 mt-2">
                           <div className="flex flex-col items-end  ">
                             <s className="text-gray-400 text-xs">
-                              $
                               {(() => {
                                 const selectedVariant = item.variantColor.find(
                                   (variant) =>
@@ -381,8 +381,8 @@ const Cart = () => {
                               })()}
                             </s>
 
-                            <p className="text-left">
-                              $
+                            <p className="text-left flex items-center">
+                              <IcpLogo size={20} />
                               {(() => {
                                 const selectedVariant = item.variantColor.find(
                                   (variant) =>

@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import IcpLogo from "../../assets/IcpLogo";
 
 const Total = ({ totalPrice }) => {
   const navigate = useNavigate();
@@ -12,7 +13,11 @@ const Total = ({ totalPrice }) => {
       <p className="text-xl font-bold p-2">Summary order</p>
       <div className="flex justify-between w-full">
         <p className="p-2 text-gray-400 ">Subtotal:</p>
-        <span className=" p-2 font-bold text-black  ">${totalPrice}</span>
+        <span className=" p-2 font-bold text-black flex items-center ">
+          {" "}
+          <IcpLogo size={20} />
+          {totalPrice}
+        </span>
       </div>
 
       <Button
