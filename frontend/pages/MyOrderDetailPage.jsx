@@ -98,9 +98,6 @@ const DeliveryInfo = ({ shippingAddress }) => {
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
 const MoreActions = () => {
-  if (id) {
-    console.log("id", id);
-  }
   // useEffect(() => {
   //   getOrderById(id);
   // }, []);
