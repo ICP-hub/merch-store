@@ -28,6 +28,7 @@ const CartApiHandler = () => {
   const [cartItems, setCartItems] = useState(null);
   const [orderList, setOrderList] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [shippingAmount, setShippingAmount] = useState(null);
   const [totalAmountForTransfer, setTotalAmountForTransfer] = useState(null);
   const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
   const [orderPlacementData, setOrderPlacementData] = useState(null);
@@ -112,13 +113,27 @@ const CartApiHandler = () => {
     }
   };
 
+  // GetShipping Amount
+  const getShippingAmount = async () => {
+    try {
+      setIsLoading(true);
+      const response = await backend.getshippingamount();
+      setShippingAmount(response.shipping_amount);
+    } catch (err) {
+      console.log("Shipping Amount error ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Gether order placement data for proceed
   const orderPlacement = async (
     products,
     shippingAddress,
     totalAmount,
     subTotal,
-    payment
+    payment,
+    shippingCost
   ) => {
     // {awb:text; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64}) → (variant {ok:record {id:text; awb:text; timeUpdated:int; paymentStatus:text; paymentMethod:text; shippingAmount:float64; orderStatus:text; userid:principal; paymentAddress:text; timeCreated:int; totalAmount:float64; shippingAddress:record {id:text; firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}; products:vec record {id:nat; color:text; size:text; sale_price:float64; quantity:nat8}; subTotalAmount:float64};
     // If user not logged in :
@@ -135,7 +150,7 @@ const CartApiHandler = () => {
       paymentStatus: "testing",
       paymentMethod: payment,
       shippingAmount: {
-        shipping_amount: 1,
+        shipping_amount: shippingCost,
       },
       orderStatus: "order placed",
       userid: userid,
@@ -204,6 +219,8 @@ const CartApiHandler = () => {
     orderDetails,
     deleteCartItemById,
     orderPlacementLoad,
+    shippingAmount,
+    getShippingAmount,
   };
 };
 

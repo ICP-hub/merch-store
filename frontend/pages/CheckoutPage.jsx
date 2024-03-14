@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 import { useCanister } from "@connect2ic/react";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
+import IcpLogo from "../assets/IcpLogo.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main checkout Container
@@ -64,8 +65,13 @@ const pMethod = [
 /*  @ checkout Container
 /* ----------------------------------------------------------------------------------------------------- */
 const Checkout = () => {
-  const { getCallerCartItems, orderPlacement, cartItems, isLoading } =
-    CartApiHandler();
+  const {
+    getCallerCartItems,
+    orderPlacement,
+    cartItems,
+    shippingAmount,
+    getShippingAmount,
+  } = CartApiHandler();
   const { productList, getProductList } = ProductApiHandler();
   const [paymentMethod, setPaymentMethod] = useState(pMethod[0]);
   const [finalCart, setFinalCart] = useState(null);
@@ -135,16 +141,25 @@ const Checkout = () => {
     const { totalPrice } = totalPriceNQty;
     const products = updateProductsForPlacement(finalCart);
     const shippingAddress = userAddress;
-    const totalAmount = totalPrice;
+    const totalAmount = totalPrice + shippingAmount;
+    const shippingCost = shippingAmount;
     const subTotal = totalPrice;
     const payment = paymentMethod.value;
-    orderPlacement(products, shippingAddress, totalAmount, subTotal, payment);
+    orderPlacement(
+      products,
+      shippingAddress,
+      totalAmount,
+      subTotal,
+      payment,
+      shippingCost
+    );
   };
 
   // Effect on initial Load : productlist , cart items
   useEffect(() => {
     getProductList();
     getCallerCartItems();
+    getShippingAmount();
   }, [successDelete, backend]);
 
   // Set Initial Prices
@@ -227,6 +242,7 @@ const Checkout = () => {
                 <BillSection
                   updatedPriceNQty={updatedPriceNQty}
                   proceed={proceed}
+                  shippingAmount={shippingAmount}
                 />
               </div>
             </div>
@@ -269,12 +285,12 @@ const CheckoutCard = ({
   };
 
   const toggleUpdate = () => {
-    console.log(
-      cartItem.orderId,
-      cartItem.quantity,
-      cartItem.color,
-      cartItem.size
-    );
+    // console.log(
+    //   cartItem.orderId,
+    //   cartItem.quantity,
+    //   cartItem.color,
+    //   cartItem.size
+    // );
     setIsChecked(false);
     updateTotal();
   };
@@ -303,13 +319,15 @@ const CheckoutCard = ({
         </div>
       </div>
       <div className="flex justify-end flex-col gap-2 items-end">
-        <p className="line-through text-gray-500">
-          ${cartItem.variantPriceBasedOnQty}
-        </p>
-        <p className="font-semibold text-2xl flex">
-          <span className="text-sm">$</span>
-          {cartItem.variantSellPriceBasedOnQty}
-        </p>
+        <div className="flex gap-4 items-center">
+          <p className="font-semibold text-2xl flex items-center gap-1">
+            <IcpLogo />
+            {cartItem.variantSellPriceBasedOnQty}
+          </p>
+          <p className="line-through text-gray-500">
+            {cartItem.variantPriceBasedOnQty}
+          </p>
+        </div>
         <div className="flex gap-4 items-center">
           <Button onClick={openModal}>
             <HiOutlineTrash size={24} color="grey" />
@@ -487,8 +505,10 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
-const BillSection = ({ updatedPriceNQty, proceed }) => {
+const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
   const { orderPlacementLoad } = CartApiHandler();
+  const priceWithShippingAmount = updatedPriceNQty.totalPrice + shippingAmount; // Price with shipping Amount
+
   return (
     <div className="flex flex-col">
       <div className="border-b-2 py-6">
@@ -505,21 +525,34 @@ const BillSection = ({ updatedPriceNQty, proceed }) => {
               {updatedPriceNQty.totalQuantity > 1 ? "items" : "item"})
             </span>
           </p>
-          <span className="font-bold">
-            ${updatedPriceNQty.totalPrice?.toFixed(2)}
+          <span className="font-bold flex items-center gap-1">
+            <IcpLogo />
+            {updatedPriceNQty.totalPrice?.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
           <p className="capitalize text-slate-500">Delivery charges</p>
           <span className="flex gap-2">
-            <p className="text-green-700 font-bold">Free</p>
+            <p className="text-green-700 font-bold">
+              {shippingAmount === 0 ? (
+                "Free"
+              ) : (
+                <span className="flex items-center gap-1">
+                  <IcpLogo />
+                  {shippingAmount?.toFixed(2)}
+                </span>
+              )}
+            </p>
           </span>
         </div>
       </div>
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
         <div className="flex justify-between px-6 gap-2 font-bold">
           <p className="capitalize">Total Payable</p>
-          <span>${updatedPriceNQty.totalPrice?.toFixed(2)}</span>
+          <span className="flex items-center gap-1">
+            <IcpLogo />
+            {priceWithShippingAmount?.toFixed(2)}
+          </span>
         </div>
       </div>
       <div className="p-6 flex w-full">

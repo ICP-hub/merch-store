@@ -310,12 +310,12 @@ const ProductCard = ({ product }) => {
           </div>
           <div className="flex items-center justify-between">
             <div className="flex gap-2 items-center">
-              <div className="font-medium text-lg flex items-center">
+              <span className="font-medium text-lg flex items-center gap-1">
                 <IcpLogo size={24} />
                 <p>{productInfo.variantInfo.variant_sale_price}</p>
-              </div>
-              <span className="text-sm line-through font-light">
-                ${productInfo.variantInfo.variant_price}
+              </span>
+              <span className="text-sm line-through font-light flex items-center gap-1">
+                <p>{productInfo.variantInfo.variant_price}</p>
               </span>
             </div>
             <div className="flex items-center gap-2">

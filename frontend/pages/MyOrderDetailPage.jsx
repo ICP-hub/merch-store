@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../components/common/Button";
 import { formatDate } from "./MyOrderPage";
 import AnimationView from "../components/common/AnimationView";
@@ -17,6 +17,9 @@ import CartApiHandler from "../apiHandlers/CartApiHandler";
 import { useParams } from "react-router-dom";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import TabChanges from "../components/Tabchanges";
+import IcpLogo from "../assets/IcpLogo";
+import Invoice from "./admin/invoice";
+import { useReactToPrint } from "react-to-print";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  Base : MyOrderDetailPage.
@@ -38,6 +41,7 @@ const MyOrderDetailPage = () => {
 const MyOrderDetailContainerMain = () => {
   const { getOrderById, orderDetails, isLoading } = CartApiHandler();
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
 
   const pathsForTabChanges = ["Home", "my-profile", "my-order", id];
   // Filter orderList from params
@@ -47,26 +51,57 @@ const MyOrderDetailContainerMain = () => {
 
   console.log("orderDetails", orderDetails);
 
+  const handleOpenInvoice = () => {
+    setIsOpen(true);
+  };
+
   return (
-    <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
-      {isLoading && <div>Loading....</div>}
-      {!isLoading && orderDetails === undefined && <div>Invalid Order ID</div>}
-      {!isLoading && orderDetails && orderDetails !== null && (
-        <>
-          <TabChanges paths={pathsForTabChanges} />
-          <DeliveryInfo shippingAddress={orderDetails.shippingAddress} />
-          <DeliveryStepper />
-          <OrderItemComp products={orderDetails.products} />
-        </>
+    <>
+      <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
+        {isLoading && <div>Loading....</div>}
+        {!isLoading && orderDetails === undefined && (
+          <div>Invalid Order ID</div>
+        )}
+        {!isLoading && orderDetails && orderDetails !== null && (
+          <>
+            <TabChanges paths={pathsForTabChanges} />
+            <DeliveryInfo
+              shippingAddress={orderDetails.shippingAddress}
+              handleOpenInvoice={handleOpenInvoice}
+            />
+            <DeliveryStepper />
+            <OrderItemComp products={orderDetails.products} />
+          </>
+        )}
+      </div>
+      {/***********Invoice : hidden : open print section only on click */}
+      {isOpen && (
+        <div className="hidden">
+          <Invoice
+            userId={orderDetails?.id}
+            userName={`${orderDetails?.shippingAddress?.firstname} ${orderDetails?.shippingAddress?.lastname}`}
+            usermobile={orderDetails?.shippingAddress?.phone_number}
+            useraddress={orderDetails?.shippingAddress?.addressline1}
+            userpincode={orderDetails?.shippingAddress?.pincode}
+            usercity={orderDetails?.shippingAddress?.city}
+            userstate={orderDetails?.shippingAddress?.state}
+            usercountry={orderDetails?.shippingAddress?.country}
+            awb={orderDetails?.awb}
+            paymentAddress={orderDetails?.paymentAddress}
+            products={orderDetails?.products}
+            orderId={orderDetails?.id}
+            onAfterPrint={() => setIsOpen(false)}
+          />
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Left 
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryInfo = ({ shippingAddress }) => {
+const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
   return (
     <div className="flex border border-dashed  rounded-2xl border-gray-900 min-w-full max-sm:flex-col">
       <div className="sm:w-1/2 sm:border-r sm:border-r-gray-900 border-dashed max-sm:border-b max-sm:border-b-gray-900">
@@ -89,7 +124,7 @@ const DeliveryInfo = ({ shippingAddress }) => {
           </div>
         </div>
       </div>
-      <MoreActions />
+      <MoreActions handleOpenInvoice={handleOpenInvoice} />
     </div>
   );
 };
@@ -97,7 +132,7 @@ const DeliveryInfo = ({ shippingAddress }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
-const MoreActions = () => {
+const MoreActions = ({ handleOpenInvoice }) => {
   return (
     <div className="sm:w-1/2 ">
       <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">
@@ -111,7 +146,10 @@ const MoreActions = () => {
           <p className="font-medium text-gray-700">Pending</p>
         </div>
         <div className="flex gap-2 text-sm">
-          <Button className="p-2  rounded-md bg-black text-white font-medium">
+          <Button
+            className="p-2  rounded-md bg-black text-white font-medium"
+            onClick={handleOpenInvoice}
+          >
             Download Invoice
           </Button>
         </div>
@@ -231,16 +269,23 @@ const OrderItemComp = ({ products }) => {
               <p className="text-xs text-gray-600 mt-2">
                 Quantity: {product?.quantity}
               </p>
-              <p className="text-xs text-gray-600">
-                Price: ${product?.sale_price.toLocaleString()}
+              <p className="text-xs text-gray-600 flex gap-2">
+                Price:
+                <span className="flex items-center gap-1">
+                  <IcpLogo size={16} />
+                  {product?.sale_price.toLocaleString()}
+                </span>
               </p>
               <span className="text-xs text-gray-600 flex gap-4">
                 <p>Size: {product?.size}</p>
                 <p>Color: {product?.color}</p>
               </span>
-              <span className="font-medium">
-                Total: $
-                {(product?.quantity * product?.sale_price)?.toLocaleString()}
+              <span className="font-medium flex items-center gap-2">
+                Total:
+                <span className="flex gap-1">
+                  <IcpLogo />
+                  {(product?.quantity * product?.sale_price)?.toLocaleString()}
+                </span>
               </span>
             </div>
           </div>

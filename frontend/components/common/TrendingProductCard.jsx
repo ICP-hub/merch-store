@@ -2,6 +2,7 @@ import React from "react";
 import Product1 from "../../assets/fakeprod.png";
 import { Link } from "react-router-dom";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
+import IcpLogo from "../../assets/IcpLogo";
 
 const TrendingProductCard = ({ product }) => {
   if (!product) {
@@ -30,11 +31,12 @@ const TrendingProductCard = ({ product }) => {
         <div className="flex justify-between items-center px-1">
           <div className="line-clamp-1 font-semibold text-xl text-gray-900 tracking-wide flex gap-2 items-center">
             <div className="flex items-center">
-              <span className="text-lg">
-                ${product?.variantColor[0]?.variant_sale_price}{" "}
+              <span className="text-lg flex items-center gap-1">
+                <IcpLogo size={18} />
+                {product?.variantColor[0]?.variant_sale_price}{" "}
               </span>
               <span className="line-through text-sm text-gray-700 font-light">
-                &nbsp;${product?.variantColor[0]?.variant_price}
+                {product?.variantColor[0]?.variant_price}
               </span>
             </div>
             <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 min-w-max">

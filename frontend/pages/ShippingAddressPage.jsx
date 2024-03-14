@@ -20,6 +20,7 @@ import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import { useCanister, useConnect } from "@connect2ic/react";
 import LoadingScreen from "../components/common/LoadingScreen.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
+import IcpLogo from "../assets/IcpLogo.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -40,7 +41,8 @@ const ShippingAddressPage = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const AddressDetail = () => {
   const { getAddressList, userAddressList } = UserAddressApiHandler();
-  const { getCallerCartItems, cartItems } = CartApiHandler();
+  const { getCallerCartItems, cartItems, getShippingAmount, shippingAmount } =
+    CartApiHandler();
   const { productList, getProductList } = ProductApiHandler();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -54,7 +56,6 @@ const AddressDetail = () => {
   // console.log("Cart Item Details", cartItemDetails);
   const totalPrice = totalCartSellPrice(cartItemDetails);
   // console.log(cartItemDetails);
-
   const pathsForTabChanges = ["Home", "cart", "shipping-address"];
 
   // Fetch data parallelly when the component mounts
@@ -64,6 +65,7 @@ const AddressDetail = () => {
         getAddressList(),
         getProductList(),
         getCallerCartItems(),
+        getShippingAmount(),
       ]);
       // Hide the form on successful submit
       if (successfulSubmit) {
@@ -139,6 +141,7 @@ const AddressDetail = () => {
                 totalPrice={totalPrice}
                 totalDiscount={totalDiscount}
                 selectedAddress={selectedAddress}
+                shippingAmount={shippingAmount}
               />
             )}
           </div>
@@ -250,7 +253,9 @@ const BillSection = ({
   totalPrice,
   totalDiscount,
   selectedAddress,
+  shippingAmount,
 }) => {
+  const priceWithShippingAmount = totalPrice + shippingAmount; // Total Price with shipping amount
   // Pass radio button data to checkout page
   const handleCheckOut = () => {
     // If selected address null then return
@@ -279,24 +284,43 @@ const BillSection = ({
               ({totalItem} {totalItem > 1 ? "items" : "item"})
             </span>
           </p>
-          <span className="font-bold">${totalPrice?.toFixed(2)}</span>
+          <span className="font-bold flex items-center gap-1">
+            <IcpLogo />
+            {totalPrice?.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
           <p className="capitalize text-slate-500">Delivery charges</p>
           <span className="flex gap-2">
-            <p className="text-green-700 font-bold">Free</p>
+            <p className="text-green-700 font-bold">
+              {shippingAmount === 0 ? (
+                "Free"
+              ) : (
+                <span className="flex items-center gap-1">
+                  <IcpLogo />
+                  {shippingAmount?.toFixed(2)}
+                </span>
+              )}
+            </p>
           </span>
         </div>
       </div>
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
         <div className="flex justify-between px-6 gap-2 font-bold">
           <p className="capitalize">Total Payable</p>
-          <span>${totalPrice?.toFixed(2)}</span>
+          <span className="flex items-center gap-1">
+            <IcpLogo />
+            {priceWithShippingAmount?.toFixed(2)}
+          </span>
         </div>
       </div>
       <div className="border-b-2 py-4 flex flex-col gap-4 border-dashed">
-        <div className="px-6 text-green-700">
-          Your total saving on this order is ${totalDiscount?.toFixed(2)}
+        <div className="px-6 text-green-700 flex gap-2">
+          Your total saving on this order is{" "}
+          <span className="flex items-center gap-1">
+            <IcpLogo size={16} />
+            {totalDiscount?.toFixed(2)}
+          </span>
         </div>
       </div>
       <div className="p-6">

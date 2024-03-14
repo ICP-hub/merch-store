@@ -15,6 +15,7 @@ import CartApiHandler from "../apiHandlers/CartApiHandler";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
+import IcpLogo from "../assets/IcpLogo";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -133,7 +134,10 @@ const MyOrders = () => {
               <div className="flex max-lg:ml-auto max-md:ml-0 gap-6">
                 <div className="flex flex-col justify-center">
                   <span className="text-[12px] uppercase">Total amount</span>
-                  <p className="text-lg font-medium">${order?.totalAmount}</p>
+                  <p className="text-lg font-medium flex items-center gap-1">
+                    <IcpLogo />
+                    {order?.totalAmount}
+                  </p>
                 </div>
                 <div className="flex justify-center flex-col">
                   <div className="h-4 w-4"></div>
