@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LoadingScreen from "../common/LoadingScreen";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 import NewIcon from "../../assets/new-icon.svg";
+import IcpLogo from "../../assets/IcpLogo";
 
 const defaultOptions = {
   reverse: false, // reverse the tilt direction
@@ -88,11 +89,12 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
               <div className="flex flex-col gap-2">
                 <div className="flex gap-4">
                   <span className="flex gap-2 items-center">
-                    <p className="font-semibold text-lg">
-                      ${variantColor[0].variant_sale_price}
+                    <p className="font-semibold text-lg flex gap-1 items-center">
+                      <IcpLogo />
+                      {variantColor[0].variant_sale_price}
                     </p>
                     <p className="line-through text-sm text-gray-600">
-                      ${variantColor[0].variant_price}
+                      {variantColor[0].variant_price}
                     </p>
                   </span>
                   <span className="bg-green-600 text-white text-xs font-medium rounded-md px-2 py-1 max-w-max flex items-center">

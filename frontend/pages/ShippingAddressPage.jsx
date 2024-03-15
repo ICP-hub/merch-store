@@ -17,7 +17,7 @@ import {
   totalCartSellPrice,
 } from "../apiHandlers/cartUtils.js";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
-import { useCanister, useConnect } from "@connect2ic/react";
+import { useCanister } from "@connect2ic/react";
 import LoadingScreen from "../components/common/LoadingScreen.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";
