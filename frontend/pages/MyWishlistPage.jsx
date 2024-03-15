@@ -220,9 +220,6 @@ const MyWishList = () => {
                         {" "}
                         Category: {wishlists?.category}
                       </p>
-                      <p className="uppercase text-xs">
-                        Added On : {formatDate(wishlists?.timeCreated)}
-                      </p>
                     </div>
                   </div>
                   <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
