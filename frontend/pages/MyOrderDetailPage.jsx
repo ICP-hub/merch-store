@@ -70,6 +70,7 @@ const MyOrderDetailContainerMain = () => {
             <DeliveryInfo
               shippingAddress={orderDetails.shippingAddress}
               handleOpenInvoice={handleOpenInvoice}
+              orderStatus={orderDetails.orderStatus}
             />
             <DeliveryStepper orderStatus={orderDetails.orderStatus} />
             <OrderItemComp products={orderDetails.products} />
@@ -103,7 +104,7 @@ const MyOrderDetailContainerMain = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Left 
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
+const DeliveryInfo = ({ shippingAddress, handleOpenInvoice, orderStatus }) => {
   return (
     <div className="flex border border-dashed  rounded-2xl border-gray-900 min-w-full max-sm:flex-col">
       <div className="sm:w-1/2 sm:border-r sm:border-r-gray-900 border-dashed max-sm:border-b max-sm:border-b-gray-900">
@@ -114,11 +115,11 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
           </h4>
           <p className="text-sm">
             {shippingAddress?.addressline1},{shippingAddress?.addressline2},
-            {shippingAddress?.pin},{shippingAddress?.state}
+            {shippingAddress?.pincode},{shippingAddress?.state}
           </p>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Email</p>
-            <p>avanish@gmail.com</p>
+            <p>{shippingAddress?.email}</p>
           </div>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Phone Number</p>
@@ -126,7 +127,10 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
           </div>
         </div>
       </div>
-      <MoreActions handleOpenInvoice={handleOpenInvoice} />
+      <MoreActions
+        handleOpenInvoice={handleOpenInvoice}
+        orderStatus={orderStatus}
+      />
     </div>
   );
 };
@@ -134,14 +138,14 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
-const MoreActions = ({ handleOpenInvoice }) => {
+const MoreActions = ({ handleOpenInvoice, orderStatus }) => {
   return (
     <div className="sm:w-1/2 ">
       <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">
         <h3 className="font-medium text-lg">More Actions</h3>
         <div className="flex gap-2 text-sm">
           <p className="font-medium">Payment Status:</p>
-          <p className="font-medium text-green-700">Success</p>
+          <p className="font-medium text-green-700">{orderStatus}</p>
         </div>
         <div className="flex gap-2 text-sm">
           <p className="font-medium">Delivery Status:</p>
