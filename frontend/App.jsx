@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { createClient } from "@connect2ic/core";
-import { PlugWallet, StoicWallet } from "@connect2ic/core/providers";
+import { PlugWallet, StoicWallet, defaultProviders } from "@connect2ic/core/providers";
 import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react";
 import "@connect2ic/core/style.css";
 import * as backend from "../.dfx/local/canisters/backend";
@@ -292,7 +292,8 @@ const client = createClient({
   canisters: {
     backend,
   },
-  providers: [new PlugWallet(), new StoicWallet()],
+  //providers: [new PlugWallet(), new StoicWallet()],
+  providers: defaultProviders,
   globalProviderConfig: {
     dev: import.meta.env.DEV,
   },
