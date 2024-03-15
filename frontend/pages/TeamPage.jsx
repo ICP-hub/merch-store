@@ -4,6 +4,8 @@ import Header from "../components/common/Header.jsx";
 import ScrollToTop from "../components/common/ScrollToTop.jsx";
 import AnimationView from "../components/common/AnimationView.jsx";
 import Footer from "../components/common/Footer.jsx";
+import img1 from "../assets/ clothes.jpg";
+import img2 from "../assets/hangers.jpg";
 
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
@@ -60,155 +62,46 @@ const TeamPage = () => {
       <Header title={"AboutUs"} />
       <div className="container mx-auto mt-4 px-6 flex gap-2 items-center md:items-start justify-between flex-col  ">
         <div className="flex  flex-col xl:flex-row gap-2 my-6">
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div className="fLex flex-row  items-center justify-center xl:ml-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">Leave a Mark</p>
-            <p className=" text-sm font-semibold">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
+          <img src={img1} alt="" className="rounded-xl w-96 h-96" />
+          <div className="fLex flex-row  items-center  mt-6 justify-center xl:ml-8 w-full">
+            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
+              Welcome to the ICP Mech Store!
             </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src=" https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 w-20 h-20 rounded-full"
-              />
-              <p className="text-xl font-semibold  my:4 xl:m-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-            </div>
+            <p className=" text-xl">
+              Welcome to the ICP Mech Store, your go-to destination for stylish
+              and unique clothing inspired by Internet Computer Protocol (ICP)!
+              Dive into our collection and explore a range of apparel that
+              embodies the spirit of decentralization and innovation.Internet
+              Computer Protocol (ICP) is a groundbreaking technology that aims
+              to revolutionize the internet by enabling decentralized computing
+              at scale. Developed by DFINITY, ICP empowers developers to build
+              tamper-proof, open internet services, and applications.
+            </p>
           </div>
           <div></div>
         </div>
         <div className="flex   flex-col xl:flex-row my-6 gap-4">
-          <div className="fLex flex-row  items-center justify-center xl:mr-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
-              Experiment Learn Grow
+          <div className="fLex flex-row  items-center mt-6 justify-center xl:mr-8 w-full">
+            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">Our Mission</p>
+            <p className=" text-xl">
+              At the ICP Mech Store, our mission is to merge fashion with
+              technology, offering clothing that not only looks great but also
+              celebrates the ethos of decentralization and the Internet Computer
+              Protocol. We aim to empower individuals to express their passion
+              for ICP through their style.Discover our diverse range of
+              ICP-inspired clothing, including t-shirts, hoodies, hats, and
+              more. Each piece is thoughtfully designed to reflect the
+              innovation and creativity of the Internet Computer community.
+              Whether you're attending a tech conference, hanging out with
+              friends, or just want to make a statement, our clothing will help
+              you stand out.
             </p>
-            <p className=" text-sm font-semibold">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src="https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 h-20 w-20 rounded-full "
-              />
-              <p className="text-xl font-semibold my-4 xl:m-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-            </div>
           </div>
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
+          <img src={img2} alt="" className="rounded-xl w-96 h-96" />
           <div></div>
         </div>
-        <div className="flex    flex-col xl:flex-row my-6 gap-4 ">
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div className="fLex flex-row  items-center justify-center   xl:ml-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
-              Work With The Best
-            </p>
-            <p className=" text-sm font-semibold ">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src="https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 w-20 h-20 rounded-full "
-              />
-              <p className="text-xl font-semibold my-4 xl:m-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-            </div>
-          </div>
-          <div></div>
-        </div>
-        <div className="flex   flex-col xl:flex-row gap-2 my-4">
-          <div className="fLex flex-row  items-center justify-center xl:mr-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">We care</p>
-            <p className=" text-sm font-semibold">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src=" https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2  h-20 w-20 rounded-full"
-              />
-              <p className="text-xl font-semibold   my:4 xl:m-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>
-            </div>
-          </div>
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div></div>
-        </div>
-        <p className="text-center text-4xl font-bold w-full">Values</p>
-        <Carousel />
+
+        {/* <Carousel /> */}
       </div>
       <Footer></Footer>
     </AnimationView>

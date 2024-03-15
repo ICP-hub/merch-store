@@ -90,7 +90,68 @@ const PrivacyPolicyPage = () => {
     <AnimationView>
       <ScrollToTop />
       <Header title={"PRIVACY POLICY"} />
-      <Policy data={privacyList} />
+      <div className="container mx-auto px-6 mt-4">
+        <h1 className="  font-bold mb-4">Last updated: March 15, 2024</h1>
+        <p className="mb-4">
+          Thank you for visiting Merch store. We are committed to protecting
+          your privacy and ensuring the security of your personal information.
+          This Privacy Policy outlines the types of information we collect from
+          you or that you may provide when you visit our website and how we use,
+          maintain, protect, and disclose it. By using our website, you consent
+          to the data practices described in this policy.
+        </p>
+        <h2 className="text-xl font-bold mb-2">
+          What Information We Collect and How We Use It:
+        </h2>
+        <p className="mb-4">
+          At Merch store, we understand the importance of safeguarding your
+          privacy. We collect and store the following personal information when
+          you create an account with us: your name, date of birth, address,
+          phone number, email address, username, and password. This information
+          is essential for providing you with the services you requested, such
+          as processing orders and communicating with you about your purchases.
+          We may also use your email address to send you updates about new
+          products, promotions, and special offers unless you opt-out.
+        </p>
+        <h2 className="text-xl font-bold mb-2">Security:</h2>
+        <p className="mb-4">
+          Protecting your personal information is our top priority. We have
+          implemented stringent administrative, physical, and technical measures
+          to prevent unauthorized access, disclosure, alteration, or destruction
+          of your data. Our website is regularly monitored for security
+          vulnerabilities to ensure your information remains safe and secure.
+        </p>
+        <h2 className="text-xl font-bold mb-2">
+          Updating, Deleting, Editing Your Account Information:
+        </h2>
+        <p className="mb-4">
+          After creating an account with Merch store, you can access, review,
+          correct, and delete the information you provided by logging into your
+          account. If you require assistance or have any questions, please
+          contact us at merchstore@gmail.com.
+        </p>
+        <h2 className="text-xl font-bold mb-2">Opting Out:</h2>
+        <p className="mb-4">
+          If you prefer not to receive marketing emails from us, you can opt-out
+          by contacting us at merchstore@gmail.com. We respect your preferences
+          and will promptly update our records accordingly.
+        </p>
+        <h2 className="text-xl font-bold mb-2">Contacting Us:</h2>
+        <p>
+          If you have any questions or concerns about our Privacy Policy or the
+          practices of Merch store, please contact us at merchstore@gmail.com or
+          by phone at [Your Phone Number]. We value your feedback and are
+          committed to addressing any issues promptly and effectively.
+        </p>
+        <p className="mt-8 ">
+          We appreciate your trust in Merch store, and we are dedicated to
+          protecting your privacy and ensuring a secure online shopping
+          experience. Thank you for choosing us for your clothing merchandise
+          needs.
+        </p>
+
+        <p className="font-bold mt-4">Merch store Team</p>
+      </div>
       <Footer></Footer>
     </AnimationView>
   );
