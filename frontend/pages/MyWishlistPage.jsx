@@ -149,7 +149,7 @@ const MyWishList = () => {
       const timeoutId = setTimeout(() => {
         getProductWishlist();
         setLoading(false);
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timeoutId); // Cleanup the timeout on component unmount
     }

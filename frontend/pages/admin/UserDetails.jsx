@@ -7,6 +7,7 @@ import Table, {
 } from "./utils/Table";
 import { InfinitySpin } from "react-loader-spinner";
 import { Principal } from "@dfinity/principal";
+import ShortText from "./ShortText";
 
 const UserDetails = () => {
   const textDecoder = new TextDecoder("utf-8"); // Specify the appropriate encoding
