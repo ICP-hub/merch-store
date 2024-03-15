@@ -147,7 +147,7 @@ const MyWishList = () => {
       console.error("Error while getting wishlist ", error);
     }
   };
-  console.log(product);
+
   useEffect(() => {
     // Call getProductWishlist only when wishlists have been updated
     if (wishlists !== "") {
@@ -220,7 +220,9 @@ const MyWishList = () => {
                         {" "}
                         Category: {wishlists?.category}
                       </p>
-                      <p className="uppercase text-xs">Added On : {Date()}</p>
+                      <p className="uppercase text-xs">
+                        Added On : {formatDate(wishlists?.timeCreated)}
+                      </p>
                     </div>
                   </div>
                   <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
@@ -237,7 +239,7 @@ const MyWishList = () => {
                       <div className="flex gap-6">
                         <Button
                           className=" hover:text-red-500"
-                          onClick={() => deleteWishlist(id[index][0])}
+                          onClick={() => deleteWishlist(id[index])}
                         >
                           <BsTrash3 size={20} />
                         </Button>
