@@ -1250,6 +1250,7 @@ actor {
         // stableimgOffset := Iter.toArray(imgOffset.entries());
         // stableimgSize := Iter.toArray(imgSize.entries());
         stablecontacts := Iter.toArray(contacts.entries());
+        stableUsers := Iter.toArray(Users.entries());
     };
 
     // Postupgrade function to restore the data from stable variables
@@ -1280,7 +1281,20 @@ actor {
         );
         // stableimgOffset := [];
         // stableimgSize := [];
-        stablecontacts := [];
+        contacts := Map.fromIter<Types.ContactId, Types.Contact>(
+            stablecontacts.vals(),
+            10,
+            Text.equal,
+            Text.hash,
+        );
+
+        Users := Map.fromIter<Principal, Types.User>(
+            stableUsers.vals(),
+            10,
+            Principal.equal,
+            Principal.hash,
+        );
+         
     };
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
