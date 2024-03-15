@@ -195,8 +195,11 @@ const DeliveryStepper = ({ orderStatus }) => {
 
   return (
     <>
+      <div className="text-xs font-semibold uppercase">Delivery Status</div>
       {orderStatus === "cancelled" ? (
-        <div className="text-2xl">Your order has been cancelled!</div>
+        <div className="text-2xl border border-dashed border-gray-900 p-8 rounded-2xl">
+          Your order has been cancelled!
+        </div>
       ) : (
         <div
           className={`border border-dashed border-gray-900 rounded-2xl capitalize ${

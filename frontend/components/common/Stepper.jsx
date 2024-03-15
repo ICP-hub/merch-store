@@ -199,7 +199,7 @@ const StepperComponent = ({
         labels={labels}
         // subLabels={subLabels}
       />
-      <br />
+      {/* <br /> */}
       {/* Render the controller (previous and next buttons) if showController is true */}
       {showController && (
         <StepperController
