@@ -28,6 +28,7 @@ import { useCanister } from "@connect2ic/react";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";
+import LoadingScreen from "../components/common/LoadingScreen.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main checkout Container
@@ -82,6 +83,7 @@ const Checkout = () => {
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [successDelete, setSuccessDelete] = useState(true);
   const [backend] = useCanister("backend");
+  const { CheckoutPageLoader } = LoadingScreen();
 
   const cartItemDetails = getCartItemDetails(cartItems, productList);
   // console.log("cartItemDetails", cartItemDetails);
@@ -206,7 +208,7 @@ const Checkout = () => {
     <div className="container mx-auto p-6 max-md:px-2">
       <TabChanges paths={pathsForTabChanges} />
       {isFinalCartLoading ? (
-        <div>Loading...</div>
+        <CheckoutPageLoader />
       ) : (
         <>
           {finalCart && finalCart.length > 0 ? (

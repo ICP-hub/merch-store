@@ -16,6 +16,7 @@ import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import IcpLogo from "../assets/IcpLogo";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -62,6 +63,7 @@ const MyOrders = () => {
   const [myOrderList, setMyOrderList] = useState(null);
   const [finalIsLoading, setFinalIsLoading] = useState(true);
   const [backend] = useCanister("backend");
+  const { OrderListLoader } = LoadingScreen();
 
   useEffect(() => {
     getOrderList();
@@ -97,7 +99,9 @@ const MyOrders = () => {
       </h1>
 
       {finalIsLoading && (
-        <div className="p-8 capitalize font-medium">Loading...</div>
+        <div className="capitalize font-medium">
+          <OrderListLoader />
+        </div>
       )}
 
       {!finalIsLoading && myOrderList?.length === 0 && (

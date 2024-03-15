@@ -20,6 +20,7 @@ import TabChanges from "../components/Tabchanges";
 import IcpLogo from "../assets/IcpLogo";
 import Invoice from "./admin/invoice";
 import { useReactToPrint } from "react-to-print";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  Base : MyOrderDetailPage.
@@ -42,6 +43,7 @@ const MyOrderDetailContainerMain = () => {
   const { getOrderById, orderDetails, isLoading } = CartApiHandler();
   const { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  const { OrderDetailPageLoader } = LoadingScreen();
 
   const pathsForTabChanges = ["Home", "my-profile", "my-order", id];
   // Filter orderList from params
@@ -58,7 +60,7 @@ const MyOrderDetailContainerMain = () => {
   return (
     <>
       <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
-        {isLoading && <div>Loading....</div>}
+        {isLoading && <OrderDetailPageLoader />}
         {!isLoading && orderDetails === undefined && (
           <div>Invalid Order ID</div>
         )}
