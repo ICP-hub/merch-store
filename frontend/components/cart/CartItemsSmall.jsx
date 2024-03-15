@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import CartItemsSmallLoader from "./CartItemsSmallLoader";
 import { useConnect } from "@connect2ic/react";
+import IcpLogo from "../../assets/IcpLogo";
 
 const CartItemsSmall = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -165,7 +166,6 @@ const CartItemsSmall = () => {
               <div className="flex flex-col justify-between items-end h-full">
                 <div className="flex flex-col justify-end items-end">
                   <h4 className="text-gray-500 text-xs line-through font-light">
-                    ${" "}
                     {(() => {
                       const selectedVariant = item.variantColor.find(
                         (variant) => variant.color === color[index]?.color
@@ -178,8 +178,8 @@ const CartItemsSmall = () => {
                         : null;
                     })()}
                   </h4>
-                  <h4 className="text-gray-900 text-md font-semibold">
-                    $
+                  <h4 className="text-gray-900 text-md font-semibold flex gap-1 items-center">
+                    <IcpLogo size={16} />
                     {(() => {
                       const selectedVariant = item.variantColor.find(
                         (variant) => variant.color === color[index]?.color
