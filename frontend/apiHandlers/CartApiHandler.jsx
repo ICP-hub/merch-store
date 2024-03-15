@@ -152,7 +152,7 @@ const CartApiHandler = () => {
       shippingAmount: {
         shipping_amount: shippingCost,
       },
-      orderStatus: "order placed",
+      orderStatus: "confirmed",
       userid: userid,
       paymentAddress: null,
       totalAmount: totalAmount,
