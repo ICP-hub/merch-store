@@ -87,13 +87,18 @@ const MyWishList = () => {
   const getWishlist = async () => {
     try {
       const item = await backend.listWishlistItems();
+      const ids = item
+        .filter((innerArray) => innerArray[1].principal.toText() === principal)
+        .map((innerArray) => innerArray[1].id);
+      setId(ids);
 
-      setId(item);
-
-      const productSlugs = item.map((innerArray) => innerArray[1].product_slug);
+      const productSlugs = item
+        .filter((innerArray) => innerArray[1].principal.toText() === principal)
+        .map((innerArray) => innerArray[1].product_slug);
 
       // Set the state with all product_slugs as an array
       setWishlists(productSlugs);
+      console.log(productSlugs, "hello");
 
       if (item.ok) {
         console.log(item);
@@ -213,11 +218,9 @@ const MyWishList = () => {
                       </p>
                       <p className="text-xs uppercase">
                         {" "}
-                        Categgory: {wishlists?.category}
+                        Category: {wishlists?.category}
                       </p>
-                      <p className="uppercase text-xs">
-                        Added On : {wishlist[0]?.addedOn}
-                      </p>
+                      <p className="uppercase text-xs">Added On : {Date()}</p>
                     </div>
                   </div>
                   <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">

@@ -316,6 +316,10 @@ const OrderDetail = () => {
                             <div className="text-lg font-semibold uppercase text-green-500">
                               delivered
                             </div>
+                          ) : orderStatus === "out for delivery" ? (
+                            <div className="text-lg font-semibold uppercase text-green-500">
+                              out for delivery
+                            </div>
                           ) : orderStatus === "cancelled" ? (
                             <div className="text-lg font-semibold uppercase text-red-500">
                               cancelled
@@ -833,6 +837,13 @@ const OrderDetail = () => {
                         >
                           Shipped
                         </option>
+                        <option
+                          value="out for delivery"
+                          defaultValue={orderStatus === "out for delivery"}
+                        >
+                          Out for delivery
+                        </option>
+
                         <option
                           value="delivered"
                           defaultValue={orderStatus === "delivered"}
