@@ -69,7 +69,7 @@ const MyOrderDetailContainerMain = () => {
               shippingAddress={orderDetails.shippingAddress}
               handleOpenInvoice={handleOpenInvoice}
             />
-            <DeliveryStepper />
+            <DeliveryStepper orderStatus={orderDetails.orderStatus} />
             <OrderItemComp products={orderDetails.products} />
           </>
         )}
@@ -161,18 +161,8 @@ const MoreActions = ({ handleOpenInvoice }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryStepper />  
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryStepper = () => {
-  const labels = [
-    "Order Placed",
-    "Ready to Dispatch",
-    "Dispatched",
-    "Out For Delivery",
-    "Delivered",
-  ];
-
-  // Date Will Be Dynamic for prod build
-  const date = formatDate(new Date());
-  const subLabels = [date, date, date, date, date];
+const DeliveryStepper = ({ orderStatus }) => {
+  const labels = ["confirmed", "shipped", "out for delivery", "delivered"];
 
   const [isVertical, setIsVertical] = useState(window.innerWidth <= 768);
   const [currentStep, setCurrentStep] = useState(0);
@@ -182,26 +172,22 @@ const DeliveryStepper = () => {
       setIsVertical(window.innerWidth <= 768);
     };
 
-    const handleStepChange = () => {
-      // If the current step is greater than the number of steps in vertical mode,
-      // set the current step to the last step.
-      if (isVertical && currentStep >= labels.length) {
-        setCurrentStep(labels.length - 1);
-      }
-    };
-
     handleResize();
-    handleStepChange();
 
-    window.addEventListener("resize", () => {
-      handleResize();
-      handleStepChange();
-    });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isVertical, currentStep, labels.length]);
+  }, []);
+
+  // Effect : check Label index with orderStauts : setCureentStep
+  useEffect(() => {
+    const index = labels.indexOf(orderStatus);
+    if (index !== -1) {
+      setCurrentStep(index);
+    }
+  }, [orderStatus, labels]);
 
   const handleStepChange = (newStep) => {
     setCurrentStep(newStep);
@@ -209,29 +195,33 @@ const DeliveryStepper = () => {
 
   return (
     <>
-      <div
-        className={`border border-dashed border-gray-900 rounded-2xl ${
-          !isVertical ? "p-8" : null
-        }`}
-      >
-        {isVertical ? (
-          <VerticalStepperComponent
-            labels={labels}
-            subLabels={subLabels}
-            // showController={true}
-            currentStep={currentStep}
-            onStepChange={handleStepChange}
-          />
-        ) : (
-          <HorizontalStepperComponent
-            labels={labels}
-            subLabels={subLabels}
-            // showController={true}
-            currentStep={currentStep}
-            onStepChange={handleStepChange}
-          />
-        )}
-      </div>
+      {orderStatus === "cancelled" ? (
+        <div className="text-2xl">Your order has been cancelled!</div>
+      ) : (
+        <div
+          className={`border border-dashed border-gray-900 rounded-2xl capitalize ${
+            !isVertical ? "p-8" : null
+          }`}
+        >
+          {isVertical ? (
+            <VerticalStepperComponent
+              labels={labels}
+              // subLabels={subLabels}
+              // showController={true}
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+            />
+          ) : (
+            <HorizontalStepperComponent
+              labels={labels}
+              // subLabels={subLabels}
+              // showController={true}
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+            />
+          )}
+        </div>
+      )}
     </>
   );
 };
