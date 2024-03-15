@@ -292,8 +292,8 @@ const client = createClient({
   canisters: {
     backend,
   },
-  //providers: [new PlugWallet(), new StoicWallet()],
-  providers: defaultProviders,
+  providers: [new PlugWallet()],
+  //providers: defaultProviders,
   globalProviderConfig: {
     dev: import.meta.env.DEV,
   },
