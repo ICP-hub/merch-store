@@ -17,6 +17,7 @@ import { BsArrowRightCircle, BsTrash3 } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import NoDataFound from "../components/common/NoDataFound";
+import { PiShirtFoldedFill } from "react-icons/pi";
 
 import {
   ConnectButton,
@@ -26,6 +27,7 @@ import {
   useDialog,
 } from "@connect2ic/react";
 import IcpLogo from "../assets/IcpLogo";
+import EmptyWishlist from "../components/common/EmptyWishlist";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -64,6 +66,7 @@ const MyWishList = () => {
   const [wishlists, setWishlists] = useState("");
   const [product, getProduct] = useState([]);
   const [id, setId] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const wishlist = [
     {
@@ -145,6 +148,7 @@ const MyWishList = () => {
     if (wishlists !== "") {
       const timeoutId = setTimeout(() => {
         getProductWishlist();
+        setLoading(false);
       }, 3000);
 
       return () => clearTimeout(timeoutId); // Cleanup the timeout on component unmount
@@ -153,11 +157,11 @@ const MyWishList = () => {
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
-      <h1 className="font-medium text-lg px-2 sm:px-8 py-4 flex items-center gap-2 ">
+      <h1 className="font-medium text-lg px-2 sm:px-8 py-2 flex items-center gap-2 ">
         My Wishlist({product.length})
       </h1>
 
-      {product.length === 0 ? (
+      {loading ? (
         <div className="  rounded-xl mb-3   grid grid-cols-1 gap-3">
           {[...Array(2)].map((_, index) => (
             <div
@@ -186,63 +190,72 @@ const MyWishList = () => {
           ))}
         </div>
       ) : (
-        <div className=" flex flex-col">
-          {product.map((wishlists, index) => (
-            <div
-              key={index}
-              className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
-            >
-              <div className="flex max-md:flex-col gap-3">
-                <div>
-                  <img
-                    draggable="false"
-                    className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
-                    src={wishlists?.variantColor[0]?.img1}
-                    alt={wishlists?.title}
-                  />
-                </div>
-                <div className="flex flex-col lg:justify-center">
-                  <p className="text-lg capitalize font-medium">
-                    {wishlists?.title}
-                  </p>
-                  <p className="text-xs uppercase">
-                    {" "}
-                    Categgory: {wishlists?.category}
-                  </p>
-                  <p className="uppercase text-xs">
-                    Added On : {wishlist[0]?.addedOn}
-                  </p>
-                </div>
-              </div>
-              <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
-                <div className="flex flex-col justify-center">
-                  <span className="text-[12px] uppercase">Price</span>
-                  <p className="text-lg font-medium flex  items-center">
-                    <IcpLogo size={16} className="mr-2" />
-                    {wishlists?.variantColor[0]?.variant_price}
-                  </p>
-                </div>
-                <div className="flex justify-center flex-col">
-                  {/*keeping empty div for better alignment */}
-                  <div className="h-4 w-4"></div>
-                  <div className="flex gap-6">
-                    <Button
-                      className=" hover:text-red-500"
-                      onClick={() => deleteWishlist(id[index][0])}
-                    >
-                      <BsTrash3 size={20} />
-                    </Button>
-                    <Button>
-                      <Link to={`/product/${wishlists?.slug}`}>
-                        <BsArrowRightCircle size={20} />
-                      </Link>
-                    </Button>
+        <>
+          {!loading && product.length > 0 ? (
+            <div className=" flex flex-col">
+              {product.map((wishlists, index) => (
+                <div
+                  key={index}
+                  className="border-t px-2 sm:px-8 py-4 flex max-lg:flex-col justify-between"
+                >
+                  <div className="flex max-md:flex-col gap-3">
+                    <div>
+                      <img
+                        draggable="false"
+                        className="h-24 w-24 object-contain bg-gray-200 rounded-2xl"
+                        src={wishlists?.variantColor[0]?.img1}
+                        alt={wishlists?.title}
+                      />
+                    </div>
+                    <div className="flex flex-col lg:justify-center">
+                      <p className="text-lg capitalize font-medium">
+                        {wishlists?.title}
+                      </p>
+                      <p className="text-xs uppercase">
+                        {" "}
+                        Categgory: {wishlists?.category}
+                      </p>
+                      <p className="uppercase text-xs">
+                        Added On : {wishlist[0]?.addedOn}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex max-lg:ml-[108px] max-md:ml-0 gap-6">
+                    <div className="flex flex-col justify-center">
+                      <span className="text-[12px] uppercase">Price</span>
+                      <p className="text-lg font-medium flex  items-center">
+                        <IcpLogo size={16} className="mr-2" />
+                        {wishlists?.variantColor[0]?.variant_price}
+                      </p>
+                    </div>
+                    <div className="flex justify-center flex-col">
+                      {/*keeping empty div for better alignment */}
+                      <div className="h-4 w-4"></div>
+                      <div className="flex gap-6">
+                        <Button
+                          className=" hover:text-red-500"
+                          onClick={() => deleteWishlist(id[index][0])}
+                        >
+                          <BsTrash3 size={20} />
+                        </Button>
+                        <Button>
+                          <Link to={`/product/${wishlists?.slug}`}>
+                            <BsArrowRightCircle size={20} />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="flex flex-col  items-center w-full h-full justify-center mt-2 font-bold">
+              <EmptyWishlist />
+              {/* <NoDataFound title={"No items in wishlist"} /> */}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

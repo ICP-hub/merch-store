@@ -8,12 +8,12 @@ const Total = ({ totalPrice }) => {
   return (
     <div
       className=" flex flex-col items-start justify-start
-       border border-gray-300 max:m-10 w-[100%] md:mt-2  mt-8  rounded-xl  p-2 py-2  md:w-[25%]   max:h-48 "
+       border-2 border-gray-300 max:m-10 w-[100%] md:mt-2  mt-8  rounded-xl  p-2 py-2  md:w-[25%]   max:h-48 "
     >
       <p className="text-xl font-bold p-2">Summary order</p>
       <div className="flex justify-between w-full">
         <p className="p-2 text-gray-400 ">Subtotal:</p>
-        <span className=" p-2 font-bold text-black flex items-center ">
+        <span className=" p-2 font-bold text-black flex items-center gap-1 ">
           {" "}
           <IcpLogo size={20} />
           {totalPrice}

@@ -12,6 +12,7 @@ import {
   CiVideoOff,
   CiVideoOn,
   CiViewBoard,
+  CiUser,
 } from "react-icons/ci";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { Link, NavLink } from "react-router-dom";
@@ -110,7 +111,7 @@ const LeftSidebar = ({ sidebar, setSidebar }) => {
                       : "flex justify-start items-center text-lg bg-transparent  hover:bg-[#512E5F]/20  text-gray-900  hover:text-[#512E5F] rounded-xl px-6 py-3 font-medium uppercase tracking-wider text-sm"
                   }
                 >
-                  <CiMail className="w-5 h-5 mr-2" />
+                  <CiUser className="w-5 h-5 mr-2" />
                   Users
                 </NavLink>
                 <NavLink

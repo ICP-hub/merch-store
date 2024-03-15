@@ -195,12 +195,14 @@ const Cart = () => {
       setUpdateSuccess(true);
 
       toast.success("Quantity changed");
+      setUpdateSuccess(true);
     } catch (error) {
       console.error("Error updating quantity:", error);
       setUpdateSuccess(false);
     } finally {
       setIsLoading(false);
       setIsQuantityChanged(false);
+      setUpdateSuccess(false);
     }
   };
 
@@ -238,7 +240,7 @@ const Cart = () => {
       0
     );
     setTotalPrice(newTotalPrice.toFixed(2));
-  }, [product]);
+  }, [product, updateSuccess]);
 
   return (
     <>
@@ -313,7 +315,7 @@ const Cart = () => {
           {!loading && product.length > 0 ? (
             <div className="container mx-auto mt-4 px-6 flex items-center md:items-start justify-between md:flex-row flex-col">
               <div className="md:w-[70%] w-[100%] ">
-                <div className="flex items-end justify-end border border-gray-300 mt-2   rounded-xl   p-5 w-[100%]">
+                <div className="flex items-end justify-end border-2 border-gray-300 mt-2   rounded-xl   p-5 w-[100%]">
                   <Button
                     className="bg-black rounded-full text-sm text-white px-3 py-2"
                     onClick={openModal}
@@ -337,16 +339,16 @@ const Cart = () => {
                 <div>
                   {product.map((item, index) => (
                     <>
-                      <div className=" md:flex flex-wrap items-center m-0  xl: justify-between border border-gray-300 mt-4  rounded-xl  p-2 py-2 w-[100%]">
-                        <div>
+                      <div className=" md:flex flex-wrap items-center m-0  xl: justify-between border-2 border-gray-300 mt-4  rounded-xl  p-2 py-2 w-[100%]">
+                        <div className="">
                           <div className="flex m-2">
                             <img
                               src={item.variantColor[0].img1}
                               alt=""
-                              className="w-24  h-24 border border-gray-300 bg-gray-400 rounded-lg ml-2"
+                              className="w-24  h-24 border-2 border-gray-300 bg-gray-400 rounded-lg ml-2"
                             />
                             <div className="md:mt-6 md:ml-2 ml-4">
-                              <p className="border border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
+                              <p className="border-2 border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">
                                 {item.category}
                               </p>
                               <p>{item.title}</p>
@@ -381,7 +383,7 @@ const Cart = () => {
                               })()}
                             </s>
 
-                            <p className="text-left flex items-center">
+                            <p className="text-left flex items-center gap-1">
                               <IcpLogo size={20} />
                               {(() => {
                                 const selectedVariant = item.variantColor.find(
