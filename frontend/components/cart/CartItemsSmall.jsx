@@ -131,11 +131,11 @@ const CartItemsSmall = () => {
               key={index}
             >
               <div className="flex justify-start items-start gap-2">
-                <div className="relative">
+                <div className="relative w-[100px]">
                   <img
                     src={item.variantColor[0].img1}
                     alt={"product image"}
-                    className="w-[80px] bg-gray-100 rounded-xl "
+                    className="min-w-[100px] bg-gray-100 rounded-xl "
                   />
                   <span className="bg-green-500 absolute top-1 right-1 rounded-md text-[9px] w-4 h-4 flex justify-center items-center text-white p-1/2">
                     {quantity[index]?.quantity}
@@ -145,7 +145,7 @@ const CartItemsSmall = () => {
                   <h4 className="text-sm border-[1px] px-2 py-1/2 text-gray-600 rounded-full max-w-max bg-gray-50 mb-1">
                     {item?.category}
                   </h4>
-                  <h4 className="text-sm line-clamp-2 text-gray-900 leading-tight mb-1/2">
+                  <h4 className="text-sm line-clamp-1 text-gray-900 leading-tight mb-1/2">
                     {item?.title}
                   </h4>
                   <div className="flex gap-2">

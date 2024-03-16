@@ -457,11 +457,11 @@ const ProductDetail = () => {
                     {data.variantColor.map((color, index) => (
                       <div
                         key={index}
-                        className={`w-10 h-10 m-1 rounded-full bg-${
+                        className={`w-10 h-10 m-1 rounded-full mx-2 bg-${
                           color.color
                         } cursor-pointer ${
                           selectedColor === color.color
-                            ? "border-[2px] border-gray-300 shadow-md   scale-125  "
+                            ? "border-[2px] border-gray-300  scale-110 shadow-md mx-2    "
                             : ""
                         }`}
                         style={{ backgroundColor: color.color }}
@@ -483,9 +483,9 @@ const ProductDetail = () => {
                     {data.variantSize.map((size, index) => (
                       <div
                         key={index}
-                        className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2 ${
+                        className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mx-2 mb-2 ${
                           selectedSize === size.size
-                            ? " border border-gray-400 scale-125"
+                            ? " border border-gray-400 scale-110 mx-2"
                             : "border-gray-300"
                         }`}
                         onClick={() => handleSizeChange(size.size)}
@@ -570,7 +570,7 @@ const ProductDetail = () => {
             ) : (
               <div className="mb-4 mt-8">
                 <p className="text-gray-800 uppercase">Description:</p>
-                <li className="list-disc text-gray-800 ">{data.description}</li>
+                <p className="list-disc text-gray-800 ">{data.description}</p>
               </div>
             )}
           </div>
