@@ -6,6 +6,7 @@ import List "mo:base/List";
 import Map "mo:base/HashMap";
 import Hash "mo:base/Hash";
 import Iter "mo:base/Iter";
+import Debug "mo:base/Debug";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
@@ -185,9 +186,10 @@ actor {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
         if (Result.isErr(await getUserdetailsbyid(callerP))) {
+            Debug.trap("User not found");
             return #err(#AddressNotFound);
+
         };
-        let address_id : Text = UUID.toText(await g.new());
         let userP : Principal = callerP;
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
@@ -199,7 +201,7 @@ actor {
                 var oldaddress = List.find<Types.Address>(
                     tempaddresslist,
                     func(a : Types.Address) : Bool {
-                        return a.id == address_id;
+                        return a.id == id;
                     },
                 );
                 switch (oldaddress) {
@@ -225,10 +227,10 @@ actor {
                         let updatedAddresses = List.filter<Types.Address>(
                             tempaddresslist,
                             func(a : Types.Address) : Bool {
-                                return a.id != address_id;
+                                return a.id != id;
                             },
                         );
-                        // addew address to the list and then pushing it to the hashmap
+                        // add new address to the list and then pushing it to the hashmap
                         let newAddresses = List.push(newaddress, updatedAddresses);
                         usersaddresslist.put(userP, List.toArray(newAddresses));
                         return #ok(newaddress);
@@ -1294,7 +1296,7 @@ actor {
             Principal.equal,
             Principal.hash,
         );
-         
+
     };
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
