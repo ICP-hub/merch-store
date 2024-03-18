@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   HiListBullet,
   HiMapPin,
@@ -9,8 +9,12 @@ import {
   HiOutlineShoppingCart,
   HiOutlineUser,
 } from "react-icons/hi2";
-import { useLocation, Link } from "react-router-dom";
-
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import Button from "../common/Button";
+import Modal1 from "../common/Styles/Modal1";
+import { RiLogoutCircleLine } from "react-icons/ri";
+import { useConnect } from "@connect2ic/react";
+import toast from "react-hot-toast";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ MyProfilePageContainerMain : MyProTabs > tabComponents are the arr of tabs
 /* ----------------------------------------------------------------------------------------------------- */
@@ -42,6 +46,41 @@ import { useLocation, Link } from "react-router-dom";
 
 const Tabs = () => {
   const location = useLocation();
+  const { disconnect } = useConnect();
+  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [disconnectLoad, setDisconnectLoad] = useState(false);
+  const [successDisconnect, setSuccessDisconnect] = useState(true);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Disconnect function
+  const disconnectAction = () => {
+    try {
+      setDisconnectLoad(true);
+      disconnect();
+      toast.success("Logout successfully");
+    } catch (err) {
+      console.error("Error during logout", err);
+    } finally {
+      setDisconnectLoad(false);
+      setSuccessDisconnect(false);
+    }
+  };
+
+  // Effect: navigate to homepage after disconnect;
+  useEffect(() => {
+    if (!successDisconnect) {
+      navigate("/");
+    }
+  }, [successDisconnect]);
 
   const tabs = [
     {
@@ -56,11 +95,6 @@ const Tabs = () => {
       route: "my-wishlist",
     },
     { name: "Address", icon: <HiMapPin size={24} />, route: "my-address" },
-    {
-      name: "Disconnect",
-      icon: <HiOutlineArrowLeftOnRectangle size={24} />,
-      route: "disconnect",
-    },
   ];
 
   return (
@@ -81,6 +115,25 @@ const Tabs = () => {
           <span>{item.name}</span>
         </Link>
       ))}
+      <Button
+        className="flex items-center gap-4 w-full p-2 rounded-md hover:bg-white hover:text-black"
+        onClick={openModal}
+      >
+        <HiOutlineArrowLeftOnRectangle size={24} />
+        Disconnect
+      </Button>
+      {isModalOpen && (
+        <Modal1
+          closeModal={closeModal}
+          title={"Are you sure you want to disconnect ?"}
+          icon={<RiLogoutCircleLine size={40} color="gray" />}
+          btnClr="gray"
+          actName="Disconnect"
+          action={disconnectAction}
+          isLoading={disconnectLoad}
+          addOn={successDisconnect}
+        />
+      )}
     </div>
   );
 };

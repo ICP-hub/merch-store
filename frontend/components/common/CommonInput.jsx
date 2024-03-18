@@ -45,6 +45,7 @@ const TelephoneInput = ({
   disabled,
   setPhone,
   phoneNumber,
+  error,
 }) => {
   const phoneInputRef = useRef(null);
   // Reference : https://github.com/jackocnr/intl-tel-input
@@ -75,7 +76,6 @@ const TelephoneInput = ({
     if (phoneNumber !== undefined) {
       iti.setNumber(phoneNumber);
     }
-
     return () => {
       iti.destroy();
     };
@@ -84,11 +84,18 @@ const TelephoneInput = ({
   return (
     <div>
       {/*If no label no space will be there */}
-      {label !== undefined || null ? (
-        <label className=" w-full font-medium  uppercase text-xs px-3 mb-1">
-          {label}
-        </label>
-      ) : null}
+      <div className="flex justify-between">
+        {label !== undefined || null ? (
+          <label className=" w-full font-medium  uppercase text-xs px-3 mb-1">
+            {label}
+          </label>
+        ) : null}
+        {error && (
+          <span className="text-red-500 text-xs px-3 min-w-max">
+            Invalid Phone Number
+          </span>
+        )}
+      </div>
 
       <div className={divClass}>
         <input
