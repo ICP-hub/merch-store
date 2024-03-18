@@ -21,6 +21,8 @@ const AddressForm = ({
   const [phone, setPhone] = useState(null);
   // Get location from selected input : Country, State, City
   const [locationInput, setLocationInput] = useState({});
+  const [isPhoneValid, setIsPhoneValid] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Define validation rules for each form field
   const validationRules = {
@@ -33,10 +35,16 @@ const AddressForm = ({
         error: "Invalid email",
       },
     ],
-    // phoneNumber: [{ required: true }],
+    // phone_number: [{ required: true }],
     addressline1: [{ required: true }],
     // city: [{ required: true }],
-    pincode: [{ required: true }],
+    pincode: [
+      { required: true },
+      {
+        pattern: /^\d+$/,
+        error: "Pincode must contain only numbers",
+      },
+    ],
     // state: [{ required: true }],
     // country: [{ required: true }],
   };
@@ -51,10 +59,14 @@ const AddressForm = ({
   // handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
     // Validate the form
     const errors = validateForm(formValues);
     // Check if there are any validation errors
     if (Object.values(errors).some((error) => error)) {
+      return;
+    }
+    if (!isPhoneValid) {
       return;
     }
     // Form Valid? : try catch block in UserAddressApiHanlder
@@ -67,12 +79,17 @@ const AddressForm = ({
     createAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
+  // Form Update
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
     // Validate the form
     const errors = validateForm(formValues);
     // Check if there are any validation errors
     if (Object.values(errors).some((error) => error)) {
+      return;
+    }
+    if (!isPhoneValid) {
       return;
     }
     // Form Valid? : try catch block in UserAddressApiHanlder
@@ -85,6 +102,13 @@ const AddressForm = ({
 
     updateAddress(updatedFormValues, setSuccessfulSubmit);
   };
+
+  const phoneValid = phone?.isValidNumberPrecise();
+
+  // Effect hook for phone validation
+  useEffect(() => {
+    setIsPhoneValid(phoneValid);
+  }, [phoneValid, phone]);
 
   const formFields = [
     { key: "firstname", label: "First Name", type: "text" },
@@ -113,6 +137,7 @@ const AddressForm = ({
             inputClass="focus:outline-none p-2 h-[38px] placeholder:font-light"
             setPhone={setPhone}
             phoneNumber={formValues?.phone_number}
+            error={!isPhoneValid && isSubmitted}
           />
         ) : type === "select" ? ( // Render the CountryInput component
           <CountryInput

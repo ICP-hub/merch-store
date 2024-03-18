@@ -31,6 +31,7 @@ const ProductCard = ({ product }) => {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const [carts, setCarts] = useState();
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const listCarts = async () => {
     try {
@@ -51,6 +52,7 @@ const ProductCard = ({ product }) => {
       try {
         listCarts();
         setLoading(true);
+        setAddedToCart(true);
 
         let cartId;
         let isProductInCart;
@@ -105,6 +107,7 @@ const ProductCard = ({ product }) => {
     if (isConnected) {
       try {
         setLoading(true);
+        setAddedToCart(false);
         const res = await backend.clearallcartitmesbyprincipal();
 
         if ("ok" in res) {
@@ -327,15 +330,18 @@ const ProductCard = ({ product }) => {
           <div className="flex justify-between gap-2 text-sm">
             <Button
               onClick={() => {
-                AddToCart();
-                setClick(true);
+                if (!addedToCart) {
+                  AddToCart();
+                } else {
+                  navigate("/cart"); // Navigate to the cart page
+                }
               }}
               className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
                 loading && " flex items-center justify-center"
               } `}
               disabled={loading && true}
             >
-              {loading && click ? (
+              {loading && addedToCart ? (
                 <TailSpin
                   height="20"
                   width="20"
@@ -345,21 +351,20 @@ const ProductCard = ({ product }) => {
                   visible={true}
                 />
               ) : (
-                <p>Add to Cart</p>
+                <p>{addedToCart ? "Go to Cart" : "Add to Cart"}</p>
               )}
             </Button>
 
             <Button
               onClick={() => {
                 buyNowHandler();
-                setClick(false);
               }}
               className={`w-full rounded-full  font-semibold  bg-black border text-white border-black px-4 py-2 ${
                 loading && " flex items-center justify-center"
               } `}
               disabled={loading && true}
             >
-              {loading && !click ? (
+              {loading && !addedToCart ? (
                 <TailSpin
                   height="20"
                   width="20"

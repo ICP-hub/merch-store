@@ -15,9 +15,9 @@ const UserApiHanlder = () => {
   // Create Contact
   const createContact = async ({ name, email, contact_number, message }) => {
     // Temporary for contact component
-    name = name || "testing";
-    contact_number = contact_number || "No number";
-    message = message || "testing";
+    name = name || "";
+    contact_number = contact_number || "";
+    message = message || "";
     try {
       setIsLoading(true);
       // console.log(name, email, contact_number, message);

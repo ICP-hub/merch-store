@@ -8,6 +8,7 @@ import { TelephoneInput } from "../common/CommonInput";
 import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
+import { Link } from "react-router-dom";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ ContactPage Components.
@@ -155,13 +156,19 @@ const ContactPageContainerMain = () => {
               By contacting us,you agree to our
             </p>
             <p className="flex justify-center">
-              <span className="text-black font-semibold mr-1 cursor-pointer">
+              <Link
+                to={"/term-of-service"}
+                className="text-black font-semibold mr-1 cursor-pointer"
+              >
                 Terms of service
-              </span>
+              </Link>
               &
-              <span className="text-black font-semibold ml-1 cursor-pointer">
+              <Link
+                to={"/privacy-policy"}
+                className="text-black font-semibold ml-1 cursor-pointer"
+              >
                 Privacy policy
-              </span>
+              </Link>
             </p>
           </div>
         </div>
