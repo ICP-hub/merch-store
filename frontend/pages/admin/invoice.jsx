@@ -50,10 +50,10 @@ const Invoice = ({
         <div
           style={{ flex: 1, borderRight: "1px solid black", padding: "2px" }}
         >
-          <h3 style={{ fontWeight: 700 }}>1444 Nomizo</h3>
-          <p style={{ fontWeight: 700 }}>GST NO: 03AAMFK4965G1Z6</p>
-          <p>486, Kidwai Nagar, Janakpuri</p>
-          <p>141008 - Ludhiana, Punjab, India</p>
+          <h3 style={{ fontWeight: 700 }}>lorem </h3>
+          <p style={{ fontWeight: 700 }}>GST NO: Contrary to popular belief</p>
+          <p>Contrary to popular belief</p>
+          <p> Contrary to popular belief </p>
         </div>
         {/* <!-- right --> */}
         <div style={{ flex: 1, padding: "2px" }}>
@@ -67,7 +67,7 @@ const Invoice = ({
             >
               Order No. (REF): {orderId}
             </div>
-            <div style={{ flex: 1, padding: "2px" }}>GST-JR-3557</div>
+            <div style={{ flex: 1, padding: "2px" }}>GST-000000</div>
           </div>
           <div
             style={{
@@ -125,13 +125,32 @@ const Invoice = ({
               </th>
               <th
                 style={{
-                  width: "75%",
+                  width: "50%",
                   borderLeft: "1px solid black",
                   textAlign: "start",
                 }}
               >
                 Product(s)
               </th>
+              <th
+                style={{
+                  width: "15%",
+                  borderLeft: "1px solid black",
+                  textAlign: "start",
+                }}
+              >
+                Color(s)
+              </th>
+              <th
+                style={{
+                  width: "10%",
+                  borderLeft: "1px solid black",
+                  textAlign: "start",
+                }}
+              >
+                Size(s)
+              </th>
+
               <th
                 style={{
                   width: "16%",
@@ -162,6 +181,12 @@ const Invoice = ({
                   {product?.title}
                 </td>
                 <td style={{ borderLeft: "1px solid black" }}>
+                  {product?.color}
+                </td>
+                <td style={{ borderLeft: "1px solid black" }}>
+                  {product?.size}
+                </td>
+                <td style={{ borderLeft: "1px solid black" }}>
                   {product?.quantity}
                 </td>
               </tr>
@@ -170,9 +195,13 @@ const Invoice = ({
               <th style={{ borderLeft: "1px solid black" }}></th>
               <td style={{ borderLeft: "1px solid black" }}></td>
               <td style={{ borderLeft: "1px solid black" }}></td>
+              <td style={{ borderLeft: "1px solid black" }}></td>
+              <td style={{ borderLeft: "1px solid black" }}></td>
             </tr>
             <tr style={{ height: "150px" }}>
               <th style={{ borderLeft: "1px solid black" }}></th>
+              <td style={{ borderLeft: "1px solid black" }}></td>
+              <td style={{ borderLeft: "1px solid black" }}></td>
               <td style={{ borderLeft: "1px solid black" }}></td>
               <td style={{ borderLeft: "1px solid black" }}></td>
             </tr>
@@ -183,6 +212,8 @@ const Invoice = ({
               <td style={{ borderLeft: "1px solid black" }}>
                 T{products?.length}
               </td>
+              <td style={{ borderLeft: "1px solid black" }}></td>
+              <td style={{ borderLeft: "1px solid black" }}></td>
               <td style={{ borderLeft: "1px solid black" }}>{totalQuantity}</td>
             </tr>
           </tbody>
@@ -204,7 +235,7 @@ const Invoice = ({
       <div style={{ borderTop: "1px solid black", padding: "6px" }}>
         <div style={{ textAlign: "center" }}>
           <h2 style={{ fontWeight: 700, fontSize: "26px" }}>
-            TAX INVOICE - 444 Nomizo
+            TAX INVOICE - 123 MERCH STORE
           </h2>
           <p style={{ fontWeight: "bold" }}>
             This is a computer-generated tax invoice.

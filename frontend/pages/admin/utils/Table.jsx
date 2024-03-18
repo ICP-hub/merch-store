@@ -137,7 +137,6 @@ export function StatusPayment({ value }) {
 }
 
 export function StatusOrder({ value }) {
-
   return (
     <span
       className={classNames(
@@ -145,6 +144,10 @@ export function StatusOrder({ value }) {
         value.startsWith("processing") ? "bg-yellow-100 text-yellow-800" : null,
         value.startsWith("confirmed") ? "bg-amber-100 text-amber-800" : null,
         value.startsWith("shipped") ? "bg-blue-100 text-blue-800" : null,
+        value.startsWith("out for delivery")
+          ? "bg-blue-100 text-blue-800"
+          : null,
+
         value.startsWith("delivered") ? "bg-green-100 text-green-800" : null,
         value.startsWith("cancelled") ? "bg-red-100 text-red-800" : null
       )}

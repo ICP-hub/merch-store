@@ -4,6 +4,8 @@ import Header from "../components/common/Header.jsx";
 import ScrollToTop from "../components/common/ScrollToTop.jsx";
 import AnimationView from "../components/common/AnimationView.jsx";
 import Footer from "../components/common/Footer.jsx";
+import img1 from "../assets/ clothes.jpg";
+import img2 from "../assets/hangers.jpg";
 
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
@@ -11,41 +13,45 @@ import "react-alice-carousel/lib/alice-carousel.css";
 const dataList = [
   {
     name: "Integrity",
-    discription: "We strive to do what is right and do what we say we will do.",
+    discription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
 
   {
     name: "Inclusion",
     discription:
-      "We value the uniqueness in everyone, respect differences, and foster a sense of belonging.",
+      " Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
   {
     name: "Audacity",
-    discription: "We think big and take bold bets.   We change the paradigm.",
+    discription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
   {
     name: "Baise for Action",
     discription:
-      "We have a strong sense of urgency to solve problems strategically.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
   {
     name: "Integrity",
-    discription: "We strive to do what is right and do what we say we will do.",
+    discription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
 
   {
     name: "Inclusion",
     discription:
-      "We value the uniqueness in everyone, respect differences, and foster a sense of belonging.",
+      " Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
   {
     name: "Audacity",
-    discription: "We think big and take bold bets. We change the paradigm.",
+    discription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
   {
     name: "Baise for Action",
     discription:
-      "We have a strong sense of urgency to solve problems strategically.",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   },
 ];
 
@@ -56,137 +62,46 @@ const TeamPage = () => {
       <Header title={"AboutUs"} />
       <div className="container mx-auto mt-4 px-6 flex gap-2 items-center md:items-start justify-between flex-col  ">
         <div className="flex  flex-col xl:flex-row gap-2 my-6">
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div className="fLex flex-row  items-center justify-center xl:ml-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">Leave a Mark</p>
-            <p className=" text-sm font-semibold">
-              We're known more by the impact we create than the titles we hold.
-              Impact that is brought by working together on audacious challenges
-              at scale with an aim to revolutionize for the Indian customer. We
-              believe great ideas can emerge from anywhere and must be backed.
-              Our people - backed by our culture of end-to-end ownership - have
-              revolutionised India's e-commerce sector - several times over!
+          <img src={img1} alt="" className="rounded-xl w-96 h-96" />
+          <div className="fLex flex-row  items-center  mt-6 justify-center xl:ml-8 w-full">
+            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
+              Welcome to the ICP Mech Store!
             </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src=" https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 w-20 h-20 rounded-full"
-              />
-              <p className="text-xl font-semibold  my:4 xl:m-4">
-                Stuffus users can choose between English and 11 Indian
-                languages. Our teams built vernacular support in just 2.5 years,
-                most of it while working remotely!
-              </p>
-            </div>
+            <p className=" text-xl">
+              Welcome to the ICP Mech Store, your go-to destination for stylish
+              and unique clothing inspired by Internet Computer Protocol (ICP)!
+              Dive into our collection and explore a range of apparel that
+              embodies the spirit of decentralization and innovation.Internet
+              Computer Protocol (ICP) is a groundbreaking technology that aims
+              to revolutionize the internet by enabling decentralized computing
+              at scale. Developed by DFINITY, ICP empowers developers to build
+              tamper-proof, open internet services, and applications.
+            </p>
           </div>
           <div></div>
         </div>
         <div className="flex   flex-col xl:flex-row my-6 gap-4">
-          <div className="fLex flex-row  items-center justify-center xl:mr-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
-              Experiment Learn Grow
+          <div className="fLex flex-row  items-center mt-6 justify-center xl:mr-8 w-full">
+            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">Our Mission</p>
+            <p className=" text-xl">
+              At the ICP Mech Store, our mission is to merge fashion with
+              technology, offering clothing that not only looks great but also
+              celebrates the ethos of decentralization and the Internet Computer
+              Protocol. We aim to empower individuals to express their passion
+              for ICP through their style.Discover our diverse range of
+              ICP-inspired clothing, including t-shirts, hoodies, hats, and
+              more. Each piece is thoughtfully designed to reflect the
+              innovation and creativity of the Internet Computer community.
+              Whether you're attending a tech conference, hanging out with
+              friends, or just want to make a statement, our clothing will help
+              you stand out.
             </p>
-            <p className=" text-sm font-semibold">
-              Our journey of building India's biggest unicorn start-up has been
-              full of successes, but also failures and learning from them.
-              That's why there's calculated risk-taking, a high willingness to
-              learn and improvise, and a growth orientation built into
-              everything we do. Whether it be opening a new warehouse, or making
-              our mobile app a bit more consumer friendly, we're always
-              experimenting, learning and growing!
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src="https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 h-20 w-20 rounded-full "
-              />
-              <p className="text-xl font-semibold my-4 xl:m-4">
-                We celebrate our biggest risk that didn't work out each year
-                with the Chandrayaan Award at our Annual Awards ceremony!
-              </p>
-            </div>
           </div>
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
+          <img src={img2} alt="" className="rounded-xl w-96 h-96" />
           <div></div>
         </div>
-        <div className="flex    flex-col xl:flex-row my-6 gap-4 ">
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div className="fLex flex-row  items-center justify-center   xl:ml-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">
-              Work With The Best
-            </p>
-            <p className=" text-sm font-semibold ">
-              The best people make the best teams. And we put all our efforts
-              into finding the right people that fit into our high-performing
-              inclusive teams. Everyone has a voice on the table and diversity
-              of thoughts, styles and actions is celebrated. From a category
-              leader to a wishmaster, we are all bound together and guided by
-              our values of audacity, bias for action, customer-first, integrity
-              and inclusion.
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src="https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2 w-20 h-20 rounded-full "
-              />
-              <p className="text-xl font-semibold my-4 xl:m-4">
-                Stuffus users can choose between English and 11 Indian
-                languages. Our teams built vernacular support in just 2.5 years,
-                most of it while working remotely!
-              </p>
-            </div>
-          </div>
-          <div></div>
-        </div>
-        <div className="flex   flex-col xl:flex-row gap-2 my-4">
-          <div className="fLex flex-row  items-center justify-center xl:mr-8 w-full">
-            <p className="text-2xl font-bold  md:m-0 mt-4 pb-4">We care</p>
-            <p className=" text-sm font-semibold">
-              Our culture of care extends to our people, stakeholders, customers
-              and the planet! We do not believe in a one size fits all strategy.
-              Our benefits and care policies are driven by empathy and
-              customised to the unique needs of individual Flipsters. Because
-              when Flipsters and their families are cared for, they can focus on
-              doing their best work. We put your hopes, dreams and endeavours
-              first - always.
-            </p>
-            <div className="flex mt-4  flex-col xl:flex-row ">
-              <img
-                src=" https://dummyimage.com/500x500/EF9A9A/fff"
-                alt=""
-                className="p-2  h-20 w-20 rounded-full"
-              />
-              <p className="text-xl font-semibold   my:4 xl:m-4">
-                Stuffus users can choose between English and 11 Indian
-                languages. Our teams built vernacular support in just 2.5 years,
-                most of it while working remotely!
-              </p>
-            </div>
-          </div>
-          <img
-            src="https://dummyimage.com/500x500/EF9A9A/fff"
-            alt=""
-            className="rounded-xl w-96 h-96"
-          />
-          <div></div>
-        </div>
-        <p className="text-center text-4xl font-bold w-full">Values</p>
-        <Carousel />
+
+        {/* <Carousel /> */}
       </div>
       <Footer></Footer>
     </AnimationView>

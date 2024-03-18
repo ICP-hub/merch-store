@@ -87,13 +87,18 @@ const MyWishList = () => {
   const getWishlist = async () => {
     try {
       const item = await backend.listWishlistItems();
+      const ids = item
+        .filter((innerArray) => innerArray[1].principal.toText() === principal)
+        .map((innerArray) => innerArray[1].id);
+      setId(ids);
 
-      setId(item);
-
-      const productSlugs = item.map((innerArray) => innerArray[1].product_slug);
+      const productSlugs = item
+        .filter((innerArray) => innerArray[1].principal.toText() === principal)
+        .map((innerArray) => innerArray[1].product_slug);
 
       // Set the state with all product_slugs as an array
       setWishlists(productSlugs);
+      console.log(productSlugs, "hello");
 
       if (item.ok) {
         console.log(item);
@@ -142,7 +147,7 @@ const MyWishList = () => {
       console.error("Error while getting wishlist ", error);
     }
   };
-  console.log(product);
+
   useEffect(() => {
     // Call getProductWishlist only when wishlists have been updated
     if (wishlists !== "") {
@@ -213,10 +218,7 @@ const MyWishList = () => {
                       </p>
                       <p className="text-xs uppercase">
                         {" "}
-                        Categgory: {wishlists?.category}
-                      </p>
-                      <p className="uppercase text-xs">
-                        Added On : {wishlist[0]?.addedOn}
+                        Category: {wishlists?.category}
                       </p>
                     </div>
                   </div>
@@ -234,7 +236,7 @@ const MyWishList = () => {
                       <div className="flex gap-6">
                         <Button
                           className=" hover:text-red-500"
-                          onClick={() => deleteWishlist(id[index][0])}
+                          onClick={() => deleteWishlist(id[index])}
                         >
                           <BsTrash3 size={20} />
                         </Button>

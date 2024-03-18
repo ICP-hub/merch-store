@@ -20,6 +20,7 @@ import TabChanges from "../components/Tabchanges";
 import IcpLogo from "../assets/IcpLogo";
 import Invoice from "./admin/invoice";
 import { useReactToPrint } from "react-to-print";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  Base : MyOrderDetailPage.
@@ -42,6 +43,7 @@ const MyOrderDetailContainerMain = () => {
   const { getOrderById, orderDetails, isLoading } = CartApiHandler();
   const { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  const { OrderDetailPageLoader } = LoadingScreen();
 
   const pathsForTabChanges = ["Home", "my-profile", "my-order", id];
   // Filter orderList from params
@@ -58,7 +60,7 @@ const MyOrderDetailContainerMain = () => {
   return (
     <>
       <div className="container mx-auto p-6 tracking-wider flex flex-col gap-6">
-        {isLoading && <div>Loading....</div>}
+        {isLoading && <OrderDetailPageLoader />}
         {!isLoading && orderDetails === undefined && (
           <div>Invalid Order ID</div>
         )}
@@ -68,8 +70,9 @@ const MyOrderDetailContainerMain = () => {
             <DeliveryInfo
               shippingAddress={orderDetails.shippingAddress}
               handleOpenInvoice={handleOpenInvoice}
+              orderStatus={orderDetails.orderStatus}
             />
-            <DeliveryStepper />
+            <DeliveryStepper orderStatus={orderDetails.orderStatus} />
             <OrderItemComp products={orderDetails.products} />
           </>
         )}
@@ -101,7 +104,7 @@ const MyOrderDetailContainerMain = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Left 
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
+const DeliveryInfo = ({ shippingAddress, handleOpenInvoice, orderStatus }) => {
   return (
     <div className="flex border border-dashed  rounded-2xl border-gray-900 min-w-full max-sm:flex-col">
       <div className="sm:w-1/2 sm:border-r sm:border-r-gray-900 border-dashed max-sm:border-b max-sm:border-b-gray-900">
@@ -112,11 +115,11 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
           </h4>
           <p className="text-sm">
             {shippingAddress?.addressline1},{shippingAddress?.addressline2},
-            {shippingAddress?.pin},{shippingAddress?.state}
+            {shippingAddress?.pincode},{shippingAddress?.state}
           </p>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Email</p>
-            <p>avanish@gmail.com</p>
+            <p>{shippingAddress?.email}</p>
           </div>
           <div className="flex gap-2 text-sm">
             <p className="font-medium">Phone Number</p>
@@ -124,7 +127,10 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
           </div>
         </div>
       </div>
-      <MoreActions handleOpenInvoice={handleOpenInvoice} />
+      <MoreActions
+        handleOpenInvoice={handleOpenInvoice}
+        orderStatus={orderStatus}
+      />
     </div>
   );
 };
@@ -132,14 +138,14 @@ const DeliveryInfo = ({ shippingAddress, handleOpenInvoice }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryInfo /> > Right 
 /* ----------------------------------------------------------------------------------------------------- */
-const MoreActions = ({ handleOpenInvoice }) => {
+const MoreActions = ({ handleOpenInvoice, orderStatus }) => {
   return (
     <div className="sm:w-1/2 ">
       <div className="flex flex-col gap-3 px-2 sm:px-8 py-4">
         <h3 className="font-medium text-lg">More Actions</h3>
         <div className="flex gap-2 text-sm">
           <p className="font-medium">Payment Status:</p>
-          <p className="font-medium text-green-700">Success</p>
+          <p className="font-medium text-green-700">{orderStatus}</p>
         </div>
         <div className="flex gap-2 text-sm">
           <p className="font-medium">Delivery Status:</p>
@@ -161,18 +167,8 @@ const MoreActions = ({ handleOpenInvoice }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyOrderDetailPage : MyOrderContainerMain: <DeliveryStepper />  
 /* ----------------------------------------------------------------------------------------------------- */
-const DeliveryStepper = () => {
-  const labels = [
-    "Order Placed",
-    "Ready to Dispatch",
-    "Dispatched",
-    "Out For Delivery",
-    "Delivered",
-  ];
-
-  // Date Will Be Dynamic for prod build
-  const date = formatDate(new Date());
-  const subLabels = [date, date, date, date, date];
+const DeliveryStepper = ({ orderStatus }) => {
+  const labels = ["confirmed", "shipped", "out for delivery", "delivered"];
 
   const [isVertical, setIsVertical] = useState(window.innerWidth <= 768);
   const [currentStep, setCurrentStep] = useState(0);
@@ -182,26 +178,22 @@ const DeliveryStepper = () => {
       setIsVertical(window.innerWidth <= 768);
     };
 
-    const handleStepChange = () => {
-      // If the current step is greater than the number of steps in vertical mode,
-      // set the current step to the last step.
-      if (isVertical && currentStep >= labels.length) {
-        setCurrentStep(labels.length - 1);
-      }
-    };
-
     handleResize();
-    handleStepChange();
 
-    window.addEventListener("resize", () => {
-      handleResize();
-      handleStepChange();
-    });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isVertical, currentStep, labels.length]);
+  }, []);
+
+  // Effect : check Label index with orderStauts : setCureentStep
+  useEffect(() => {
+    const index = labels.indexOf(orderStatus);
+    if (index !== -1) {
+      setCurrentStep(index);
+    }
+  }, [orderStatus, labels]);
 
   const handleStepChange = (newStep) => {
     setCurrentStep(newStep);
@@ -209,29 +201,36 @@ const DeliveryStepper = () => {
 
   return (
     <>
-      <div
-        className={`border border-dashed border-gray-900 rounded-2xl ${
-          !isVertical ? "p-8" : null
-        }`}
-      >
-        {isVertical ? (
-          <VerticalStepperComponent
-            labels={labels}
-            subLabels={subLabels}
-            // showController={true}
-            currentStep={currentStep}
-            onStepChange={handleStepChange}
-          />
-        ) : (
-          <HorizontalStepperComponent
-            labels={labels}
-            subLabels={subLabels}
-            // showController={true}
-            currentStep={currentStep}
-            onStepChange={handleStepChange}
-          />
-        )}
-      </div>
+      <div className="text-xs font-semibold uppercase">Delivery Status</div>
+      {orderStatus === "cancelled" ? (
+        <div className="text-2xl border border-dashed border-gray-900 p-8 rounded-2xl">
+          Your order has been cancelled!
+        </div>
+      ) : (
+        <div
+          className={`border border-dashed border-gray-900 rounded-2xl capitalize ${
+            !isVertical ? "p-8" : null
+          }`}
+        >
+          {isVertical ? (
+            <VerticalStepperComponent
+              labels={labels}
+              // subLabels={subLabels}
+              // showController={true}
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+            />
+          ) : (
+            <HorizontalStepperComponent
+              labels={labels}
+              // subLabels={subLabels}
+              // showController={true}
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+            />
+          )}
+        </div>
+      )}
     </>
   );
 };

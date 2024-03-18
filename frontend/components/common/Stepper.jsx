@@ -71,11 +71,11 @@ const StepperComponent = ({
               <div className="flex items-center flex-col justify-center w-max">
                 <div className="flex items-center flex-col relative">
                   <div
-                    className={`absolute top-0 left-full ml-4 w-max ${
+                    className={`absolute top-2 left-full ml-4 w-max ${
                       activeStep(index) ? "text-gray-400" : "text-green-500"
                     }`}
                   >
-                    <p className="text-xs font-medium">{subLabels[index]}</p>
+                    {/* <p className="text-xs font-medium">{subLabels[index]}</p> */}
                     <h6
                       className={`text-sm font-semibold ${
                         activeStep(index) ? "text-[#333]" : "text-gray-400"
@@ -156,7 +156,7 @@ const StepperComponent = ({
                   }
                 >
                   <div
-                    className={`block absolute top-[-25px] left-[-100%] w-max text-sm font-semibold ${
+                    className={`block absolute top-[-25px] left-[-50%] w-max text-sm font-semibold ${
                       activeStep(index) ? "text-[#333]" : "text-gray-400"
                     }`}
                   >
@@ -168,18 +168,18 @@ const StepperComponent = ({
                     activeStep(index) ? "text-gray-400" : "text-green-500"
                   }
                 >
-                  <div
+                  {/* <div
                     className={`block absolute bottom-[-25px] left-[-100%] w-max text-xs font-medium tracking-tight ${
                       activeStep(index) ? "text-[#333]" : "text-gray-400"
                     }`}
                   >
                     {subLabels[index]}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {index === numberOfSteps - 1 ? null : (
                 <div
-                  className={`w-3/12 h-1 ${
+                  className={`w-4/12 h-1 ${
                     activeStep(index) ? "bg-green-500" : "bg-gray-400"
                   }`}
                 ></div>
@@ -197,9 +197,9 @@ const StepperComponent = ({
       <Stepper
         numberOfSteps={NUMBER_OF_STEPS}
         labels={labels}
-        subLabels={subLabels}
+        // subLabels={subLabels}
       />
-      <br />
+      {/* <br /> */}
       {/* Render the controller (previous and next buttons) if showController is true */}
       {showController && (
         <StepperController

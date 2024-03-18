@@ -301,7 +301,7 @@ const ProductDetail = () => {
               <div className="absolute top-2 left-2 w-12 h-6 animate-pulse bg-white py-2 px-2 rounded-full text-sm cursor-pointer font-semibold"></div>
             ) : (
               <Link to="/products">
-                <div className="absolute top-2 left-2 bg-white py-1 px-2 max:w-16 rounded-full text-xs text-center cursor-pointer font-semibold">
+                <div className="absolute top-2 left-2 bg-white py-1 px-2 uppercase max:w-16 rounded-full text-xs text-center cursor-pointer font-semibold">
                   {data.category}
                 </div>
               </Link>
@@ -393,7 +393,9 @@ const ProductDetail = () => {
             {!loading ? (
               <h2 className=" w-1/3 h-8 animate-pulse bg-gray-200 py-2 px-2 rounded-full text-sm cursor-pointer font-semibold"></h2>
             ) : (
-              <h2 className="xl:text-2xl  font-bold mb-4">{data.title}</h2>
+              <h2 className="xl:text-2xl  font-bold mb-4 uppercase">
+                {data.title}
+              </h2>
             )}
 
             {/* Ratings
@@ -423,14 +425,14 @@ const ProductDetail = () => {
             {!loading ? (
               <div className=" w-1/3 h-8  mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
-              <div className="mb-4 flex items-center  text-gray-700 ">
-                Price:
-                <p className="text-gray-800 flex items-center ml-2">
+              <div className="mb-3 flex  items-center gap-1 text-gray-700 capitalize ">
+                PRICE :
+                <p className="text-gray-800 flex items-center ml-1  gap-1">
                   {" "}
-                  <IcpLogo size={20} />
+                  <IcpLogo size={20} className="gap-1" />
                   {price}
                 </p>
-                <p className="text-gray-500 mx-2 text-xs ">
+                <p className="text-gray-500 mx-2 text-sm ">
                   <s className="flex"> {sellingPrice}</s>
                 </p>
                 <div className="flex items-center gap-2">
@@ -448,18 +450,18 @@ const ProductDetail = () => {
                 <div className=" w-full h-12 mt-4  animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
               ) : (
                 <div>
-                  <h2 className="text-sm text-gray-700   mb-2">
-                    COLOR OPTIONS :{selectedColor}
+                  <h2 className=" text-gray-700 uppercase  mb-2">
+                    COLOR OPTIONS : {selectedColor}
                   </h2>
                   <div className="flex  flex-wrap">
                     {data.variantColor.map((color, index) => (
                       <div
                         key={index}
-                        className={`w-10 h-10 m-1 rounded-full bg-${
+                        className={`w-10 h-10 m-1 rounded-full mx-2 bg-${
                           color.color
                         } cursor-pointer ${
                           selectedColor === color.color
-                            ? "border-[2px] border-gray-300 shadow-md   scale-125  "
+                            ? "border-[2px] border-gray-300  scale-110 shadow-md mx-2    "
                             : ""
                         }`}
                         style={{ backgroundColor: color.color }}
@@ -474,16 +476,16 @@ const ProductDetail = () => {
                 <div className=" w-full h-12 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
               ) : (
                 <div>
-                  <h2 className="text-sm text-gray-700 mb-4">
-                    SELECT SIZE:{selectedSize}
+                  <h2 className=" text-gray-700 mb-4 uppercase">
+                    SELECT SIZE : {selectedSize}
                   </h2>
                   <div className="flex flex-wrap  ">
                     {data.variantSize.map((size, index) => (
                       <div
                         key={index}
-                        className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mr-2 mb-2 ${
+                        className={`bg-gray-200 text-gray-800 text-center py-2 px-4 rounded-md cursor-pointer mx-2 mb-2 ${
                           selectedSize === size.size
-                            ? "border-black scale-125"
+                            ? " border border-gray-400 scale-110 mx-2"
                             : "border-gray-300"
                         }`}
                         onClick={() => handleSizeChange(size.size)}
@@ -567,8 +569,8 @@ const ProductDetail = () => {
               <div className=" w-full h-36 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-xl"></div>
             ) : (
               <div className="mb-4 mt-8">
-                <p className="text-gray-800">Description:</p>
-                <li className="list-disc text-gray-800 ">{data.description}</li>
+                <p className="text-gray-800 uppercase">Description:</p>
+                <p className="list-disc text-gray-800 ">{data.description}</p>
               </div>
             )}
           </div>

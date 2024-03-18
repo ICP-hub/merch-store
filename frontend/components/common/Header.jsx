@@ -108,7 +108,7 @@ const Header = ({ title }) => {
       }
     };
 
-    if (backend) {
+    if (backend && isConnected) {
       listCarts();
     }
   }, [backend, carts]);
