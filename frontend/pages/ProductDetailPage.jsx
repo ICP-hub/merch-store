@@ -11,12 +11,13 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { IoHeartOutline, IoHeart } from "react-icons/io5";
 import Button from "../components/common/Button.jsx";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi2";
 import placeholderImg from "../assets/product/p1-front.jpg";
+
 import img1 from "../assets/product/p2-front.jpeg";
 import img2 from "../assets/product/p1-back.jpg";
 import img3 from "../assets/product/p2-back.jpeg";
@@ -56,6 +57,7 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState();
   const [inventory, setInventory] = useState();
   const [mainImage, setMainImage] = useState("");
+  const navigate = useNavigate();
   const [image, setImage] = useState({
     img1: "",
     img2: "",
@@ -67,6 +69,7 @@ const ProductDetail = () => {
     if (color.inventory < 5) {
       toast(` !!! Hurry up only ${color.inventory} piece left !!!`);
     }
+
     setProductInLocalCart(false);
     setPrice(color.variant_sale_price);
     setSellingPrice(color.variant_price);
@@ -146,31 +149,39 @@ const ProductDetail = () => {
   // add to cart functionality for adding items into cart
   const AddToCart = async () => {
     if (isConnected) {
-      try {
-        setLoading4(true);
-        const res = await backend.addtoCartItems(
-          slug,
-          selectedSize,
-          selectedColor,
-          quantity
-        );
+      if (!selectedColor) {
+        toast.error("please select at least one color");
+      } else if (!selectedSize) {
+        toast.error("please select at least one size");
+      } else {
+        try {
+          setLoading4(true);
 
-        if ("ok" in res) {
-          toast.success("item added to cart Successfully");
-          console.log("     Item added successfully     ", res);
-        } else {
-          // Log an error if the response does not have "ok" property
-          console.error("Unexpected response from backend:", res);
+          const res = await backend.addtoCartItems(
+            slug,
+            selectedSize,
+            selectedColor,
+            quantity
+          );
+
+          if ("ok" in res) {
+            toast.success("item added to cart Successfully");
+            console.log("     Item added successfully     ", res);
+          } else {
+            // Log an error if the response does not have "ok" property
+            console.error("Unexpected response from backend:", res);
+          }
+        } catch (error) {
+          // Log the error for debugging
+          console.error("An error occurred adding items to cart:", error);
+        } finally {
+          setLoading4(false);
+          navigate("/cart");
+          listCarts();
         }
-      } catch (error) {
-        // Log the error for debugging
-        console.error("An error occurred adding items to cart:", error);
-      } finally {
-        setLoading4(false);
-        listCarts();
       }
     } else {
-      toast.error("please login first");
+      toast.error("Please login first");
     }
   };
 
@@ -451,7 +462,7 @@ const ProductDetail = () => {
               ) : (
                 <div>
                   <h2 className=" text-gray-700 uppercase  mb-2">
-                    COLOR OPTIONS : {selectedColor}
+                    SELECTED COLOR : {selectedColor}
                   </h2>
                   <div className="flex  flex-wrap">
                     {data.variantColor.map((color, index) => (
@@ -477,7 +488,7 @@ const ProductDetail = () => {
               ) : (
                 <div>
                   <h2 className=" text-gray-700 mb-4 uppercase">
-                    SELECT SIZE : {selectedSize}
+                    SELECTED SIZE : {selectedSize}
                   </h2>
                   <div className="flex flex-wrap  ">
                     {data.variantSize.map((size, index) => (
