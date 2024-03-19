@@ -58,11 +58,33 @@ const ProductDetail = () => {
   const [inventory, setInventory] = useState();
   const [mainImage, setMainImage] = useState("");
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [image, setImage] = useState({
     img1: "",
-    img2: "",
+    img2: " ",
     img3: "",
   });
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex(
+      (prevIndex) => (prevIndex + 1) % Object.keys(image).length
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? Object.keys(image).length - 1 : prevIndex - 1
+    );
+  };
 
   const handleColorChange = (color) => {
     setSelectedColor(color.color === selectedColor ? null : color.color);
@@ -296,6 +318,41 @@ const ProductDetail = () => {
   return (
     <>
       <div className="container mx-auto xl:mt-12 mt-6 px-6 flex items-center md:items-start justify-between md:flex-col flex-col">
+        <div>
+          {isOpen && (
+            <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white rounded md:w-[40%] xl:h-[90%]  shadow-lg">
+                <div className=" w-full h-7 bg-gray-700 flex items-center  ">
+                  <span
+                    className="  top-0 md:ml-[96%]  ml-[90%] mb-1 text-3xl text-white  cursor-pointer"
+                    onClick={closeModal}
+                  >
+                    &times;
+                  </span>
+                </div>
+                <div className="relative m-5 mt-4">
+                  <img
+                    src={Object.values(image)[currentImageIndex]}
+                    alt={`Image ${currentImageIndex + 1}`}
+                    className="     md:h-[70%] "
+                  />
+                  <button
+                    className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-700 hover:text-gray-900"
+                    onClick={prevImage}
+                  >
+                    &#10094;
+                  </button>
+                  <button
+                    className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-700 hover:text-gray-900"
+                    onClick={nextImage}
+                  >
+                    &#10095;
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="flex flex-col   max-w-full  xl:ml-0  lg:flex-row ">
           <div className="lg:w-2/6 xl:pr-6 relative">
             {/* Product Image */}
@@ -306,6 +363,7 @@ const ProductDetail = () => {
                 src={mainImage}
                 alt={data.title}
                 className="w-full rounded-md"
+                onClick={openModal}
               />
             )}
             {!loading ? (

@@ -1,14 +1,14 @@
-import React from "react"
-import AnimationView from "../components/common/AnimationView"
-import ScrollToTop from "../components/common/ScrollToTop"
-import Header from "../components/common/Header"
-import Hero from "../components/common/Hero"
-import Footer from "../components/common/Footer"
-import { Tabs } from "../components/MyProfilePageComponents/MyProTabs"
-import { BsQrCodeScan } from "react-icons/bs"
-import Button from "../components/common/Button"
-import { CommonInput, TelephoneInput } from "../components/common/CommonInput"
-import { useEffect, useState } from "react"
+import React from "react";
+import AnimationView from "../components/common/AnimationView";
+import ScrollToTop from "../components/common/ScrollToTop";
+import Header from "../components/common/Header";
+import Hero from "../components/common/Hero";
+import Footer from "../components/common/Footer";
+import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
+import { BsQrCodeScan } from "react-icons/bs";
+import Button from "../components/common/Button";
+import { CommonInput, TelephoneInput } from "../components/common/CommonInput";
+import { useEffect, useState } from "react";
 
 import {
   ConnectButton,
@@ -16,12 +16,12 @@ import {
   useCanister,
   useConnect,
   useDialog,
-} from "@connect2ic/react"
-import Avatar from "boring-avatars"
-import toast from "react-hot-toast"
-import { RiCheckLine, RiFileCopyLine } from "react-icons/ri"
-import useClipboard from "react-use-clipboard"
-import { TailSpin } from "react-loader-spinner"
+} from "@connect2ic/react";
+import Avatar from "boring-avatars";
+import toast from "react-hot-toast";
+import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
+import useClipboard from "react-use-clipboard";
+import { TailSpin } from "react-loader-spinner";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components: MyProfilePage.
@@ -35,8 +35,8 @@ const MyProfilePage = () => {
       <MyProfilePageContainerMain />
       <Footer></Footer>
     </AnimationView>
-  )
-}
+  );
+};
 
 const MyProfilePageContainerMain = () => {
   return (
@@ -46,103 +46,105 @@ const MyProfilePageContainerMain = () => {
         <MyProAccount />
       </div>
     </div>
-  )
-}
+  );
+};
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @  MyProfilePageContainerMain : MyProAccount.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProAccount = () => {
-  const { principal, isConnected } = useConnect()
+  const { principal, isConnected } = useConnect();
 
-  const [backend] = useCanister("backend")
-  const [loading, setLoading] = useState(false)
-  const [loading2, setLoading2] = useState(true)
-  const [email, setEmail] = useState("") // Add state for email
-  const [firstName, setFirstName] = useState("") // Add state for FirstName
-  const [lastName, setLastName] = useState("") // Add state for LastName
-  const [user, setUser] = useState([]) // Add  state user
-  const [inputsDisabled, setInputsDisabled] = useState(true)
+  const [backend] = useCanister("backend");
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(true);
+  const [email, setEmail] = useState(""); // Add state for email
+  const [firstName, setFirstName] = useState(""); // Add state for FirstName
+  const [lastName, setLastName] = useState(""); // Add state for LastName
+  const [user, setUser] = useState([]); // Add  state user
+  const [inputsDisabled, setInputsDisabled] = useState(true);
   const [isCopied, setCopied] = useClipboard(principal, {
     successDuration: 1000,
-  })
+  });
 
   const validateForm = () => {
     if (!firstName.trim()) {
-      toast.error("Please enter first name")
-      return false
+      toast.error("Please enter first name");
+      return false;
     }
     if (!lastName.trim()) {
-      toast.error("Please enter last name")
-      return false
+      toast.error("Please enter last name");
+      return false;
     }
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
-      toast.error("Please enter a valid email address")
-      return false
+      toast.error("Please enter a valid email address");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const getUser = async () => {
     try {
-      setLoading2(true)
+      setLoading2(true);
 
-      const item = await backend.getUserdetailsbycaller()
+      const item = await backend.getUserdetailsbycaller();
       if (item.ok) {
-        setEmail(item.ok.email)
-        setFirstName(item.ok.FirstName)
-        setLastName(item.ok.LastName)
-        setUser(item.ok)
-        console.log(item.ok)
+        setEmail(item.ok.email);
+        setFirstName(item.ok.firstName);
+        setLastName(item.ok.lastName);
+        setUser(item.ok);
+        console.log(item.ok);
       }
     } catch (error) {
-      console.error("Error listing user:", error)
+      console.error("Error listing user:", error);
     } finally {
-      setLoading2(false)
+      setLoading2(false);
     }
-  }
-  console.log(user, "user")
+  };
+  console.log(user, "user");
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      getUser()
-    }, 2000)
+      getUser();
+    }, 2000);
 
-    return () => clearTimeout(timeoutId)
-  }, [backend])
+    return () => clearTimeout(timeoutId);
+  }, [backend]);
 
   const updateProfileHandler = async () => {
     try {
       if (!validateForm()) {
-        return
+        return;
       }
-      setLoading(true)
+      setLoading(true);
 
       // Log input values for debugging
       //console.log("Updating profile with:", email, firstName, lastName)
 
-      const res = await backend.updateUser(email, firstName, lastName)
+      const res = await backend.updateUser(email, firstName, lastName);
 
       // Log the entire response for debugging
-      console.log("Response from backend:", res)
+      console.log("Response from backend:", res);
 
       if ("ok" in res) {
-        toast.success("Profile Successfully Updated.")
-        setInputsDisabled(true)
+        toast.success("Profile Successfully Updated.");
+        setInputsDisabled(true);
         // getUser()
       } else {
         // Display error message
-        toast.error("Profile update failed. Please try again.")
-        console.error("Unexpected response from backend:", res)
+        toast.error("Profile update failed. Please try again.");
+        console.error("Unexpected response from backend:", res);
       }
     } catch (error) {
       // Log and display error message
-      console.error("An error occurred while updating profile:", error)
-      toast.error("An error occurred while updating profile. Please try again.")
+      console.error("An error occurred while updating profile:", error);
+      toast.error(
+        "An error occurred while updating profile. Please try again."
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col w-full border border-gray-300 rounded-2xl tracking-normal">
@@ -166,7 +168,11 @@ const MyProAccount = () => {
             />
           </div>
           <h4 className="text-center font-semibold text-gray-900 text-lg">
-            {loading2 ? (<span className="animate-pulse bg-gray-300 h-[20px] w-[150px] rounded-full"></span>) : `${firstName} ${lastName}`}
+            {loading2 ? (
+              <span className="animate-pulse bg-gray-300 h-[20px] w-[150px] rounded-full"></span>
+            ) : (
+              `${firstName} ${lastName}`
+            )}
           </h4>
         </div>
         <div className="w-full md:w-3/4 flex flex-col gap-3">
@@ -175,7 +181,7 @@ const MyProAccount = () => {
               type="text"
               label="first name"
               placeholder="first name"
-              divClass={loading2 && ` animate-pulse` }
+              divClass={loading2 && ` animate-pulse`}
               value={loading2 ? "please wait..." : firstName}
               onChange={(e) => setFirstName(e.target.value)}
               disabled={inputsDisabled}
@@ -184,7 +190,7 @@ const MyProAccount = () => {
               label="Last Name"
               type="text"
               placeholder="last name"
-              divClass={loading2 && ` animate-pulse` }
+              divClass={loading2 && ` animate-pulse`}
               value={loading2 ? "please wait..." : lastName}
               onChange={(e) => setLastName(e.target.value)}
               disabled={inputsDisabled}
@@ -194,7 +200,7 @@ const MyProAccount = () => {
             label="Email"
             type="text"
             placeholder="email"
-            divClass={loading2 && ` animate-pulse` }
+            divClass={loading2 && ` animate-pulse`}
             value={loading2 ? "please wait..." : email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={inputsDisabled}
@@ -210,8 +216,8 @@ const MyProAccount = () => {
             />
             <button
               onClick={() => {
-                setCopied()
-                toast.success("Principal copied successfully")
+                setCopied();
+                toast.success("Principal copied successfully");
               }}
               className="absolute bottom-2 right-2 text-gray-400"
             >
@@ -259,7 +265,7 @@ const MyProAccount = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyProfilePage
+export default MyProfilePage;
