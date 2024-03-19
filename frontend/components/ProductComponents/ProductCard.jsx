@@ -14,6 +14,7 @@ import { TailSpin } from "react-loader-spinner";
 import { useEffect } from "react";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 import IcpLogo from "../../assets/IcpLogo";
+import { AnimatePresence, motion } from "framer-motion";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component ProductCard.
@@ -32,6 +33,7 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [carts, setCarts] = useState();
   const [addedToCart, setAddedToCart] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // State for img change on hover
 
   const listCarts = async () => {
     try {
@@ -207,6 +209,15 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  // Img change on mouse hover and leave
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   /* ----------------------------------------------------------------------------------------------------- */
   /*  @ Final ProductCard and Renders
 /* ----------------------------------------------------------------------------------------------------- */
@@ -236,7 +247,6 @@ const ProductCard = ({ product }) => {
     };
   };
   const productInfo = extractProductInfo(product);
-  // console.log(productInfo);
   // Calculate discount
   const calculateDiscountPercentage = () => {
     if (productInfo?.variantInfo.variant_price === 0) {
@@ -293,11 +303,23 @@ const ProductCard = ({ product }) => {
             )}
           </button>
           <Link to={`/product/${productInfo.slug}`}>
-            <div className="img-hover-zoom rounded-xl  cursor-pointer">
-              <img
-                src={productInfo.variantInfo.img1 || placeholderImg}
+            <div
+              className="rounded-xl cursor-pointer"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <motion.img
+                key={isHovered}
+                src={
+                  isHovered
+                    ? productInfo.variantInfo.img2
+                    : productInfo.variantInfo.img1
+                }
                 alt="prod name"
                 className="rounded-xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               />
             </div>
           </Link>
