@@ -185,11 +185,7 @@ actor {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
-        if (Result.isErr(await getUserdetailsbyid(callerP))) {
-            Debug.trap("User not found");
-            return #err(#AddressNotFound);
-
-        };
+       
         let userP : Principal = callerP;
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
