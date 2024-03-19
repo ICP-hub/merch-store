@@ -309,7 +309,11 @@ const ProductCard = ({ product }) => {
               onMouseLeave={handleMouseLeave}
             >
               <motion.img
-                key={isHovered}
+                key={
+                  isHovered
+                    ? productInfo.variantInfo.img2
+                    : productInfo.variantInfo.img1
+                }
                 src={
                   isHovered
                     ? productInfo.variantInfo.img2
