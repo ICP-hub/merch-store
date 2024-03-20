@@ -321,7 +321,7 @@ const ProductDetail = () => {
         <div>
           {isOpen && (
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white rounded md:w-[40%] xl:h-[90%]  shadow-lg">
+              <div className="bg-white rounded md:w-[40%] xl:h-[100%]  shadow-lg">
                 <div className=" w-full h-7 bg-gray-700 flex items-center  ">
                   <span
                     className="  top-0 md:ml-[96%]  ml-[90%] mb-1 text-3xl text-white  cursor-pointer"
@@ -334,7 +334,7 @@ const ProductDetail = () => {
                   <img
                     src={Object.values(image)[currentImageIndex]}
                     alt={`Image ${currentImageIndex + 1}`}
-                    className="     md:h-[70%] "
+                    className="     md:h-[80%] "
                   />
                   <button
                     className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-700 hover:text-gray-900"
