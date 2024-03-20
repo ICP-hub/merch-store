@@ -14,7 +14,6 @@ import { TailSpin } from "react-loader-spinner";
 import { useEffect } from "react";
 import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 import IcpLogo from "../../assets/IcpLogo";
-import { AnimatePresence, motion } from "framer-motion";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component ProductCard.
@@ -304,26 +303,18 @@ const ProductCard = ({ product }) => {
           </button>
           <Link to={`/product/${productInfo.slug}`}>
             <div
-              className="rounded-xl cursor-pointer"
+              className="rounded-xl cursor-pointer image-container"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <motion.img
-                key={
-                  isHovered
-                    ? productInfo.variantInfo.img2
-                    : productInfo.variantInfo.img1
-                }
+              <img
                 src={
                   isHovered
                     ? productInfo.variantInfo.img2
                     : productInfo.variantInfo.img1
                 }
                 alt="prod name"
-                className="rounded-xl"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                className="rounded-xl product-image"
               />
             </div>
           </Link>
