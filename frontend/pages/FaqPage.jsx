@@ -17,7 +17,7 @@ const FaqPage = () => {
   return (
     <AnimationView>
       <ScrollToTop />
-      <Header title={"F&Q"}></Header>
+      <Header title={"FAQ"}></Header>
       <FaqPageContainerMain />
       <Contact></Contact>
       <Footer></Footer>

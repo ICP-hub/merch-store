@@ -73,7 +73,7 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
     100;
 
   return (
-    <div className="px-6 md:container md:mx-auto mb-10">
+    <div className="md:px-6 max-md:px-2 md:container md:mx-auto mb-10">
       <div
         data-aos="fade-up"
         className="p-6 grid sm:grid-cols-2 max-h-full overflow-hidden gap-4 border border-gray-300 border-dashed rounded-2xl"
@@ -196,7 +196,7 @@ const ExpCategories = () => {
   );
 
   return (
-    <div className="md:container md:mx-auto px-6 my-8 ">
+    <div className="md:container md:mx-auto px-6 my-8 max-md:px-2 ">
       <h1
         data-aos="fade-up"
         className="font-semibold text-5xl text-center text-gray-900 mb-2"

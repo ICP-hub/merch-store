@@ -38,7 +38,7 @@ const Contact = () => {
 
   return (
     <div
-      className="py-6 px-6 md:container md:mx-auto  flex flex-col justify-center items-center"
+      className="py-6 px-6 max-md:px-2 md:container md:mx-auto  flex flex-col justify-center items-center"
       data-aos="fade-up"
     >
       <div className="rounded-t-3xl bg-black/70 w-[80%] md:w-[90%] py-2"></div>
