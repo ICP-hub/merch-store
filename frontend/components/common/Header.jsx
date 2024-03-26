@@ -622,7 +622,7 @@ const Header = ({ title }) => {
       {isHomePage && <TrendingProducts />}
       <motion.div
         style={{ x: x }}
-        className={` text-[50px] max-md:text-[100px] ${
+        className={` text-[50px] ${
           isHomePage ? `md:text-[200px]` : `md:text-[100px]`
         } font-black tracking-widest text-white absolute -bottom-[22px] ${
           isHomePage ? `md:-bottom-[90px]` : `md:-bottom-[40px]`
