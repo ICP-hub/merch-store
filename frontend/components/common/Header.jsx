@@ -570,7 +570,7 @@ const Header = ({ title }) => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="mt-2 absolute right-0   w-76 sm:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
+                        <Menu.Items className="mt-2 absolute right-0   w-80 md:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
                           <div className="border-b-[1px] border-gray-200 px-3 py-3 mb-1">
                             <h2 className="text-lg text-gray-900 font-semibold">
                               My Cart ({carts?.length})
