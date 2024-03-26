@@ -142,9 +142,8 @@ const ShippingPolicyPage = () => {
         </p>
         <h2 className="text-xl font-bold mb-2">RETURN REQUEST DAYS</h2>
         <p className="mb-4">
-          Merch store allows you to return its item (s) within a period of 7
-          days. Kindly be advised that the item (s) should be returned unopened
-          and unused.
+          Merch store allows you to return its item(s) within 7 days. Kindly be
+          advised that the item(s) should be returned unopened and unused.
         </p>
         <h2 className="text-xl font-bold mb-2">OUT OF STOCK ITEM PROCESS</h2>
         <p className="mb-4">
@@ -164,11 +163,8 @@ const ShippingPolicyPage = () => {
           By accessing our site and placing an order you have willingly accepted
           the terms of this Shipping Policy.
         </p>
-        <h2 className="text-xl font-bold mb-2">CONTACT INFORMATION</h2>
-        <p className="mb-4">
-          In the event you have any questions or comments please reach us via
-          the following contacts: Email - merchstore@gmail.com
-        </p>
+        <h2 className="text-xl font-bold mb-2">CONTACT </h2>
+        <p className="mb-4">Email - merchstore@gmail.com</p>
       </div>
       <Footer></Footer>
     </AnimationView>

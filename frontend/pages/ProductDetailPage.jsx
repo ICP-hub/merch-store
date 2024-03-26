@@ -457,7 +457,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          <div className="lg:w-4/6 mt-4 ml-3 pl-3  lg:mt-0   ">
+          <div className="lg:w-4/6 mt-4 sm:ml-3 sm:pl-3  lg:mt-0   ">
             {/* Product Details */}
 
             {!loading ? (
@@ -638,7 +638,7 @@ const ProductDetail = () => {
             {!loading ? (
               <div className=" w-full h-36 mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-xl"></div>
             ) : (
-              <div className="mb-4 mt-8">
+              <div className="mb-4 mt-8 flex flex-wrap flex-col">
                 <p className="text-gray-800 uppercase">Description:</p>
                 <p className="list-disc text-gray-800 ">{data.description}</p>
               </div>

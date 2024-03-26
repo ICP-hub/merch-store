@@ -89,12 +89,11 @@ const TeamPage = () => {
               celebrates the ethos of decentralization and the Internet Computer
               Protocol. We aim to empower individuals to express their passion
               for ICP through their style.Discover our diverse range of
-              ICP-inspired clothing, including t-shirts, hoodies, hats, and
-              more. Each piece is thoughtfully designed to reflect the
-              innovation and creativity of the Internet Computer community.
-              Whether you're attending a tech conference, hanging out with
-              friends, or just want to make a statement, our clothing will help
-              you stand out.
+              ICP-inspired clothing. Each piece is thoughtfully designed to
+              reflect the innovation and creativity of the Internet Computer
+              community. Whether you're attending a tech conference, hanging out
+              with friends, or just want to make a statement, our clothing will
+              help you stand out.
             </p>
           </div>
           <img src={img2} alt="" className="rounded-xl w-96 h-96" />

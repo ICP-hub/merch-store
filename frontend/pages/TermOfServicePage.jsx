@@ -101,25 +101,25 @@ const TermOfServicePage = () => {
   return (
     <AnimationView>
       <ScrollToTop />
-      <Header title={"Term Of Service"} />
+      <Header title={"Term and Service"} />
       <div className="container mx-auto mt-4 px-6 flex gap-2 items-center md:items-start justify-between flex-col">
         <h2 className="text-xl font-bold mb-2">1. Terms</h2>
         <p className="mb-4">
           By accessing this Website, accessible from
-          https://fygdv-xiaaa-aaaak-afnuq-cai.icp0.io/, you are agreeing to be
-          bound by these Website Terms and Conditions of Use and agree that you
-          are responsible for the agreement with any applicable local laws. If
-          you disagree with any of these terms, you are prohibited from
-          accessing this site. The materials contained in this Website are
-          protected by copyright and trademark law.
+          https://fygdv-xiaaa-aaaak-afnuq-cai.icp0.io/, you agree to be bound by
+          these Website Terms and Conditions of Use and agree that you are
+          responsible for the agreement with any applicable local laws. If you
+          disagree with any of these terms, you are prohibited from accessing
+          this site. The materials contained in this Website are protected by
+          copyright and trademark law.
         </p>
 
         <h2 className="text-xl font-bold mb-2">2. Use License</h2>
         <p className="mb-4">
           Permission is granted to temporarily download one copy of the
           materials on Merch store's Website for personal, non-commercial
-          transitory viewing only. This is the grant of a license, not a
-          transfer of title, and under this license you may not:
+          transitory viewing only.This grant constitutes a license and not a
+          transfer of title. Under this license, you may not:
         </p>
         <ul className="list-disc pl-8 mb-4">
           <li>modify or copy the materials;</li>
@@ -136,8 +136,8 @@ const TermOfServicePage = () => {
             materials; or
           </li>
           <li>
-            transferring the materials to another person or "mirror" the
-            materials on any other server.
+            Transfer the materials to another person or "mirror" the materials
+            on any other server.
           </li>
         </ul>
         <p className="mb-4">
@@ -174,8 +174,8 @@ const TermOfServicePage = () => {
           technical, typographical, or photographic errors. Merch store will not
           promise that any of the materials on this Website are accurate,
           complete, or current. Merch store may change the materials contained
-          on its Website at any time without notice. Merch store does not make
-          any commitment to update the materials.
+          on its Website at any time without notice. Merch store do not make any
+          commitment to update the materials.
         </p>
 
         <h2 className="text-xl font-bold mb-2">6. Links</h2>

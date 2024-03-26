@@ -122,7 +122,7 @@ const PrivacyPolicyPage = () => {
           vulnerabilities to ensure your information remains safe and secure.
         </p>
         <h2 className="text-xl font-bold mb-2">
-          Updating, Deleting, Editing Your Account Information:
+          Updating, Deleting and Editing Your Account Information:
         </h2>
         <p className="mb-4">
           After creating an account with Merch store, you can access, review,
