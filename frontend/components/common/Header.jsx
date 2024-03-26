@@ -161,7 +161,7 @@ const Header = ({ title }) => {
             <div className="flex justify-between items-center gap-2">
               <div>
                 <Link to="/">
-                  <img src={LOGO} alt="logo" className="h-12" />
+                  <img src={LOGO} alt="logo" className="h-8 sm:h-12" />
                 </Link>
               </div>
               <div className="flex justify-center items-center nav-menu  md:block hidden">
@@ -337,7 +337,7 @@ const Header = ({ title }) => {
                 </div>
                 <div className="order-first md:order-last">
                   {isConnected ? (
-                    <div>
+                    <div className="text-xs sm:text-lg">
                       <Menu
                         as="div"
                         className="relative inline-block text-left"
@@ -373,7 +373,7 @@ const Header = ({ title }) => {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right divide-y divide-gray-100 rounded-2xl bg-white !backdrop-blur-3xl  shadow-lg ring-1 ring-black/5 focus:outline-none">
+                          <Menu.Items className="absolute right-0 mt-2 md:w-48  w-36 origin-top-right divide-y divide-gray-100 rounded-2xl bg-white !backdrop-blur-3xl  shadow-lg ring-1 ring-black/5 focus:outline-none">
                             {/*  {isConnected ? ( */}
                             <>
                               {isAdmin && (
@@ -570,7 +570,7 @@ const Header = ({ title }) => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="mt-2 absolute right-0 w-80 md:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
+                        <Menu.Items className="mt-2 absolute right-0   w-76 sm:w-96 origin-top-right rounded-2xl bg-white  shadow-lg ring-1 ring-black/5 focus:outline-none">
                           <div className="border-b-[1px] border-gray-200 px-3 py-3 mb-1">
                             <h2 className="text-lg text-gray-900 font-semibold">
                               My Cart ({carts?.length})

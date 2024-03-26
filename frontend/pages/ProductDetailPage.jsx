@@ -496,7 +496,6 @@ const ProductDetail = () => {
               <div className=" w-1/3 h-8  mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
               <div className="mb-3 flex  items-center gap-1 text-gray-700 capitalize ">
-                PRICE :
                 <p className="text-gray-800 flex items-center ml-1  gap-1">
                   {" "}
                   <IcpLogo size={20} className="gap-1" />
