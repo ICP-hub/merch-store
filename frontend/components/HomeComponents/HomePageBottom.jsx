@@ -199,13 +199,13 @@ const ExpCategories = () => {
     <div className="md:container md:mx-auto px-6 my-8 max-md:px-2 ">
       <h1
         data-aos="fade-up"
-        className="font-semibold text-5xl text-center text-gray-900 mb-2"
+        className="font-semibold text-5xl text-center text-gray-900 mb-2 max-sm:text-2xl"
       >
         Featured Collections
       </h1>
       <p
         data-aos="fade-up"
-        className="mb-10 font-light text-sm text-center text-gray-400"
+        className="mb-10 font-light text-sm text-center text-gray-400 max-sm:text-xs"
       >
         Explore our featured collections for a curated selection of excellence
         in every category.
