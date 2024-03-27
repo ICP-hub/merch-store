@@ -86,13 +86,15 @@ const MyProAccount = () => {
   const getUser = async () => {
     try {
       setLoading2(true);
-
+      setInputsDisabled(false);
       const item = await backend.getUserdetailsbycaller();
+
       if (item.ok) {
         setEmail(item.ok.email);
         setFirstName(item.ok.firstName);
         setLastName(item.ok.lastName);
         setUser(item.ok);
+        setInputsDisabled(true);
         console.log(item.ok);
       }
     } catch (error) {

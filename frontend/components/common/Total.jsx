@@ -2,8 +2,9 @@ import React from "react";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import IcpLogo from "../../assets/IcpLogo";
+import toast from "react-hot-toast";
 
-const Total = ({ totalPrice }) => {
+const Total = ({ totalPrice, flag }) => {
   const navigate = useNavigate();
   return (
     <div
@@ -22,7 +23,13 @@ const Total = ({ totalPrice }) => {
 
       <Button
         className="bg-black text-white  m-auto  py-2 px-4 rounded-full   text-xs  md:text-sm w-full md:w-36 xl:w-72"
-        onClick={() => navigate("/shipping-address")}
+        onClick={() => {
+          if (!flag) {
+            navigate("/shipping-address");
+          } else {
+            toast.error("you need to update the cart before proceed");
+          }
+        }}
       >
         Place order
       </Button>

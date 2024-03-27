@@ -4,12 +4,18 @@ import Header from "../components/common/Header.jsx";
 import ScrollToTop from "../components/common/ScrollToTop.jsx";
 import AnimationView from "../components/common/AnimationView.jsx";
 import Footer from "../components/common/Footer.jsx";
-import { HiOutlineTrash } from "react-icons/hi2";
+
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi2";
 import Button from "../components/common/Button.jsx";
 import toast from "react-hot-toast";
 import { GoCheckCircle } from "react-icons/go";
+import {
+  HiCheckBadge,
+  HiCheckCircle,
+  HiOutlineTrash,
+  HiTrash,
+} from "react-icons/hi2";
 import { FcOk } from "react-icons/fc";
 import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
@@ -63,6 +69,7 @@ const Cart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successClearAll, setSuccessClearAll] = useState(true);
   const [clearCartLoad, setClearCartLoad] = useState(false);
+  const [flag, setFlag] = useState(false);
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -136,6 +143,7 @@ const Cart = () => {
   }, [backend, successClearAll]);
 
   const increment = (index) => {
+    setFlag(true);
     setQuantity((prevQuantities) => {
       const updatedQuantities = [...prevQuantities];
       updatedQuantities[index] = {
@@ -149,6 +157,7 @@ const Cart = () => {
   };
 
   const decrement = (index) => {
+    setFlag(true);
     setQuantity((prevQuantities) => {
       if (prevQuantities[index].quantity > 1) {
         const updatedQuantities = [...prevQuantities];
@@ -203,6 +212,7 @@ const Cart = () => {
       setIsLoading(false);
       setIsQuantityChanged(false);
       setUpdateSuccess(false);
+      setFlag(false);
     }
   };
 
@@ -239,6 +249,7 @@ const Cart = () => {
           quantity[index]?.quantity,
       0
     );
+
     setTotalPrice(newTotalPrice.toFixed(2));
   }, [product, updateSuccess]);
 
@@ -453,7 +464,11 @@ const Cart = () => {
                                       />
                                     ) : (
                                       // Default icon
-                                      <FcOk />
+                                      <HiCheckBadge
+                                        color="green"
+                                        size={24}
+                                        className="cursor-pointer"
+                                      />
                                     )}
                                   </button>
                                 )}
@@ -466,7 +481,7 @@ const Cart = () => {
                 </div>
               </div>
 
-              <Total totalPrice={totalPrice} />
+              <Total totalPrice={totalPrice} flag={flag} />
             </div>
           ) : (
             <div className="px-6 mt-4 m-auto container">

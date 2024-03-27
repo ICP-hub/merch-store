@@ -65,6 +65,24 @@ const ProductDetail = () => {
     img2: " ",
     img3: "",
   });
+  const [showModal, setShowModal] = useState(false);
+  const [unit, setUnit] = useState("cm"); // 'cm' or 'inches'
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const toggleUnit = () => {
+    setUnit(unit === "cm" ? "inch" : "cm");
+  };
+
+  const renderSize = (size) => {
+    if (unit === "cm") {
+      return size;
+    } else {
+      return (size * 0.393701).toFixed(2);
+    }
+  };
 
   const openModal = () => {
     setIsOpen(true);
@@ -569,7 +587,145 @@ const ProductDetail = () => {
                       </div>
                     ))}
                   </div>
-                  <div></div>
+                  <div className="">
+                    <button
+                      className="   text-gray-700 text-xs   py-2  px-2 rounded uppercase"
+                      onClick={toggleModal}
+                    >
+                      Open Size Chart
+                    </button>
+                    {showModal && (
+                      <div className="fixed z-10 inset-0  text-center overflow-y-auto flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="relative bg-white rounded-lg w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 shadow-lg">
+                          <div className="p-8">
+                            <span
+                              className="absolute top-0 right-0  pr-2 cursor-pointer text-xl"
+                              onClick={toggleModal}
+                            >
+                              &times;
+                            </span>
+                            <h2 className="text-lg font-bold mb-4 text-center">
+                              T-Shirt Size Chart
+                            </h2>
+                            <div className="flex justify-center text-sm mb-4">
+                              <button
+                                className={`px-4 py-2 border border-black  rounded-r-none rounded-md ${
+                                  unit === "cm"
+                                    ? " bg-black text-white"
+                                    : " text-black "
+                                }`}
+                                onClick={toggleUnit}
+                              >
+                                Cms
+                              </button>
+                              <button
+                                className={`px-4 py-2  border border-black rounded-l-none rounded-md ${
+                                  unit === "inch"
+                                    ? "bg-black text-white"
+                                    : " text-black"
+                                }`}
+                                onClick={toggleUnit}
+                              >
+                                In
+                              </button>
+                            </div>
+                            <div className="overflow-x-auto">
+                              <table className="w-full border-collapse">
+                                <thead className="bg-gray-50 text-sm">
+                                  <tr>
+                                    <th className="py-2 border">Size</th>
+                                    <th className="py-2 border">
+                                      Chest ({unit})
+                                    </th>
+                                    <th className="py-2 border">
+                                      Front Length ({unit})
+                                    </th>
+                                    <th className="py-2 border">
+                                      Sleeve Length ({unit})
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                  <tr>
+                                    <td className="py-2 border">S</td>
+                                    <td className="py-2 border">
+                                      {renderSize(96.5)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(69.2)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(20.3)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 border">M</td>
+                                    <td className="py-2 border">
+                                      {renderSize(101.6)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(71.1)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(21.0)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 border">L</td>
+                                    <td className="py-2 border">
+                                      {renderSize(106.7)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(73.0)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(21.6)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 border">XL</td>
+                                    <td className="py-2 border">
+                                      {renderSize(111.8)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(74.9)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(22.2)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 border">2XL</td>
+                                    <td className="py-2 border">
+                                      {renderSize(116.8)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(76.2)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(22.9)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 border">3XL</td>
+                                    <td className="py-2 border">
+                                      {renderSize(121.9)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(77.5)}
+                                    </td>
+                                    <td className="py-2 border">
+                                      {renderSize(23.5)}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
