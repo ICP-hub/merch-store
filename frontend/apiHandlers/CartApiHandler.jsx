@@ -207,6 +207,18 @@ const CartApiHandler = () => {
     }
   };
 
+  // Update cart
+  const updateCart = async (id, quantity, color, size) => {
+    try {
+      setIsLoading(true);
+      await backend.updateCartItems(id, quantity, size, color);
+    } catch (err) {
+      console.error("error updating cart ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Returns
   return {
     getCallerCartItems,
@@ -221,6 +233,7 @@ const CartApiHandler = () => {
     orderPlacementLoad,
     shippingAmount,
     getShippingAmount,
+    updateCart,
   };
 };
 

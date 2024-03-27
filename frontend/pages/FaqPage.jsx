@@ -20,7 +20,7 @@ const FaqPage = () => {
       <Header title={"FAQ"}></Header>
       <FaqPageContainerMain />
       <Contact></Contact>
-      <Footer></Footer>
+      {/* <Footer></Footer> */}
     </AnimationView>
   );
 };

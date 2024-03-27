@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <AnimationView>
       <ScrollToTop />
-      <Header title={'MerchStore'}></Header>
+      <Header title={"MerchStore"}></Header>
       <HomePageContainerMain />
       <Contact></Contact>
       <Footer></Footer>

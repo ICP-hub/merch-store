@@ -353,7 +353,7 @@ const ProductCard = ({ product }) => {
                   navigate("/cart"); // Navigate to the cart page
                 }
               }}
-              className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 ${
+              className={`w-full rounded-full  font-semibold  border border-black px-4 py-2 hover:bg-gradient-to-r from-fuchsia-500 to-cyan-500 hover:border-white hover:text-white ${
                 loading && " flex items-center justify-center"
               } `}
               disabled={loading && true}
@@ -376,7 +376,7 @@ const ProductCard = ({ product }) => {
               onClick={() => {
                 buyNowHandler();
               }}
-              className={`w-full rounded-full  font-semibold  bg-black border text-white border-black px-4 py-2 ${
+              className={`w-full rounded-full  font-semibold  bg-black border text-white border-black px-4 py-2 hover:bg-gradient-to-r from-fuchsia-500 to-cyan-500 hover:border-white ${
                 loading && " flex items-center justify-center"
               } `}
               disabled={loading && true}

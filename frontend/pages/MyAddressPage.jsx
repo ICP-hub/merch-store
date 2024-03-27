@@ -22,7 +22,7 @@ const MyAddressPage = () => {
       <ScrollToTop />
       <Header title={"Address"}></Header>
       <MyAddressContainerMain />
-      <Footer></Footer>
+      {/* <Footer></Footer> */}
     </AnimationView>
   );
 };

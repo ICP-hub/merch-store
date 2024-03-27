@@ -31,7 +31,7 @@ const ShippingAddressPage = () => {
       <ScrollToTop />
       <Header title={"ADDRESS"} />
       <AddressDetail />
-      <Footer></Footer>
+      {/* <Footer></Footer> */}
     </AnimationView>
   );
 };

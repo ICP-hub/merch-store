@@ -40,7 +40,7 @@ const CheckoutPage = () => {
         <ScrollToTop />
         <Header title={"Checkout"} />
         <Checkout />
-        <Footer></Footer>
+        {/* <Footer></Footer> */}
       </AnimationView>
     </>
   );
@@ -271,7 +271,7 @@ const CheckoutCard = ({
   setSuccessDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { deleteCartItemById, isLoading } = CartApiHandler();
+  const { deleteCartItemById, isLoading, updateCart } = CartApiHandler();
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   const openModal = () => {
@@ -287,12 +287,12 @@ const CheckoutCard = ({
   };
 
   const toggleUpdate = () => {
-    // console.log(
-    //   cartItem.orderId,
-    //   cartItem.quantity,
-    //   cartItem.color,
-    //   cartItem.size
-    // );
+    updateCart(
+      cartItem.orderId,
+      cartItem.quantity,
+      cartItem.color,
+      cartItem.size
+    );
     setIsChecked(false);
     updateTotal();
   };
