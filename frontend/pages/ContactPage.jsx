@@ -20,7 +20,7 @@ const ContactPage = () => {
       <Header title={"ContactUs"}></Header>
       <ContactPageContainerMain />
       <Contact></Contact>
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };

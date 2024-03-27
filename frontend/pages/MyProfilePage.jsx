@@ -33,7 +33,7 @@ const MyProfilePage = () => {
       <ScrollToTop />
       <Header title={"AccountInfo"}></Header>
       <MyProfilePageContainerMain />
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };

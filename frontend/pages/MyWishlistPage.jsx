@@ -38,7 +38,7 @@ const MyWishlistPage = () => {
       <ScrollToTop />
       <Header title={"Wishlist"}></Header>
       <MyWishListContainerMain />
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };

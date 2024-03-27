@@ -16,12 +16,12 @@ const Footer = () => {
   const x = useTransform(scrollYProgress, [0, 1], [-800, 0]);
   return (
     <div className="relative pt-[100px] md:pt-[200px] !z-0">
-      <motion.div
+      {/* <motion.div
         style={{ x: x }}
         className="overflow-hidden text-[80px] md:text-[200px] font-black tracking-widest text-gray-50 absolute top-[15px] md:-top-[15px] flex justify-center w-full"
       >
         FOOTER
-      </motion.div>
+      </motion.div> */}
       <div className="px-6 bg-gray-50">
         <div className="tracking-wider py-6 border-b border-slate-200">
           <div className="container mx-auto max-md:p-2 flex justify-between max-md:flex-col py-4">

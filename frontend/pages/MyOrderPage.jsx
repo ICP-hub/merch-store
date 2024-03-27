@@ -27,7 +27,7 @@ const MyOrderPage = () => {
       <ScrollToTop />
       <Header title={"Orders"}></Header>
       <MyOrderPageContainerMain />
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };

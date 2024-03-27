@@ -31,7 +31,7 @@ const MyOrderDetailPage = () => {
       <ScrollToTop />
       <Header title={"OrderDetails"}></Header>
       <MyOrderDetailContainerMain />
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };

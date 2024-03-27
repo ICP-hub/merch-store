@@ -40,7 +40,7 @@ const CheckoutPage = () => {
         <ScrollToTop />
         <Header title={"Checkout"} />
         <Checkout />
-        {/* <Footer></Footer> */}
+        <Footer></Footer>
       </AnimationView>
     </>
   );

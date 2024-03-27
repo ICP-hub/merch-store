@@ -17,7 +17,7 @@ const ProductPage = () => {
       <Header title={"Products"}></Header>
       <ProductPageContainerMain />
       <Contact></Contact>
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </AnimationView>
   );
 };
