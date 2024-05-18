@@ -732,15 +732,15 @@ const ProductDetail = () => {
             {!loading ? (
               <div className=" w-1/3 h-12  mt-4 animate-pulse bg-gray-200 py-2 px-2 rounded-full"></div>
             ) : (
-              <div class="flex items-center justify-start ml-2">
-                <button class="    " onClick={decrement}>
+              <div className="flex items-center justify-start ml-2">
+                <button className="    " onClick={decrement}>
                   <HiOutlineMinus />
                 </button>
-                <p type="text" class="w-12 text-center     ">
+                <p type="text" className="w-12 text-center     ">
                   {quantity}
                 </p>
 
-                <button class=" " onClick={increment}>
+                <button className=" " onClick={increment}>
                   <HiOutlinePlus />
                 </button>
               </div>

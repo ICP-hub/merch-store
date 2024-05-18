@@ -21,7 +21,7 @@ const Error404Page = () => {
           <button className="flex items-center space-x-2 bg-gray-900   tracking-wider text-white px-6 py-3 text-lg rounded-full uppercase transition duration-150">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              className="h-5 w-5"
               viewBox="0 0 20 20"
               fill="currentColor"
             >

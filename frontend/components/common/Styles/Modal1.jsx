@@ -65,7 +65,7 @@ const Modal1 = ({
                   ariaLabel="tail-spin-loading"
                   radius="1"
                   wrapperStyle={{}}
-                  wrapperClass=""
+                  wrapperclassName=""
                 />
               </div>
             ) : (

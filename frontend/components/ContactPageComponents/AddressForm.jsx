@@ -133,8 +133,8 @@ const AddressForm = ({
           <TelephoneInput
             key={key}
             label={label}
-            divClass="border border-gray-300 rounded-full"
-            inputClass="focus:outline-none p-2 h-[38px] placeholder:font-light"
+            divclassName="border border-gray-300 rounded-full"
+            inputclassName="focus:outline-none p-2 h-[38px] placeholder:font-light"
             setPhone={setPhone}
             phoneNumber={formValues?.phone_number}
             error={!isPhoneValid && isSubmitted}
@@ -186,7 +186,7 @@ const AddressForm = ({
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 wrapperStyle={{}}
-                wrapperClass=""
+                wrapperclassName=""
               />
             </div>
           ) : isNew ? (

@@ -40,7 +40,7 @@ const SearchBar = ({
             ariaLabel="tail-spin-loading"
             radius="1"
             wrapperStyle={{}}
-            wrapperClass=""
+            wrapperclassName=""
           />
         </span>
       ) : (

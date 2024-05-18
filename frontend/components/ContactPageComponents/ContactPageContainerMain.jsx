@@ -121,8 +121,8 @@ const ContactPageContainerMain = () => {
               </div>
             </div>
             <TelephoneInput
-              divClass="border border-slate-500 rounded-full flex w-full gap-2 items-center"
-              inputClass="focus:outline-none border-none p-4"
+              divclassName="border border-slate-500 rounded-full flex w-full gap-2 items-center"
+              inputclassName="focus:outline-none border-none p-4"
               setPhone={setPhone}
             />
             <div className="flex flex-col gap-4 border border-slate-500 rounded-2xl p-4">
@@ -144,7 +144,7 @@ const ContactPageContainerMain = () => {
                   ariaLabel="tail-spin-loading"
                   radius="1"
                   wrapperStyle={{}}
-                  wrapperClass=""
+                  wrapperclassName=""
                 />
               ) : (
                 "Submit"

@@ -372,7 +372,7 @@ const CheckoutCard = ({
               ariaLabel="tail-spin-loading"
               radius="1"
               wrapperStyle={{}}
-              wrapperClass=""
+              wrapperclassName=""
             />
           ) : (
             isChecked && (
@@ -573,7 +573,7 @@ const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 wrapperStyle={{}}
-                wrapperClass=""
+                wrapperclassName=""
               />
             </div>
           ) : (

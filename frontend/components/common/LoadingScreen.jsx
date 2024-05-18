@@ -56,21 +56,21 @@ const LoadingScreen = () => {
     return (
       <div className="flex w-full max-md:flex-col gap-4">
         <div className="flex-1 flex flex-col gap-4">
-          <div class="md:flex border border-gray-300 rounded-xl p-2 w-full bg-gray-100">
-            <div class="flex flex-col p-2 animate-pulse">
-              <div class="flex gap-2 items-center w-full">
-                <span class="h-5 w-5 bg-gray-300 rounded-full"></span>
-                <div class="flex-1 flex sm:items-center gap-2 max-sm:flex-col mb-2">
-                  <p class="font-bold capitalize min-w-max bg-gray-300 h-5 w-32 rounded-md"></p>
-                  <span class="px-2 py-1 rounded-md bg-gray-300 text-gray-500 uppercase text-xs flex items-center max-w-max font-semibold h-5"></span>
-                  <p class="font-semibold bg-gray-300 h-5 w-24 rounded-md"></p>
+          <div className="md:flex border border-gray-300 rounded-xl p-2 w-full bg-gray-100">
+            <div className="flex flex-col p-2 animate-pulse">
+              <div className="flex gap-2 items-center w-full">
+                <span className="h-5 w-5 bg-gray-300 rounded-full"></span>
+                <div className="flex-1 flex sm:items-center gap-2 max-sm:flex-col mb-2">
+                  <p className="font-bold capitalize min-w-max bg-gray-300 h-5 w-32 rounded-md"></p>
+                  <span className="px-2 py-1 rounded-md bg-gray-300 text-gray-500 uppercase text-xs flex items-center max-w-max font-semibold h-5"></span>
+                  <p className="font-semibold bg-gray-300 h-5 w-24 rounded-md"></p>
                 </div>
               </div>
-              <div class="flex gap-2 items-center">
-                <span class="h-5 w-5"></span>
-                <div class="flex-1">
-                  <p class="capitalize bg-gray-300 h-5 w-48 rounded-md mb-2"></p>
-                  <p class="font-semibold bg-gray-300 h-5 w-36 rounded-md"></p>
+              <div className="flex gap-2 items-center">
+                <span className="h-5 w-5"></span>
+                <div className="flex-1">
+                  <p className="capitalize bg-gray-300 h-5 w-48 rounded-md mb-2"></p>
+                  <p className="font-semibold bg-gray-300 h-5 w-36 rounded-md"></p>
                 </div>
               </div>
             </div>

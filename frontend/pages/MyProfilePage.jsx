@@ -238,8 +238,8 @@ const MyProAccount = () => {
           /> */}
           {/* <TelephoneInput
           label="Phone Number"
-          divClass="border border-gray-300 rounded-full bg-white mb-4"
-          inputClass="focus:outline-none py-2 px-0 h-[38px] placeholder:font-light"
+          divclassName="border border-gray-300 rounded-full bg-white mb-4"
+          inputclassName="focus:outline-none py-2 px-0 h-[38px] placeholder:font-light"
           disabled={inputsDisabled}
         /> */}
           {/*           {!inputsDisabled && ( */}

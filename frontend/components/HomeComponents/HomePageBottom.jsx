@@ -163,7 +163,7 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
       <Carousel
         responsive={responsive}
         infinite
-        containerClass="carousel-container"
+        containerclassName="carousel-container"
       >
         {Array.from({ length: 6 }, (_, index) => (
           <div className="relative rounded-lg bg-sky-500 mr-4" key={index}>

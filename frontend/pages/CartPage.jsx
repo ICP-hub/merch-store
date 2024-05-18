@@ -542,22 +542,22 @@ const Cart = () => {
 //             </Button>
 //           </div>
 
-//           <div class="flex items-center justify-end">
+//           <div className="flex items-center justify-end">
 //             <button
-//               class="bg-gray-100   py-2 px-4 border-t border-l border-b  border-gray-300 rounded-l-md hover:bg-gray-200"
+//               className="bg-gray-100   py-2 px-4 border-t border-l border-b  border-gray-300 rounded-l-md hover:bg-gray-200"
 //               onClick={decrement}
 //             >
 //               <HiOutlineMinus />
 //             </button>
 //             <p
 //               type="text"
-//               class="w-16 text-center  py-1 px-2 border-t border-b border-gray-300   bg-gray-100  "
+//               className="w-16 text-center  py-1 px-2 border-t border-b border-gray-300   bg-gray-100  "
 //             >
 //               {id[1].id}
 //             </p>
 
 //             <button
-//               class="bg-gray-100   py-2 px-4 border-t border-r border-b border-gray-300  rounded-r-md hover:bg-gray-200"
+//               className="bg-gray-100   py-2 px-4 border-t border-r border-b border-gray-300  rounded-r-md hover:bg-gray-200"
 //               onClick={increment}
 //             >
 //               <HiOutlinePlus />

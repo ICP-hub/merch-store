@@ -155,7 +155,7 @@ const HeaderMain = ({ title }) => {
                 >
                   Contact
                 </NavLink>
-                <div class="animation rounded-xl"></div>
+                <div className="animation rounded-xl"></div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="block md:hidden">
