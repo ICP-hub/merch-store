@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import { BsEnvelopeAt } from "react-icons/bs";
-import { TelephoneInput } from "../common/CommonInput";
+//import { TelephoneInput } from "../common/CommonInput";
 import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
@@ -120,11 +120,11 @@ const ContactPageContainerMain = () => {
                 />
               </div>
             </div>
-            <TelephoneInput
+            {/* <TelephoneInput
               divclassName="border border-slate-500 rounded-full flex w-full gap-2 items-center"
               inputclassName="focus:outline-none border-none p-4"
               setPhone={setPhone}
-            />
+            /> */}
             <div className="flex flex-col gap-4 border border-slate-500 rounded-2xl p-4">
               <textarea
                 placeholder="Tell us how can we help you..."
