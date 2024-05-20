@@ -15,7 +15,7 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [initialRender, setInitialRender] = useState(true);
 
-  const categories = ["all"];
+  const categories = ["All"];
 
   // Category name from category list:
   if (categoryList !== null) {
@@ -52,7 +52,7 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
       {categories.map((category, index) => (
         <Button
           key={index}
-          className={`focus:outline-none py-2 px-4 rounded-full ${
+          className={`focus:outline-none py-2 px-4 rounded-full   capitalize ${
             (initialRender && state === category) || focusedIndex === index
               ? "bg-black text-white"
               : ""
@@ -73,7 +73,7 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
   const { categoryList, getCategoryList } = ProductApiHandler();
   const [focusedIndex, setFocusedIndex] = useState(0);
   // Extract categories using a loop
-  const categories = ["all"];
+  const categories = ["All"];
   // Show category name from category list:
   if (categoryList !== null) {
     // categoryList.map(([cateSlug, { name }]) => categories.push(name));
@@ -109,7 +109,7 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
         {categories.map((category, index) => (
           <Button
             key={index}
-            className={`px-4 py-1 rounded-full ${
+            className={`px-4 py-1 rounded-full capitalize ${
               focusedIndex === index ? "bg-black text-white" : ""
             }
             hover:border hover:border-black focus:border focus:border-black  focus:bg-black hover:text-white hover:bg-black focus:text-white border border-slate-500  flex items-start font-semibold text-sm focus:outline-none min-w-max `}

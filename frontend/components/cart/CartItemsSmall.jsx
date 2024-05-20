@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiOutlineTrash } from "react-icons/hi2";
 import PR1 from "../../assets/fakeprod.png";
 import { useCanister } from "@connect2ic/react";
-import placeholderImg from "../../assets/product/p1-front.jpg";
+import placeholderImg from "../../assets/placeholderImg-Small.jpeg";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import CartItemsSmallLoader from "./CartItemsSmallLoader";
@@ -21,6 +21,10 @@ const CartItemsSmall = () => {
   const [loading, setLoading] = useState(true);
   const [loading3, setLoading3] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
+  const [errorImage, setErrorImage] = useState(false);
+  const handleError = () => {
+    setErrorImage(true);
+  };
 
   const [backend] = useCanister("backend");
 
@@ -133,9 +137,12 @@ const CartItemsSmall = () => {
               <div className="flex justify-start items-start gap-2">
                 <div className="relative w-[100px]">
                   <img
-                    src={item.variantColor[0].img1}
+                    src={
+                      errorImage ? placeholderImg : item.variantColor[0].img1
+                    }
                     alt={"product image"}
                     className="min-w-[100px] bg-gray-100 rounded-xl "
+                    onError={handleError}
                   />
                   <span className="bg-green-500 absolute top-1 right-1 rounded-md text-[9px] w-4 h-4 flex justify-center items-center text-white p-1/2">
                     {quantity[index]?.quantity}

@@ -6,6 +6,7 @@ import AnimationView from "../components/common/AnimationView.jsx";
 import Footer from "../components/common/Footer.jsx";
 import { RadioGroup } from "@headlessui/react";
 import { FaArrowLeft } from "react-icons/fa";
+import placeHolderImage from "../assets/placeholderImg-Small.jpeg";
 import {
   HiCheckBadge,
   HiCheckCircle,
@@ -273,6 +274,10 @@ const CheckoutCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteCartItemById, isLoading, updateCart } = CartApiHandler();
   const [deleteLoad, setDeleteLoad] = useState(false);
+  const [errorImage, setErrorImage] = useState(false);
+  const handleError = () => {
+    setErrorImage(true);
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -302,9 +307,10 @@ const CheckoutCard = ({
       <div className="flex gap-4 flex-1">
         <div className="flex p-1 border border-gray-300 rounded-xl">
           <img
-            src={cartItem.img1 === "" ? NoImage : cartItem.img1}
+            src={errorImage ? placeHolderImage : cartItem.img1}
             alt="_blank"
             className="max-w-24 max-h-24 object-contain rounded-xl"
+            onError={handleError}
           />
         </div>
         <div className="flex flex-col gap-2">

@@ -33,6 +33,7 @@ const ProductCard = ({ product }) => {
   const [carts, setCarts] = useState();
   const [addedToCart, setAddedToCart] = useState(false);
   const [isHovered, setIsHovered] = useState(false); // State for img change on hover
+  const [imageError, SetImageError] = useState(false);
 
   const listCarts = async () => {
     try {
@@ -216,6 +217,9 @@ const ProductCard = ({ product }) => {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+  const handleError = () => {
+    SetImageError(true);
+  };
 
   /* ----------------------------------------------------------------------------------------------------- */
   /*  @ Final ProductCard and Renders
@@ -309,12 +313,15 @@ const ProductCard = ({ product }) => {
             >
               <img
                 src={
-                  isHovered
+                  imageError
+                    ? placeholderImg
+                    : isHovered
                     ? productInfo.variantInfo.img2
                     : productInfo.variantInfo.img1
                 }
                 alt="prod name"
                 className="rounded-xl product-image"
+                onError={handleError}
               />
             </div>
           </Link>

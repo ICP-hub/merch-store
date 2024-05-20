@@ -27,6 +27,7 @@ import Modal1 from "../components/common/Styles/Modal1.jsx";
 import { LuTrash } from "react-icons/lu";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";
+import placeholderImg from "../assets/placeholderImg-Small.jpeg";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ main cartpage Container
@@ -63,6 +64,10 @@ const Cart = () => {
 
   const [size, setSize] = useState("");
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [errorImage, setErrorImage] = useState(false);
+  const handleError = () => {
+    setErrorImage(true);
+  };
 
   const [backend] = useCanister("backend");
   // States for modal : ClearAll
@@ -354,9 +359,14 @@ const Cart = () => {
                         <div className="">
                           <div className="flex m-2">
                             <img
-                              src={item.variantColor[0].img1}
+                              src={
+                                errorImage
+                                  ? placeholderImg
+                                  : item.variantColor[0].img1
+                              }
                               alt=""
                               className="w-24  h-24 border-2 border-gray-300 bg-gray-400 rounded-lg ml-2"
+                              onError={handleError}
                             />
                             <div className="md:mt-6 md:ml-2 ml-4">
                               <p className="border-2 border-gray-300 px-2 py-1 text-xs uppercase font-medium rounded-full max-w-max">

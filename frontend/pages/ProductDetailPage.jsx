@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi2";
-import placeholderImg from "../assets/product/p1-front.jpg";
+import placeholderImg from "../assets/placeholderImg-Small.jpeg";
 
 import img1 from "../assets/product/p2-front.jpeg";
 import img2 from "../assets/product/p1-back.jpg";
@@ -67,6 +67,11 @@ const ProductDetail = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const [unit, setUnit] = useState("cm"); // 'cm' or 'inches'
+  const [errorImage, setErrorImage] = useState(false);
+
+  const [errorImage1, setErrorImage1] = useState(false);
+  const [errorImage2, setErrorImage2] = useState(false);
+  const [errorImage3, setErrorImage3] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -323,6 +328,18 @@ const ProductDetail = () => {
       setQuantity(quantity - 1);
     }
   };
+  const handleError = () => {
+    setErrorImage(true);
+  };
+  const handleError1 = () => {
+    setErrorImage1(true);
+  };
+  const handleError2 = () => {
+    setErrorImage2(true);
+  };
+  const handleError3 = () => {
+    setErrorImage3(true);
+  };
 
   const calculateDiscountPercentage = () => {
     if (price === 0) {
@@ -379,10 +396,11 @@ const ProductDetail = () => {
               <div className="w-full h-[100%] rounded-md animate-pulse bg-gray-200"></div>
             ) : (
               <img
-                src={mainImage}
+                src={errorImage ? placeholderImg : mainImage}
                 alt={data.title}
                 className="w-full rounded-md cursor-pointer"
                 onClick={openModal}
+                onError={handleError}
               />
             )}
             {!loading ? (
@@ -437,7 +455,7 @@ const ProductDetail = () => {
             ) : (
               <div className="w-full flex mt-2 pr-4  gap-2">
                 <img
-                  src={image.img1}
+                  src={errorImage1 ? placeholderImg : image.img1}
                   alt="img1"
                   className={`w-1/3 rounded-md cursor-pointer
                     ${
@@ -446,10 +464,11 @@ const ProductDetail = () => {
                         : ""
                     }`}
                   onClick={handleImageClick1}
+                  onError={handleError1}
                 />
 
                 <img
-                  src={image.img2}
+                  src={errorImage2 ? placeholderImg : image.img2}
                   alt="img1"
                   className={`w-1/3 rounded-md cursor-pointer
                     ${
@@ -458,10 +477,11 @@ const ProductDetail = () => {
                         : ""
                     }`}
                   onClick={handleImageClick2}
+                  onError={handleError2}
                 />
 
                 <img
-                  src={image.img3}
+                  src={errorImage3 ? placeholderImg : image.img3}
                   alt="img1"
                   className={`w-1/3 rounded-md cursor-pointer
                     ${
@@ -470,6 +490,7 @@ const ProductDetail = () => {
                         : ""
                     }`}
                   onClick={handleImageClick3}
+                  onError={handleError3}
                 />
               </div>
             )}
