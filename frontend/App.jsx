@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { createClient } from "@connect2ic/core";
-import { PlugWallet, StoicWallet, defaultProviders } from "@connect2ic/core/providers";
+import {
+  PlugWallet,
+  StoicWallet,
+  defaultProviders,
+} from "@connect2ic/core/providers";
 import { ConnectDialog, Connect2ICProvider } from "@connect2ic/react";
 import "@connect2ic/core/style.css";
 import * as backend from "../.dfx/local/canisters/backend";
@@ -49,6 +53,8 @@ import Message from "./pages/admin/Message";
 import MessageDetail from "./pages/admin/message/MessageDetail";
 import UserDetails from "./pages/admin/UserDetails";
 import Shipping from "./pages/admin/Shipping";
+import "intl-tel-input/build/css/intlTelInput.css";
+import "./components/common/Styles/itelinput.css";
 
 const router = createBrowserRouter([
   {
@@ -71,15 +77,15 @@ const router = createBrowserRouter([
     path: "/checkout",
     element: <CheckoutPage></CheckoutPage>,
   },
-   {
+  {
     path: "/contact",
     element: <ContactPage></ContactPage>,
-  }, 
+  },
   {
     path: "/faq",
     element: <FaqPage></FaqPage>,
   },
-   /* {
+  /* {
     path: "/my-address",
     element: <MyAddressPage></MyAddressPage>,
   },  */
@@ -97,7 +103,7 @@ const router = createBrowserRouter([
     path: "/my-order",
     element: <MyOrderPage></MyOrderPage>,
   },
-/*   {
+  /*   {
     path: "/my-profile",
     element: (
       <Protected>
@@ -125,7 +131,7 @@ const router = createBrowserRouter([
     path: "/shipping-policy",
     element: <ShippingPolicyPage></ShippingPolicyPage>,
   },
-/*   {
+  /*   {
     path: "/shipping-address",
     element: <ShippingAddressPage></ShippingAddressPage>,
   }, */

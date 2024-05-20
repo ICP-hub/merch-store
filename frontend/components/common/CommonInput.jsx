@@ -4,6 +4,7 @@ import "intl-tel-input/build/css/intlTelInput.css";
 import "intl-tel-input/build/js/utils.js";
 import "./Styles/itelinput.css";
 import { Country, State, City } from "country-state-city";
+
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Common Input Component 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -48,34 +49,27 @@ const TelephoneInput = ({
   error,
 }) => {
   const phoneInputRef = useRef(null);
-  // Reference : https://github.com/jackocnr/intl-tel-input
+
   useEffect(() => {
     const iti = intlTelInput(phoneInputRef.current, {
       showSelectedDialCode: true,
       countrySearch: false,
-      // Set Country base on Location ip address : reference : https://github.com/jackocnr/intl-tel-input > geoLookup
       initialCountry: "auto",
-      geoIpLookup: function (callback) {
+      geoIpLookup: (callback) => {
         fetch("https://ipapi.co/json")
-          .then(function (res) {
-            return res.json();
-          })
-          .then(function (data) {
-            callback(data.country_code);
-          })
-          .catch(function () {
-            callback();
-          });
+          .then((res) => res.json())
+          .then((data) => callback(data.country_code))
+          .catch(() => callback());
       },
     });
-    // Set Country initially according to need
-    // setPhone From main Component
+
     if (setPhone) {
       setPhone(iti);
     }
     if (phoneNumber !== undefined) {
       iti.setNumber(phoneNumber);
     }
+
     return () => {
       iti.destroy();
     };
@@ -83,20 +77,18 @@ const TelephoneInput = ({
 
   return (
     <div>
-      {/*If no label no space will be there */}
       <div className="flex justify-between">
-        {label !== undefined || null ? (
-          <label className=" w-full font-medium  uppercase text-xs px-3 mb-1">
+        {label && (
+          <label className="w-full font-medium uppercase text-xs px-3 mb-1">
             {label}
           </label>
-        ) : null}
+        )}
         {error && (
           <span className="text-red-500 text-xs px-3 min-w-max">
             Invalid Phone Number
           </span>
         )}
       </div>
-
       <div className={divClass}>
         <input
           type="tel"
@@ -121,49 +113,42 @@ const CountryInput = ({
 }) => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
+  const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const countries = Country.getAllCountries();
-  const states = State.getStatesOfCountry(selectedCountry);
-
-  const countryOptions = countries.map((country) => ({
-    value: country.isoCode,
-    label: country.name,
-  }));
-
-  const stateOptions = states.map((state) => ({
-    value: state.isoCode,
-    label: state.name,
-  }));
+  useEffect(() => {
+    setSelectedCountry("");
+    setSelectedState("");
+    setCities([]);
+  }, []);
 
   const handleCountryChange = (event) => {
-    setSelectedCountry(event.target.value);
+    const countryCode = event.target.value;
+    setSelectedCountry(countryCode);
+    const statesOfSelectedCountry = State.getStatesOfCountry(countryCode);
+    setStates(statesOfSelectedCountry);
     setSelectedState("");
-    // States based on the selected country
-    const statesOfSelectedCountry = State.getStatesOfCountry(
-      event.target.value
-    );
-    setSelectedState(statesOfSelectedCountry);
 
-    // Update locationInput state in the parent component
     setLocationInput({
       country: event.target.options[event.target.selectedIndex].text,
+      state: "",
+      city: "",
     });
   };
 
   const handleStateChange = (event) => {
-    setSelectedState(event.target.value);
-    // Cities based on the selected country and state
+    const stateCode = event.target.value;
+    setSelectedState(stateCode);
     const citiesOfSelectedState = City.getCitiesOfState(
       selectedCountry,
-      event.target.value
+      stateCode
     );
     setCities(citiesOfSelectedState);
 
-    // Get State name and update state
     setLocationInput((prev) => ({
       ...prev,
       state: event.target.options[event.target.selectedIndex].text,
+      city: "",
     }));
   };
 
@@ -173,6 +158,21 @@ const CountryInput = ({
       city: event.target.value,
     }));
   };
+
+  const countries = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    label: country.name,
+  }));
+
+  const stateOptions = states.map((state) => ({
+    value: state.isoCode,
+    label: state.name,
+  }));
+
+  const cityOptions = cities.map((city) => ({
+    value: city.name,
+    label: city.name,
+  }));
 
   return (
     <>
@@ -186,10 +186,8 @@ const CountryInput = ({
           value={selectedCountry}
           onChange={handleCountryChange}
         >
-          <option value="">
-            {currCountry ? currCountry : "Select Country"}
-          </option>
-          {countryOptions.map((option) => (
+          <option value="">{currCountry || "Select Country"}</option>
+          {countries.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -207,7 +205,7 @@ const CountryInput = ({
           onChange={handleStateChange}
           disabled={!selectedCountry}
         >
-          <option value="">{currState ? currState : "Select State"}</option>
+          <option value="">{currState || "Select State"}</option>
           {stateOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -222,13 +220,14 @@ const CountryInput = ({
         <select
           className="focus:outline-none flex-1 px-3 py-2 border border-gray-300 h-full rounded-full text-black w-full placeholder:capitalize placeholder:font-light"
           name="city"
-          disabled={!selectedState}
+          value={currCity}
           onChange={handleCityChange}
+          disabled={!selectedState}
         >
-          <option value="">{currCity ? currCity : "Select City"}</option>
-          {cities.map((city) => (
-            <option key={city.name} value={city.name}>
-              {city.name}
+          <option value="">{currCity || "Select City"}</option>
+          {cityOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
           ))}
         </select>
