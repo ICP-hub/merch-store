@@ -4,7 +4,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import { BsEnvelopeAt } from "react-icons/bs";
-import { TelephoneInput } from "../common/CommonInput";
+import {
+  CommonInput,
+  CountryInput,
+  TelephoneInput,
+} from "../common/InputFields";
 import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
@@ -90,7 +94,13 @@ const ContactPageContainerMain = () => {
             className="rounded-xl"
           ></iframe>
         </div>
-        <div className="w-full md:w-2/5 bg-white rounded-xl px-4 py-4 md:py-8 flex flex-col gap-8">
+
+        <div>
+          <TelephoneInput />
+          <CommonInput value={""} onChange={(e) => e.target.value} />
+          <CountryInput />
+        </div>
+        {/* <div className="w-full md:w-2/5 bg-white rounded-xl px-4 py-4 md:py-8 flex flex-col gap-8">
           <div className="flex flex-col items-center justify-center">
             <h1 className="md:text-4xl text-3xl font-bold">Get In Touch</h1>
             <p className="text-slate-600">You can reach us anytime</p>
@@ -171,7 +181,7 @@ const ContactPageContainerMain = () => {
               </Link>
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

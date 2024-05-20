@@ -5,7 +5,7 @@ import {
   CommonInput,
   CountryInput,
   TelephoneInput,
-} from "../common/CommonInput";
+} from "../common/InputFields";
 import { TailSpin } from "react-loader-spinner";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ MyAddress Page : ShippingAddress page <MyAddressForm component/>.
