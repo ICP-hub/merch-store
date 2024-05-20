@@ -3,7 +3,7 @@ import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
 import "intl-tel-input/build/js/utils.js";
 import "./Styles/itelinput.css";
-import { Country, State, City } from "country-state-city";
+//import { Country, State, City } from "country-state-city";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Common Input Component 

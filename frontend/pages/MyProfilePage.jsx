@@ -7,7 +7,6 @@ import Footer from "../components/common/Footer";
 import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import { BsQrCodeScan } from "react-icons/bs";
 import Button from "../components/common/Button";
-import { CommonInput, TelephoneInput } from "../components/common/CommonInput";
 import { useEffect, useState } from "react";
 
 import {
@@ -22,6 +21,7 @@ import toast from "react-hot-toast";
 import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
 import useClipboard from "react-use-clipboard";
 import { TailSpin } from "react-loader-spinner";
+import { CommonInput } from "../components/common/InputFields";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components: MyProfilePage.

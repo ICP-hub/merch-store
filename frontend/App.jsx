@@ -18,20 +18,20 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ContactPage from "./pages/ContactPage";
 import FaqPage from "./pages/FaqPage";
-//import MyAddressPage from "./pages/MyAddressPage";
+import MyAddressPage from "./pages/MyAddressPage";
 import MyOrderDetailPage from "./pages/MyOrderDetailPage";
 import MyOrderInvoicePage from "./pages/MyOrderInvoicePage";
 import MyOrderPage from "./pages/MyOrderPage";
 import RegisterPage from "./pages/RegisterPage";
 import TermOfServicePage from "./pages/TermOfServicePage";
 import TeamPage from "./pages/TeamPage";
-//import ShippingAddressPage from "./pages/ShippingAddressPage";
+import ShippingAddressPage from "./pages/ShippingAddressPage";
 import ShippingPolicyPage from "./pages/ShippingPolicyPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import MyWishlistPage from "./pages/MyWishlistPage";
-//import MyProfilePage from "./pages/MyProfilePage";
+import MyProfilePage from "./pages/MyProfilePage";
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import BackToTop from "./components/common/BackToTop";
@@ -85,10 +85,10 @@ const router = createBrowserRouter([
     path: "/faq",
     element: <FaqPage></FaqPage>,
   },
-  /* {
+  {
     path: "/my-address",
     element: <MyAddressPage></MyAddressPage>,
-  },  */
+  },  
 
   {
     path: "/my-order-detail/:id",
@@ -103,14 +103,14 @@ const router = createBrowserRouter([
     path: "/my-order",
     element: <MyOrderPage></MyOrderPage>,
   },
-  /*   {
+    {
     path: "/my-profile",
     element: (
       <Protected>
         <MyProfilePage></MyProfilePage>
       </Protected>
     ),
-  },  */
+  },  
   {
     path: "/my-wishlist",
     element: <MyWishlistPage></MyWishlistPage>,
@@ -131,10 +131,10 @@ const router = createBrowserRouter([
     path: "/shipping-policy",
     element: <ShippingPolicyPage></ShippingPolicyPage>,
   },
-  /*   {
+    {
     path: "/shipping-address",
     element: <ShippingAddressPage></ShippingAddressPage>,
-  }, */
+  }, 
   {
     path: "/about",
     element: <TeamPage></TeamPage>,
