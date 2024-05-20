@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import UserAddressApiHandler from "../../apiHandlers/UserAddressApiHandler";
 import useFormValidation from "../common/FormValidation";
-import {
-  CommonInput,
-  CountryInput,
-  TelephoneInput,
-} from "../common/InputFields";
+import { CommonInput, TelephoneInput } from "../common/InputFields";
 import { TailSpin } from "react-loader-spinner";
+import countries from "./countries.json";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ MyAddress Page : ShippingAddress page <MyAddressForm component/>.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -19,12 +16,9 @@ const AddressForm = ({
   const [formValues, setFormValues] = useState(initialFormValues || {});
   const { createAddress, updateAddress, isLoading } = UserAddressApiHandler();
   const [phone, setPhone] = useState(null);
-  // Get location from selected input : Country, State, City
-  const [locationInput, setLocationInput] = useState({});
   const [isPhoneValid, setIsPhoneValid] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Define validation rules for each form field
   const validationRules = {
     firstname: [{ required: true }],
     lastname: [{ required: true }],
@@ -35,9 +29,7 @@ const AddressForm = ({
         error: "Invalid email",
       },
     ],
-    // phone_number: [{ required: true }],
     addressline1: [{ required: true }],
-    // city: [{ required: true }],
     pincode: [
       { required: true },
       {
@@ -45,70 +37,45 @@ const AddressForm = ({
         error: "Pincode must contain only numbers",
       },
     ],
-    // state: [{ required: true }],
-    // country: [{ required: true }],
   };
 
   const { validationErrors, validateForm } = useFormValidation(validationRules);
 
-  // handle Input value changes
   const handleChange = (key, value) => {
     setFormValues((prevForm) => ({ ...prevForm, [key]: value }));
   };
 
-  // handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    // Validate the form
     const errors = validateForm(formValues);
-    // Check if there are any validation errors
-    if (Object.values(errors).some((error) => error)) {
+    if (Object.values(errors).some((error) => error) || !isPhoneValid) {
       return;
     }
-    if (!isPhoneValid) {
-      return;
-    }
-    // Form Valid? : try catch block in UserAddressApiHanlder
     const updatedFormValues = {
       ...formValues,
       phone_number: phone.getNumber(),
-      ...locationInput,
     };
-
     createAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
-  // Form Update
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    // Validate the form
     const errors = validateForm(formValues);
-    // Check if there are any validation errors
-    if (Object.values(errors).some((error) => error)) {
+    if (Object.values(errors).some((error) => error) || !isPhoneValid) {
       return;
     }
-    if (!isPhoneValid) {
-      return;
-    }
-    // Form Valid? : try catch block in UserAddressApiHanlder
     const updatedFormValues = {
       ...formValues,
       phone_number: phone.getNumber(),
-      ...locationInput,
     };
-    // console.log(updatedFormValues);
-
     updateAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
-  const phoneValid = phone?.isValidNumberPrecise();
-
-  // Effect hook for phone validation
   useEffect(() => {
-    setIsPhoneValid(phoneValid);
-  }, [phoneValid, phone]);
+    setIsPhoneValid(phone?.isValidNumberPrecise());
+  }, [phone]);
 
   const formFields = [
     { key: "firstname", label: "First Name", type: "text" },
@@ -119,6 +86,8 @@ const AddressForm = ({
     { key: "addressline2", label: "Address Line 2", type: "text" },
     { key: "pincode", label: "Pincode", type: "text" },
     { key: "country", label: "Country", type: "select" },
+    { key: "state", label: "State", type: "text" },
+    { key: "city", label: "City", type: "text" },
   ];
 
   return (
@@ -139,14 +108,31 @@ const AddressForm = ({
             phoneNumber={formValues?.phone_number}
             error={!isPhoneValid && isSubmitted}
           />
-        ) : type === "select" ? ( // Render the CountryInput component
-          <CountryInput
-            key={key}
-            setLocationInput={setLocationInput}
-            currCountry={formValues?.country}
-            currState={formValues?.state}
-            currCity={formValues?.city}
-          />
+        ) : type === "select" && key === "country" ? (
+          <div key={key} className="flex flex-col gap-1 w-full">
+            <div className="flex">
+              <label className="h-full flex items-center w-full font-medium uppercase text-xs px-3">
+                {label}
+              </label>
+              {validationErrors[key] && (
+                <span className="text-red-500 text-xs min-w-max">
+                  {validationErrors[key]}
+                </span>
+              )}
+            </div>
+            <select
+              value={formValues[key]}
+              onChange={(e) => handleChange(key, e.target.value)}
+              className="border border-gray-300 rounded-full focus:outline-none p-2 h-[38px] placeholder:font-light"
+            >
+              <option value="">Select a country</option>
+              {countries.map((country) => (
+                <option key={country.code} value={country.name}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
+          </div>
         ) : (
           <div key={key} className="flex flex-col gap-1 w-full">
             <div className="flex">
@@ -159,10 +145,8 @@ const AddressForm = ({
                 </span>
               )}
             </div>
-
             <CommonInput
-              key={key}
-              type="text"
+              type={type}
               placeholder={label.toLowerCase()}
               value={formValues[key]}
               onChange={(e) => handleChange(key, e.target.value)}

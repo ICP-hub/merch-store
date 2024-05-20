@@ -4,11 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import { BsEnvelopeAt } from "react-icons/bs";
-import {
-  CommonInput,
-  CountryInput,
-  TelephoneInput,
-} from "../common/InputFields";
+import { CommonInput, TelephoneInput } from "../common/InputFields";
 import UserApiHanlder from "../../apiHandlers/UserApiHandler";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
