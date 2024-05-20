@@ -95,12 +95,12 @@ const ContactPageContainerMain = () => {
           ></iframe>
         </div>
 
-        <div>
+        {/* <div>
           <TelephoneInput />
           <CommonInput value={""} onChange={(e) => e.target.value} />
           <CountryInput />
-        </div>
-        {/* <div className="w-full md:w-2/5 bg-white rounded-xl px-4 py-4 md:py-8 flex flex-col gap-8">
+        </div> */}
+        <div className="w-full md:w-2/5 bg-white rounded-xl px-4 py-4 md:py-8 flex flex-col gap-8">
           <div className="flex flex-col items-center justify-center">
             <h1 className="md:text-4xl text-3xl font-bold">Get In Touch</h1>
             <p className="text-slate-600">You can reach us anytime</p>
@@ -181,7 +181,7 @@ const ContactPageContainerMain = () => {
               </Link>
             </p>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );
