@@ -22,7 +22,7 @@ const CommonInput = ({
       <label className="h-full flex items-center w-full font-medium uppercase text-xs px-3">
         {label}
       </label>
-      <div className="w-full flex">
+      <div className="w-full flex ">
         <input
           type={type}
           placeholder={placeholder}
@@ -89,12 +89,12 @@ const TelephoneInput = ({
           </span>
         )}
       </div>
-      <div className={divClass}>
+      <div className={`${divClass}`}>
         <input
           type="tel"
           id="phone"
           ref={phoneInputRef}
-          className={inputClass}
+          className={`${inputClass} outline-none`}
           disabled={disabled}
         />
       </div>

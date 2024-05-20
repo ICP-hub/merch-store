@@ -127,7 +127,7 @@ const ContactPageContainerMain = () => {
               </div>
             </div>
             <TelephoneInput
-              divclassName="border border-slate-500 rounded-full flex w-full gap-2 items-center"
+              divClass="border border-slate-500 rounded-full flex w-full gap-2 items-center"
               inputClass="focus:outline-none border-none p-4"
               setPhone={setPhone}
             />

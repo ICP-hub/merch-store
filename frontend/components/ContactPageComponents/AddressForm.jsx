@@ -102,7 +102,7 @@ const AddressForm = ({
           <TelephoneInput
             key={key}
             label={label}
-            divclassName="border border-gray-300 rounded-full"
+            divClass="border border-gray-300 rounded-full p-[6px]"
             inputclassName="focus:outline-none p-2 h-[38px] placeholder:font-light"
             setPhone={setPhone}
             phoneNumber={formValues?.phone_number}
