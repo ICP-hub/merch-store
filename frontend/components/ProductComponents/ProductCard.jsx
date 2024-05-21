@@ -271,7 +271,7 @@ const ProductCard = ({ product }) => {
       <div className="rounded-xl  flex flex-col overflow-hidden gap-2">
         <div className="bg-gray-200 relative rounded-xl">
           <div
-            className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold"
+            className="absolute top-2 left-2 bg-white py-1 px-2 rounded-full text-sm cursor-pointer font-semibold capitalize"
             style={{ zIndex: "1" }}
           >
             {productInfo.category}
