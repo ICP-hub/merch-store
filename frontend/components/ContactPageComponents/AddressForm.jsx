@@ -16,7 +16,7 @@ const AddressForm = ({
   const [formValues, setFormValues] = useState(initialFormValues || {});
   const { createAddress, updateAddress, isLoading } = UserAddressApiHandler();
   const [phone, setPhone] = useState(null);
-  const [isPhoneValid, setIsPhoneValid] = useState(null);
+  // const [isPhoneValid, setIsPhoneValid] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validationRules = {
@@ -49,13 +49,14 @@ const AddressForm = ({
     e.preventDefault();
     setIsSubmitted(true);
     const errors = validateForm(formValues);
-    if (Object.values(errors).some((error) => error) || !isPhoneValid) {
+    if (Object.values(errors).some((error) => error)) {
       return;
     }
     const updatedFormValues = {
       ...formValues,
       phone_number: phone.getNumber(),
     };
+    console.log(updatedFormValues);
     createAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
@@ -63,19 +64,20 @@ const AddressForm = ({
     e.preventDefault();
     setIsSubmitted(true);
     const errors = validateForm(formValues);
-    if (Object.values(errors).some((error) => error) || !isPhoneValid) {
+    if (Object.values(errors).some((error) => error)) {
       return;
     }
     const updatedFormValues = {
       ...formValues,
       phone_number: phone.getNumber(),
     };
+
     updateAddress(updatedFormValues, setSuccessfulSubmit);
   };
 
-  useEffect(() => {
-    setIsPhoneValid(phone?.isValidNumberPrecise());
-  }, [phone]);
+  // useEffect(() => {
+  //   setIsPhoneValid(phone?.isValidNumberPrecise());
+  // }, [phone]);
 
   const formFields = [
     { key: "firstname", label: "First Name", type: "text" },
@@ -106,7 +108,6 @@ const AddressForm = ({
             inputclassName="focus:outline-none p-2 h-[38px] placeholder:font-light"
             setPhone={setPhone}
             phoneNumber={formValues?.phone_number}
-            error={!isPhoneValid && isSubmitted}
           />
         ) : type === "select" && key === "country" ? (
           <div key={key} className="flex flex-col gap-1 w-full">
