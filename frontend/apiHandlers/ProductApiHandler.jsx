@@ -66,7 +66,7 @@ const ProductApiHandler = () => {
   //  Search for products by category and update the product list
   const searchProductByCategory = async (searchInput) => {
     // If input is all set the Product List from inital ProductList load : getProductList
-    if (searchInput === "all") {
+    if (searchInput === "All") {
       // console.log(initialProductList);
       setProductList(initialProductList);
       return;
