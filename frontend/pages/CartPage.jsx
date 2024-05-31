@@ -465,8 +465,8 @@ const Cart = () => {
                                     loadingItemId === id[index].id ? (
                                       // Loading spinner
                                       <TailSpin
-                                        height="10px"
-                                        width="10px"
+                                        height="20px"
+                                        width="20px"
                                         color="black"
                                         ariaLabel="tail-spin-loading"
                                         radius="1"
@@ -474,11 +474,13 @@ const Cart = () => {
                                       />
                                     ) : (
                                       // Default icon
-                                      <HiCheckBadge
+                                      <div className="flex">
+                                        <HiCheckBadge
                                         color="green"
                                         size={24}
                                         className="cursor-pointer"
-                                      />
+                                      /> Update
+                                      </div>
                                     )}
                                   </button>
                                 )}
