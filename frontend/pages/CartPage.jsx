@@ -450,7 +450,7 @@ const Cart = () => {
                               {isQuantityChanged &&
                                 selectedItemIndex === index && (
                                   <button
-                                    className="ml-2"
+                                    className="ml-2 bg-black text-white rounded-md py-2 px-4"
                                     onClick={() =>
                                       updateQuantity(
                                         id[index].id,
@@ -465,9 +465,9 @@ const Cart = () => {
                                     loadingItemId === id[index].id ? (
                                       // Loading spinner
                                       <TailSpin
-                                        height="20px"
-                                        width="20px"
-                                        color="black"
+                                        height="20"
+                                        width="20"
+                                        color="white"
                                         ariaLabel="tail-spin-loading"
                                         radius="1"
                                         visible={true}
@@ -475,11 +475,11 @@ const Cart = () => {
                                     ) : (
                                       // Default icon
                                       <div className="flex">
-                                        <HiCheckBadge
+                                        {/* <HiCheckBadge
                                         color="green"
                                         size={24}
                                         className="cursor-pointer"
-                                      /> Update
+                                      />  */}Update Cart
                                       </div>
                                     )}
                                   </button>
