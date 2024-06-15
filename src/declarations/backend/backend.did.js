@@ -213,6 +213,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const CreateProductError = IDL.Variant({
     'UserNotAdmin' : IDL.Null,
+    'CategoryNotFound' : IDL.Null,
     'UserNotAuthenticated' : IDL.Null,
     'EmptyTitle' : IDL.Null,
   });

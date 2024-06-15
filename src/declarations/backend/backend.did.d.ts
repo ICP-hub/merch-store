@@ -67,6 +67,7 @@ export type CreateContactError = { 'EmptyName' : null } |
   { 'EmptyMessage' : null } |
   { 'EmptyEmail' : null };
 export type CreateProductError = { 'UserNotAdmin' : null } |
+  { 'CategoryNotFound' : null } |
   { 'UserNotAuthenticated' : null } |
   { 'EmptyTitle' : null };
 export type CreateVariantError = { 'VariantSlugAlreadyExists' : null } |
