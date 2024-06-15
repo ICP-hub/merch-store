@@ -18,12 +18,12 @@ module {
         email : Text;
     };
 
-    public type CreateUserError = {
-        #UserAlreadyExists;
-        #EmptyEmail;
-        #EmptyFirstName;
-        #EmptyLastName;
-    };
+        public type CreateUserError = {
+            #UserAlreadyExists;
+            #EmptyEmail;
+            #EmptyFirstName;
+            #EmptyLastName;
+        };
 
     public type UpdateUserError = {
         #UserNotAuthenticated;
@@ -41,6 +41,7 @@ module {
         #UserNotAuthenticated;
         #UserNotAdmin;
         #EmptyTitle;
+        #CategoryNotFound;
     };
 
     public type GetProductError = {
@@ -187,7 +188,7 @@ module {
         slug : SlugId;
         category_img : Text;
         featured : Bool;
-        active : Bool;
+        active : Bool; 
     };
 
     public type VariantSize = {
@@ -205,6 +206,7 @@ module {
     };
 
     // User input data for products
+
     public type UserProduct = {
         title : Text;
         //price : Float;
@@ -215,7 +217,6 @@ module {
         newArrival : Bool;
         trending : Bool;
     };
-
     // Backend data for products
     public type Product = UserProduct and {
         //img : Text; // Upload 3 images for each product

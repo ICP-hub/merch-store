@@ -6,25 +6,30 @@ import Principal "mo:base/Principal";
 import Array "mo:base/Array";
 
 module {
-    func process_character(char : Char) : Char {
-        let unicode_value = Char.toNat32(char); // converted to nat32
+func process_character(char : Char) : Char {
+    let unicode_value = Char.toNat32(char); // converted to nat32
 
-        if (unicode_value >= 97 and unicode_value <= 122) {
-            // ascii lowercase
-            // leave as is
-            return (Char.fromNat32(unicode_value));
-        };
-        if (unicode_value >= 65 and unicode_value <= 90) {
-            // lowercase
-            return (Char.fromNat32(unicode_value + 32));
-        };
-        if (unicode_value == 32) {
-            // spaces to "-"
-            return Char.fromNat32(45);
-        };
-        // remove everything else
-        return Char.fromNat32(0);
+    if (unicode_value >= 97 and unicode_value <= 122) {
+        // ascii lowercase
+        // leave as is
+        return (Char.fromNat32(unicode_value));
     };
+    if (unicode_value >= 65 and unicode_value <= 90) {
+        // lowercase
+        return (Char.fromNat32(unicode_value + 32));
+    };
+    if (unicode_value >= 48 and unicode_value <= 57) {
+        // keep digits
+        return Char.fromNat32(unicode_value);
+    };
+    if (unicode_value == 32 or unicode_value == 45) {
+        // spaces to "-" and keep "-"
+        return Char.fromNat32(45);
+    };
+    // remove everything else
+    return Char.fromNat32(0);
+};
+
 
     public func slugify(word : Text) : Text {
         var slug : Text = "";
