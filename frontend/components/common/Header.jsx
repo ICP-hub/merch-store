@@ -624,8 +624,8 @@ const Header = ({ title }) => {
         style={{ x: x }}
         className={`text-[30px] md:text-[50px] ${
           isHomePage ? `md:text-[200px]` : `md:text-[100px]`
-        } font-black tracking-widest text-white absolute -bottom-3 md:-bottom-[22px] ${
-          isHomePage ? `md:-bottom-[90px]` : `md:-bottom-[40px]`
+        } font-black tracking-widest text-white absolute -bottom-[22px] ${
+          isHomePage ? `md:-bottom-[90px]` : `-bottom-2.5 md:-bottom-5`
         } flex justify-center w-full`}
       >
         {title}
