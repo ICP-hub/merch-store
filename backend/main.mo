@@ -64,10 +64,6 @@ actor {
 
     private var addressToOrder = Map.HashMap<Text, Types.OrderId>(0, Text.equal, Text.hash);
     private stable var stableaddresstoorder : [(Text, Types.OrderId)] = [];
-
-    private var ratingandreviews = Map.HashMap<Types.SlugId, List.List<Types.ReviewRatings>>(0, Text.equal, Text.hash);
-    private stable var stableratingandreviews : [(Types.SlugId, [Types.ReviewRatings])] = [];
-
     //For processing and storing images
     // private stable var currentMemoryOffset : Nat64 = 2;
     // private stable var stableimgOffset : [(Types.ImgI, Nat64)] = [];
@@ -404,20 +400,20 @@ actor {
     //  ------------------   Products_Functions ----------------
 
     public shared ({ caller }) func createProduct(p : Types.UserProduct, vs : [Types.VariantSize], vc : [Types.VariantColor]) : async Result.Result<(Types.Product), Types.CreateProductError> {
-
         let adminstatus = await isAdmin(caller);
         if (adminstatus == false) {
             return #err(#UserNotAdmin); // We require the user to be admin
         };
+        let category_slug = p.category;
 
+        if (checkifcategoryexists(category_slug) == false) {
+            return #err(#CategoryNotFound);
+        };  
         if (p.title == "") { return #err(#EmptyTitle) };
-
         let productId = nextProduct;
         nextProduct += 1;
         // increment the counter so we never try to create a product under the same index
-
         let newSlug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
-
         // var imgSlug : Types.SlugId = "";
         // switch (img) {
         //     case null {
@@ -428,7 +424,6 @@ actor {
         //         imgSlug := newSlug;
         //     };
         // };
-
         let product : Types.Product = {
             title = p.title;
             id = productId;
@@ -446,7 +441,6 @@ actor {
             time_created = Time.now();
             time_updated = Time.now();
         };
-
         products.put(newSlug, product);
         return #ok(product);
     };
@@ -620,15 +614,12 @@ actor {
     // ------------------------------------  CATEGORY_FUNCTIONS  ---------------------------------------------
 
     public shared (msg) func createCategory(name : Text, cat_img : Text, featured : Bool, active : Bool) : async Result.Result<(Types.Category), Types.CreateCategoryError> {
-
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
             return #err(#UserNotAdmin); // We require the user to be admin
         };
         if (name == "") { return #err(#EmptyName) };
-
         let new_slug = Utils.slugify(name);
-
         let result = categories.get(new_slug);
         switch (result) {
             case null {
@@ -639,7 +630,6 @@ actor {
                     featured = featured;
                     active = active;
                 };
-
                 categories.put(new_slug, category);
                 return #ok(category);
             };
@@ -705,6 +695,18 @@ actor {
     public query func listCategories() : async [(Types.SlugId, Types.Category)] {
         return Iter.toArray(categories.entries());
     };
+
+    func checkifcategoryexists(slug : Text) : Bool {
+        let result = categories.get(slug);
+        switch (result) {
+            case null {
+                return false;
+            };
+            case (?v) {
+                return true;
+            };
+        };
+    }; 
 
     //  -----------------------------------   Wishlist_Functions ---------------------------------------------------------------------------------------------------------
 
@@ -887,7 +889,7 @@ actor {
             },
         );
         for (item in filteredCartItems.entries()) {
-            cartItems.delete(item.0);
+            cartItems.delete(item.0); 
         };
         return #ok(());
     };
@@ -919,7 +921,6 @@ actor {
             case (?order) return #err(#PaymentAddressAlreadyUsed);
             case null {
                 let orderId : Types.OrderId = UUID.toText(await g.new());
-
                 var newOrder : Types.Order = {
                     id = orderId;
                     shippingAddress = order.shippingAddress;
@@ -938,7 +939,6 @@ actor {
                 };
                 orders.put(orderId, newOrder);
                 addressToOrder.put(newOrder.paymentAddress, newOrder.id);
-
                 return #ok(newOrder);
             };
         };
