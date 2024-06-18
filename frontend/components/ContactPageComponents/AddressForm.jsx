@@ -104,15 +104,15 @@ const AddressForm = ({
           <TelephoneInput
             key={key}
             label={label}
-            divClass="border border-gray-300 rounded-full p-[6px]"
+            divClass="border border-gray-300 rounded-full w-[90%]  md:w-full p-[6px]"
             inputclassName="focus:outline-none p-2 h-[38px] placeholder:font-light"
             setPhone={setPhone}
             phoneNumber={formValues?.phone_number}
           />
         ) : type === "select" && key === "country" ? (
-          <div key={key} className="flex flex-col gap-1 w-full">
+          <div key={key} className="flex flex-col gap-1 md:w-full">
             <div className="flex">
-              <label className="h-full flex items-center w-full font-medium uppercase text-xs px-3">
+              <label className="h-full flex   w-full font-medium uppercase text-xs px-3">
                 {label}
               </label>
               {validationErrors[key] && (
@@ -124,7 +124,7 @@ const AddressForm = ({
             <select
               value={formValues[key]}
               onChange={(e) => handleChange(key, e.target.value)}
-              className="border border-gray-300 rounded-full focus:outline-none p-2 h-[38px] placeholder:font-light"
+              className="border border-gray-300 rounded-full w-full focus:outline-none p-2 h-[38px] placeholder:font-light"
             >
               <option value="">Select a country</option>
               {countries.map((country) => (

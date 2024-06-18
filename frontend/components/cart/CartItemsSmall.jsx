@@ -149,23 +149,25 @@ const CartItemsSmall = () => {
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-sm border-[1px] px-2 py-1/2 text-gray-600 rounded-full max-w-max bg-gray-50 mb-1">
+                  <h4 className="text-sm border-[1px] uppercase px-2 py-1/2 text-gray-600 rounded-full max-w-max bg-gray-50 mb-1">
                     {item?.category}
                   </h4>
-                  <h4 className="text-sm line-clamp-1 text-gray-900 leading-tight mb-1/2">
+                  <h4 className="text-sm line-clamp-1 capitalize text-gray-900 leading-tight mb-1/2">
                     {item?.title}
                   </h4>
                   <div className="flex gap-2">
                     <h4 className="text-xs">
                       <span className="text-gray-500">Color: </span>
-                      <span className="text-gray-800">
+                      <span className="text-gray-800 capitalize">
                         {" "}
                         {color[index]?.color}
                       </span>
                     </h4>
                     <h4 className="text-xs">
                       <span className="text-gray-500">Size: </span>
-                      <span className="text-gray-800">{size[index]?.size}</span>
+                      <span className="text-gray-800 capitalize">
+                        {size[index]?.size}
+                      </span>
                     </h4>
                   </div>
                 </div>
