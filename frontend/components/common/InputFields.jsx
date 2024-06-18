@@ -74,6 +74,9 @@ const TelephoneInput = ({
       iti.destroy();
     };
   }, []);
+  const handleInput = (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "");
+  };
 
   return (
     <div>
@@ -96,6 +99,9 @@ const TelephoneInput = ({
           ref={phoneInputRef}
           className={`${inputClass} outline-none`}
           disabled={disabled}
+          onInput={handleInput}
+          inputMode="numeric"
+          pattern="[0-9]*"
         />
       </div>
     </div>
