@@ -739,9 +739,9 @@ const ProductDetail = () => {
                 onClick={handleSubmit}
                 type="submit"
                 className={`bg-[#512E5F] text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
-                  loading4 && "opacity-50"
+                  loading4 || (loading && "opacity-50")
                 }`}
-                disabled={loading4}
+                disabled={loading4 || loading}
               >
                 {loading4 ? (
                   <TailSpin
@@ -769,9 +769,9 @@ const ProductDetail = () => {
               }}
               type="submit"
               className={`bg-red-500 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium flex justify-center items-center gap-2 ${
-                loading && "opacity-50"
+                loading || (loading4 && "opacity-50")
               }`}
-              disabled={loading}
+              disabled={loading || loading4}
             >
               {loading ? (
                 <TailSpin

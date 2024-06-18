@@ -41,10 +41,10 @@ const Categories = () => {
 
   const listAllCategories = async () => {
     try {
+      setLoading(true);
       const category = await backend.listCategories();
       console.log(category, "hello from list categories");
 
-      setLoading(true);
       setCategories(category);
     } catch (error) {
       console.error("Error listing all category:", error);

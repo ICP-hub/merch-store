@@ -10,6 +10,7 @@ const Shipping = () => {
   const [amount, setAmount] = useState("");
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(true);
 
   const shippingAmount = async () => {
     try {
@@ -18,13 +19,20 @@ const Shipping = () => {
       setAmount(items.shipping_amount);
     } catch (error) {
       console.error("Error listing Amount:", error);
+    } finally {
+      setLoading1(false);
     }
   };
+
   const updateAmount = async () => {
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      toast.error("Shipping Amount must be zero or greater than zero");
+      return;
+    }
+
     try {
       setLoading(true);
-
-      const parsedAmount = parseFloat(amount);
       const items = await backend.updateshippingamount({
         shipping_amount: parsedAmount,
       });
@@ -41,6 +49,7 @@ const Shipping = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     shippingAmount();
   }, [backend]);
@@ -49,9 +58,9 @@ const Shipping = () => {
     <>
       <div>
         <div className="w-full">
-          <div className="styled-scrollbar flex flex-col  bg-white  rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
-            <div className="mb-5  justify-between items-center gap-2">
-              <h1 className="uppercase text-xl font-semibold text-gray-800  ">
+          <div className="styled-scrollbar flex flex-col bg-white rounded-2xl overflow-y-auto h-[calc(100vh-100px)] p-4">
+            <div className="mb-5 justify-between items-center gap-2">
+              <h1 className="uppercase text-xl font-semibold text-gray-800">
                 Shipping amount
               </h1>
               <div className="my-2">
@@ -60,13 +69,12 @@ const Shipping = () => {
                   <input
                     id="title"
                     type="text"
-                    value={amount}
+                    value={loading1 ? "loading...." : amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="  pl-2 outline-none border-none w-full rounded-lg"
+                    className="pl-2 outline-none border-none w-full rounded-lg"
                     placeholder="Enter Shipping Amount"
                   />
                 </div>
-
                 <div className="flex flex-col items-end justify-end gap-4 mt-6">
                   <button
                     onClick={updateAmount}
@@ -92,7 +100,7 @@ const Shipping = () => {
                 </div>
               </div>
             </div>
-          </div>{" "}
+          </div>
         </div>
       </div>
     </>

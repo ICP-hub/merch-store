@@ -15,7 +15,7 @@ const Footer = () => {
   const { scrollYProgress } = useScroll();
   const x = useTransform(scrollYProgress, [0, 1], [-800, 0]);
   return (
-    <div className="relative pt-[100px] md:pt-[200px] !z-0">
+    <div className="relative pt-[50px]  !z-0">
       {/* <motion.div
         style={{ x: x }}
         className="overflow-hidden text-[80px] md:text-[200px] font-black tracking-widest text-gray-50 absolute top-[15px] md:-top-[15px] flex justify-center w-full"

@@ -47,7 +47,7 @@ const Message = () => {
 
   const listAllMessage = async () => {
     try {
-      //setLoading(true);
+      setLoading(true);
       const message = await backend.listContacts();
       setMessages(message);
     } catch (error) {
