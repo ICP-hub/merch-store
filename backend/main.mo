@@ -19,17 +19,24 @@ import Nat64 "mo:base/Nat64";
 import Memory "mo:base/ExperimentalStableMemory";
 import Nat8 "mo:base/Nat8";
 import HashMap "mo:base/HashMap";
-
+import Error "mo:base/Error";
+import ICRC "./ICRC";
+import XRC "./XRC";
 import UUID "mo:uuid/UUID";
 import Source "mo:uuid/async/SourceV4";
+import Int "mo:base/Int";
+import Cycles "mo:base/ExperimentalCycles";
+
 actor {
 
     let g = Source.Source();
     //Products
 
-    // ---------------------------------------------------------------------------------------------------------------------------------------//
-
     private stable var nextProduct : Types.ProductId = 1;
+    
+    stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
+    stable let exchange_rate_canister = "uf6dk-hyaaa-aaaaq-qaaaq-cai";
 
     private var Users = Map.HashMap<Principal, Types.User>(0, Principal.equal, Principal.hash);
     private stable var stableUsers : [(Principal, Types.User)] = [];
@@ -913,7 +920,7 @@ actor {
         return shippingamount;
     };
 
-    public shared (msg) func createOrder(order : Types.NewOrder) : async Result.Result<Types.Order, Types.OrderError> {
+    shared (msg) func createOrder(order : Types.NewOrder) : async Result.Result<Types.Order, Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
@@ -942,6 +949,82 @@ actor {
                 return #ok(newOrder);
             };
         };
+    };
+
+    public shared (msg) func place_order(order : Types.NewOrder , from : Principal , to : Principal , amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
+        switch (paymentOption){
+            case (#icp) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show (index));
+                    };
+                    case (#Ok(res)) {
+                        let order_status = await createOrder(order);
+                        switch (order_status) {
+                            case (#err(index)) {
+                                return #err(index);
+                            };
+                            case (#ok(response)) {
+                                return #ok(response,#Ok(res));
+                            };
+                        };
+                    };
+                }; 
+            };
+            case (#ckbtc) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show (index));
+                    };
+                    case (#Ok(res)) {
+                        let order_status = await createOrder(order);
+                        switch (order_status) {
+                            case (#err(index)) {
+                                return #err(#UnableToCreate);
+                            };
+                            case (#ok(response)) {
+                                return #ok(response,#Ok(res));
+                            };
+                        };
+                    };
+                };
+        };
+
+        };
+    };
+
+
+    func icrc2_transferFrom(ledgerId : Text, transferfrom : Principal, transferto : Principal, amount : Nat) : async (ICRC.Result_2) {
+
+        let ledger = actor (ledgerId) : ICRC.Token;
+        await ledger.icrc2_transfer_from({
+            spender_subaccount = null;
+            from = { owner = transferfrom; subaccount = null };
+            to = { owner = transferto; subaccount = null };
+            amount;
+            fee = null;
+            memo = null;
+            created_at_time = null;
+        });
+    };
+
+    public func get_exchange_rates( x : XRC.Asset , y : XRC.Asset) : async XRC.GetExchangeRateResult {
+        let xrc = actor (exchange_rate_canister) : actor {
+            get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
+        };
+        let timestamp = Int.div(Time.now(),1_000_000_000) - 120;
+        // 2 mintues buffer time to get the exchange rate
+        Debug.print(debug_show(timestamp));
+        Cycles.add<system>(10_000_000_000);
+        let result = await xrc.get_exchange_rate({timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
+        Debug.print(debug_show(Cycles.refunded()));
+        Debug.print(debug_show (result));
+        return result;
     };
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
