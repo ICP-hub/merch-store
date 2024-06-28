@@ -920,7 +920,7 @@ actor {
         return shippingamount;
     };
 
-    shared (msg) func createOrder(order : Types.NewOrder) : async Result.Result<Types.Order, Types.OrderError> {
+    func createOrder(order : Types.NewOrder ) : async Result.Result<Types.Order, Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
@@ -932,7 +932,7 @@ actor {
                     id = orderId;
                     shippingAddress = order.shippingAddress;
                     products = order.products;
-                    userid = msg.caller;
+                    userid = order.userid;
                     totalAmount = order.totalAmount;
                     subTotalAmount = order.subTotalAmount;
                     shippingAmount = shippingamount;
@@ -951,7 +951,7 @@ actor {
         };
     };
 
-    public shared (msg) func place_order(order : Types.NewOrder , from : Principal , to : Principal , amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
+    public shared (msg) func place_order(neworder : Types.NewOrder , from : Principal , to : Principal , amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
@@ -963,6 +963,20 @@ actor {
                         throw Error.reject(debug_show (index));
                     };
                     case (#Ok(res)) {
+                        let order : Types.NewOrder = {
+                            userid = msg.caller;
+                            shippingAddress = neworder.shippingAddress;
+                            products = neworder.products;
+                            totalAmount = neworder.totalAmount;
+                            subTotalAmount = neworder.subTotalAmount;
+                            orderStatus = neworder.orderStatus;
+                            paymentStatus = neworder.paymentStatus;
+                            paymentAddress = neworder.paymentAddress;
+                            paymentMethod = neworder.paymentMethod;
+                            shippingAmount = neworder.shippingAmount;
+                            awb = neworder.awb;
+                        };
+
                         let order_status = await createOrder(order);
                         switch (order_status) {
                             case (#err(index)) {
@@ -982,6 +996,19 @@ actor {
                         throw Error.reject(debug_show (index));
                     };
                     case (#Ok(res)) {
+                        let order : Types.NewOrder = {
+                            userid = msg.caller;
+                            shippingAddress = neworder.shippingAddress;
+                            products = neworder.products;
+                            totalAmount = neworder.totalAmount;
+                            subTotalAmount = neworder.subTotalAmount;
+                            orderStatus = neworder.orderStatus;
+                            paymentStatus = neworder.paymentStatus;
+                            paymentAddress = neworder.paymentAddress;
+                            paymentMethod = neworder.paymentMethod;
+                            shippingAmount = neworder.shippingAmount;
+                            awb = neworder.awb;
+                        };
                         let order_status = await createOrder(order);
                         switch (order_status) {
                             case (#err(index)) {
