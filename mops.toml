@@ -1,5 +1,5 @@
 [dependencies]
-base = "0.9.8"
+base = "0.11.1"
 "array" = "https://github.com/aviate-labs/array.mo#master@8e4282825d3b401407954917cd94d1548ee21256"
 "encoding" = "https://github.com/aviate-labs/encoding.mo#master@2711d18727e954b11afc0d37945608512b5fbce2"
 "io" = "https://github.com/aviate-labs/io.mo#master@6492419a1592b3346085c32cadb98c5a9ff71075"

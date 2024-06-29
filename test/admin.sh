@@ -5,7 +5,7 @@ ADMIN_IDENTITY="admin"
 PRODUCT_SLUGS_FILE="product_slugs.txt"
 
 # Number of categories and products to create
-NUM_CATEGORIES=10
+NUM_CATEGORIES=1
 NUM_PRODUCTS=10
 
 # Ensure NUM_CATEGORIES is not zero

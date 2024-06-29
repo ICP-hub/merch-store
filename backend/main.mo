@@ -19,17 +19,25 @@ import Nat64 "mo:base/Nat64";
 import Memory "mo:base/ExperimentalStableMemory";
 import Nat8 "mo:base/Nat8";
 import HashMap "mo:base/HashMap";
-
+import Error "mo:base/Error";
+import ICRC "./ICRC";
+import XRC "./XRC";
 import UUID "mo:uuid/UUID";
 import Source "mo:uuid/async/SourceV4";
+import Int "mo:base/Int";
+import Cycles "mo:base/ExperimentalCycles";
+
+
 actor {
 
     let g = Source.Source();
     //Products
 
-    // ---------------------------------------------------------------------------------------------------------------------------------------//
-
     private stable var nextProduct : Types.ProductId = 1;
+    
+    stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
+    stable let exchange_rate_canister = "uf6dk-hyaaa-aaaaq-qaaaq-cai";
 
     private var Users = Map.HashMap<Principal, Types.User>(0, Principal.equal, Principal.hash);
     private stable var stableUsers : [(Principal, Types.User)] = [];
@@ -138,8 +146,16 @@ actor {
         return Result.fromOption(user, #UserNotFound);
     };
 
-    public query func listUsers() : async [(Principal, Types.User)] {
-        return Iter.toArray(Users.entries());
+    // 📍📍📍📍📍
+    public query func listUsers(chunkSize : Nat , PageNo : Nat) : async{data : [(Principal, Types.User)]; current_page : Nat; total_pages : Nat} {
+        let pages =  Utils.paginate<(Principal , Types.User)>(Iter.toArray(Users.entries()), chunkSize);
+        if (pages.size() < PageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No users found");
+        };
+        return { data = pages[PageNo]; current_page = PageNo; total_pages = pages.size(); };
     };
 
     //  ***************************************** Users Address CRUD Operations *****************************************************
@@ -287,15 +303,24 @@ actor {
         };
     };
 
-    public query ({ caller }) func listUserAddresses() : async [(Principal, [Types.Address])] {
+
+//📍📍📍📍📍
+    public query ({ caller }) func listUserAddresses(chunkSize:Nat , pageNo : Nat) : async {data :[(Principal, [Types.Address])]; current_page : Nat; total_pages : Nat} {
         let userP = caller;
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
             case null {
-                return [];
+                throw Error.reject("No addresses found");
             };
             case (?existingAddresses) {
-                return [(userP, existingAddresses)];
+                let pages =  Utils.paginate<(Principal, [Types.Address])>([(userP, existingAddresses)], chunkSize);        
+                if (pages.size() < pageNo) {
+                    throw Error.reject("Page not found");
+                };
+                if (pages.size() == 0) {
+                    throw Error.reject("No addresses found");
+                };
+                return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
             };
         };
     };
@@ -311,9 +336,9 @@ actor {
         variant_sale_price : Float
 
     ) : async Result.Result<(Types.Variants), Types.CreateVariantError> {
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        };
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
             return #err(#UserNotAdmin); // We require the user to be admin
@@ -523,8 +548,17 @@ actor {
         // If the post is not found, this will return an error as result.
     };
 
-    public query func listallProducts() : async [(Types.SlugId, Types.Product)] {
-        return Iter.toArray(products.entries());
+    // 📍📍📍📍📍
+    public query func listallProducts(chunksize : Nat , pageNo : Nat) : async {data : [(Types.SlugId, Types.Product)]; current_page : Nat; total_pages : Nat} {
+        let pages =  Utils.paginate<(Types.SlugId,Types.Product)>(Iter.toArray(products.entries()),chunksize);
+
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No products found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     // --------------------------Searching Functions----------------------------------------------------------
@@ -692,8 +726,16 @@ actor {
         return #ok(());
     };
 
-    public query func listCategories() : async [(Types.SlugId, Types.Category)] {
-        return Iter.toArray(categories.entries());
+    // 📍📍📍📍📍
+    public query func listCategories(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.SlugId, Types.Category)]; current_page : Nat; total_pages : Nat} {
+        let pages = Utils.paginate<(Types.SlugId, Types.Category)>(Iter.toArray(categories.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No categories found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     func checkifcategoryexists(slug : Text) : Bool {
@@ -772,9 +814,16 @@ actor {
         return #ok(());
     };
 
-    public query func listWishlistItems() : async [(Types.WishlistId, Types.WishlistItem)] {
-
-        return Iter.toArray(wishlistItems.entries());
+    // 📍📍📍📍📍
+    public query func listWishlistItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.WishlistId, Types.WishlistItem)]; current_page : Nat; total_pages : Nat} {
+        let pages = Utils.paginate<(Types.WishlistId, Types.WishlistItem)>(Iter.toArray(wishlistItems.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No wishlist items found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
@@ -851,7 +900,8 @@ actor {
         return #ok(());
     };
 
-    public query (msg) func getCallerCartItems() : async [(Types.CartId, Types.CartItem)] {
+    // 📍📍📍📍📍
+    public query (msg) func getCallerCartItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.CartId, Types.CartItem)]; current_page : Nat; total_pages : Nat} {
         // Assuming `cartItems` is your existing HashMap<CartId, CartItem>
         let caller = msg.caller;
 
@@ -868,8 +918,17 @@ actor {
                 };
             },
         );
-        return Iter.toArray(filteredCartItems.entries());
+        let pages = Utils.paginate<(Types.CartId, Types.CartItem)>(Iter.toArray(filteredCartItems.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No cart items found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); 
+         };
     };
+    
 
     public shared (msg) func clearallcartitmesbyprincipal() : async Result.Result<(), Types.DeleteCartItemsError> {
         //  if (Principal.isAnonymous(msg.caller)) {
@@ -913,7 +972,7 @@ actor {
         return shippingamount;
     };
 
-    public shared (msg) func createOrder(order : Types.NewOrder) : async Result.Result<Types.Order, Types.OrderError> {
+    func createOrder(order : Types.NewOrder ) : async Result.Result<Types.Order, Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
@@ -925,7 +984,7 @@ actor {
                     id = orderId;
                     shippingAddress = order.shippingAddress;
                     products = order.products;
-                    userid = msg.caller;
+                    userid = order.userid;
                     totalAmount = order.totalAmount;
                     subTotalAmount = order.subTotalAmount;
                     shippingAmount = shippingamount;
@@ -942,6 +1001,109 @@ actor {
                 return #ok(newOrder);
             };
         };
+    };
+
+    public shared (msg) func place_order(neworder : Types.NewOrder , from : Principal , to : Principal , amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        // };
+        switch (paymentOption){
+            case (#icp) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show (index));
+                    };
+                    case (#Ok(res)) {
+                        let order : Types.NewOrder = {
+                            userid = msg.caller;
+                            shippingAddress = neworder.shippingAddress;
+                            products = neworder.products;
+                            totalAmount = neworder.totalAmount;
+                            subTotalAmount = neworder.subTotalAmount;
+                            orderStatus = neworder.orderStatus;
+                            paymentStatus = neworder.paymentStatus;
+                            paymentAddress = neworder.paymentAddress;
+                            paymentMethod = neworder.paymentMethod;
+                            shippingAmount = neworder.shippingAmount;
+                            awb = neworder.awb;
+                        };
+
+                        let order_status = await createOrder(order);
+                        switch (order_status) {
+                            case (#err(index)) {
+                                return #err(index);
+                            };
+                            case (#ok(response)) {
+                                return #ok(response,#Ok(res));
+                            };
+                        };
+                    };
+                }; 
+            };
+            case (#ckbtc) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show (index));
+                    };
+                    case (#Ok(res)) {
+                        let order : Types.NewOrder = {
+                            userid = msg.caller;
+                            shippingAddress = neworder.shippingAddress;
+                            products = neworder.products;
+                            totalAmount = neworder.totalAmount;
+                            subTotalAmount = neworder.subTotalAmount;
+                            orderStatus = neworder.orderStatus;
+                            paymentStatus = neworder.paymentStatus;
+                            paymentAddress = neworder.paymentAddress;
+                            paymentMethod = neworder.paymentMethod;
+                            shippingAmount = neworder.shippingAmount;
+                            awb = neworder.awb;
+                        };
+                        let order_status = await createOrder(order);
+                        switch (order_status) {
+                            case (#err(index)) {
+                                return #err(#UnableToCreate);
+                            };
+                            case (#ok(response)) {
+                                return #ok(response,#Ok(res));
+                            };
+                        };
+                    };
+                };
+        };
+
+        };
+    };
+
+
+    func icrc2_transferFrom(ledgerId : Text, transferfrom : Principal, transferto : Principal, amount : Nat) : async (ICRC.Result_2) {
+
+        let ledger = actor (ledgerId) : ICRC.Token;
+        await ledger.icrc2_transfer_from({
+            spender_subaccount = null;
+            from = { owner = transferfrom; subaccount = null };
+            to = { owner = transferto; subaccount = null };
+            amount;
+            fee = null;
+            memo = null;
+            created_at_time = null;
+        });
+    };
+
+    public func get_exchange_rates( x : XRC.Asset , y : XRC.Asset) : async XRC.GetExchangeRateResult {
+        let xrc = actor (exchange_rate_canister) : actor {
+            get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
+        };
+        let timestamp = Int.div(Time.now(),1_000_000_000) - 120;
+        // 2 mintues buffer time to get the exchange rate
+        Debug.print(debug_show(timestamp));
+        Cycles.add<system>(10_000_000_000);
+        let result = await xrc.get_exchange_rate({timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
+        Debug.print(debug_show(Cycles.refunded()));
+        Debug.print(debug_show (result));
+        return result;
     };
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
@@ -1017,14 +1179,22 @@ actor {
         };
     };
     // Admin can see all orders
-    public query (msg) func listallOrders() : async [(Types.OrderId, Types.Order)] {
+    // 📍📍📍📍📍📍
+    public query (msg) func listallOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
 
-        return Iter.toArray(orders.entries());
+        let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(orders.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No orders found");
+        };
+        return pages[pageNo];
     };
 
     // Users can see their orders
 
-    public query (msg) func listUserOrders() : async [(Types.OrderId, Types.Order)] {
+    public query (msg) func listUserOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
         let caller = msg.caller;
 
         // Filter orders to include only those belonging to `caller`
@@ -1040,7 +1210,14 @@ actor {
                 };
             },
         );
-        return Iter.toArray(filteredOrders.entries());
+        let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(filteredOrders.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No orders found");
+        };
+        return pages[pageNo];
     };
 
     // get order by id

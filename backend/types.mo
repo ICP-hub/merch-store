@@ -181,6 +181,7 @@ module {
         #OrderNotFound;
         #UnableToUpdate;
         #UserNotAuthenticated;
+        #PaymentFailed;
     };
 
     public type Category = {
