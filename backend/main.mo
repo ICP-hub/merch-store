@@ -27,6 +27,7 @@ import Source "mo:uuid/async/SourceV4";
 import Int "mo:base/Int";
 import Cycles "mo:base/ExperimentalCycles";
 
+
 actor {
 
     let g = Source.Source();
@@ -145,8 +146,16 @@ actor {
         return Result.fromOption(user, #UserNotFound);
     };
 
-    public query func listUsers() : async [(Principal, Types.User)] {
-        return Iter.toArray(Users.entries());
+    // 📍📍📍📍📍
+    public query func listUsers(chunkSize : Nat , PageNo : Nat) : async{data : [(Principal, Types.User)]; current_page : Nat; total_pages : Nat} {
+        let pages =  Utils.paginate<(Principal , Types.User)>(Iter.toArray(Users.entries()), chunkSize);
+        if (pages.size() < PageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No users found");
+        };
+        return { data = pages[PageNo]; current_page = PageNo; total_pages = pages.size(); };
     };
 
     //  ***************************************** Users Address CRUD Operations *****************************************************
@@ -294,15 +303,24 @@ actor {
         };
     };
 
-    public query ({ caller }) func listUserAddresses() : async [(Principal, [Types.Address])] {
+
+//📍📍📍📍📍
+    public query ({ caller }) func listUserAddresses(chunkSize:Nat , pageNo : Nat) : async {data :[(Principal, [Types.Address])]; current_page : Nat; total_pages : Nat} {
         let userP = caller;
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
             case null {
-                return [];
+                throw Error.reject("No addresses found");
             };
             case (?existingAddresses) {
-                return [(userP, existingAddresses)];
+                let pages =  Utils.paginate<(Principal, [Types.Address])>([(userP, existingAddresses)], chunkSize);        
+                if (pages.size() < pageNo) {
+                    throw Error.reject("Page not found");
+                };
+                if (pages.size() == 0) {
+                    throw Error.reject("No addresses found");
+                };
+                return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
             };
         };
     };
@@ -318,9 +336,9 @@ actor {
         variant_sale_price : Float
 
     ) : async Result.Result<(Types.Variants), Types.CreateVariantError> {
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        };
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
             return #err(#UserNotAdmin); // We require the user to be admin
@@ -530,8 +548,17 @@ actor {
         // If the post is not found, this will return an error as result.
     };
 
-    public query func listallProducts() : async [(Types.SlugId, Types.Product)] {
-        return Iter.toArray(products.entries());
+    // 📍📍📍📍📍
+    public query func listallProducts(chunksize : Nat , pageNo : Nat) : async {data : [(Types.SlugId, Types.Product)]; current_page : Nat; total_pages : Nat} {
+        let pages =  Utils.paginate<(Types.SlugId,Types.Product)>(Iter.toArray(products.entries()),chunksize);
+
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No products found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     // --------------------------Searching Functions----------------------------------------------------------
@@ -699,8 +726,16 @@ actor {
         return #ok(());
     };
 
-    public query func listCategories() : async [(Types.SlugId, Types.Category)] {
-        return Iter.toArray(categories.entries());
+    // 📍📍📍📍📍
+    public query func listCategories(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.SlugId, Types.Category)]; current_page : Nat; total_pages : Nat} {
+        let pages = Utils.paginate<(Types.SlugId, Types.Category)>(Iter.toArray(categories.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No categories found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     func checkifcategoryexists(slug : Text) : Bool {
@@ -779,9 +814,16 @@ actor {
         return #ok(());
     };
 
-    public query func listWishlistItems() : async [(Types.WishlistId, Types.WishlistItem)] {
-
-        return Iter.toArray(wishlistItems.entries());
+    // 📍📍📍📍📍
+    public query func listWishlistItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.WishlistId, Types.WishlistItem)]; current_page : Nat; total_pages : Nat} {
+        let pages = Utils.paginate<(Types.WishlistId, Types.WishlistItem)>(Iter.toArray(wishlistItems.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No wishlist items found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
     };
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
@@ -858,7 +900,8 @@ actor {
         return #ok(());
     };
 
-    public query (msg) func getCallerCartItems() : async [(Types.CartId, Types.CartItem)] {
+    // 📍📍📍📍📍
+    public query (msg) func getCallerCartItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.CartId, Types.CartItem)]; current_page : Nat; total_pages : Nat} {
         // Assuming `cartItems` is your existing HashMap<CartId, CartItem>
         let caller = msg.caller;
 
@@ -875,8 +918,17 @@ actor {
                 };
             },
         );
-        return Iter.toArray(filteredCartItems.entries());
+        let pages = Utils.paginate<(Types.CartId, Types.CartItem)>(Iter.toArray(filteredCartItems.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No cart items found");
+        };
+        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); 
+         };
     };
+    
 
     public shared (msg) func clearallcartitmesbyprincipal() : async Result.Result<(), Types.DeleteCartItemsError> {
         //  if (Principal.isAnonymous(msg.caller)) {
@@ -1127,14 +1179,22 @@ actor {
         };
     };
     // Admin can see all orders
-    public query (msg) func listallOrders() : async [(Types.OrderId, Types.Order)] {
+    // 📍📍📍📍📍📍
+    public query (msg) func listallOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
 
-        return Iter.toArray(orders.entries());
+        let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(orders.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No orders found");
+        };
+        return pages[pageNo];
     };
 
     // Users can see their orders
 
-    public query (msg) func listUserOrders() : async [(Types.OrderId, Types.Order)] {
+    public query (msg) func listUserOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
         let caller = msg.caller;
 
         // Filter orders to include only those belonging to `caller`
@@ -1150,7 +1210,14 @@ actor {
                 };
             },
         );
-        return Iter.toArray(filteredOrders.entries());
+        let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(filteredOrders.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No orders found");
+        };
+        return pages[pageNo];
     };
 
     // get order by id
