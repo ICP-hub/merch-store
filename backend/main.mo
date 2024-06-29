@@ -3,22 +3,17 @@
 import Types "types";
 import Utils "utils";
 import List "mo:base/List";
-import Map "mo:base/HashMap";
-import Hash "mo:base/Hash";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
-import Blob "mo:base/Blob";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
-import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
-import Memory "mo:base/ExperimentalStableMemory";
 import Nat8 "mo:base/Nat8";
-import HashMap "mo:base/HashMap";
+import TrieMap "mo:base/TrieMap";
 import Error "mo:base/Error";
 import ICRC "./ICRC";
 import XRC "./XRC";
@@ -39,10 +34,10 @@ actor {
     stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
     stable let exchange_rate_canister = "uf6dk-hyaaa-aaaaq-qaaaq-cai";
 
-    private var Users = Map.HashMap<Principal, Types.User>(0, Principal.equal, Principal.hash);
+    private var Users = TrieMap.TrieMap<Principal, Types.User>(Principal.equal, Principal.hash);
     private stable var stableUsers : [(Principal, Types.User)] = [];
 
-    private var products = Map.HashMap<Types.SlugId, Types.Product>(0, Text.equal, Text.hash);
+    private var products = TrieMap.TrieMap<Types.SlugId, Types.Product>( Text.equal, Text.hash);
     private stable var stableproducts : [(Types.SlugId, Types.Product)] = [];
 
     private stable var shippingamount : Types.ShippingAmount = {
@@ -57,20 +52,21 @@ actor {
     // private var color = Map.HashMap<Types.SlugId, Types.Color>(0, Text.equal, Text.hash);
     // private stable var stablecolors : [(Types.SlugId, Types.Color)] = [];
 
-    private var variants = Map.HashMap<Types.SlugId, Types.Variants>(0, Text.equal, Text.hash); //! Here Variant Slug will be the key
+    private var variants = TrieMap.TrieMap<Types.SlugId, Types.Variants>( Text.equal, Text.hash); //! Here Variant Slug will be the key
     private stable var stablevariants : [(Types.SlugId, Types.Variants)] = [];
 
-    private var usersaddresslist = Map.HashMap<Principal, [Types.Address]>(0, Principal.equal, Principal.hash);
+    private var usersaddresslist = TrieMap.TrieMap<Principal, [Types.Address]>(Principal.equal, Principal.hash);
+
     private stable var stableusersaddresslist : [(Principal, [Types.Address])] = [];
 
     // --------------------------------------------------------------------------------------------------------------------------
-    private var categories = Map.HashMap<Types.SlugId, Types.Category>(0, Text.equal, Text.hash);
+    private var categories = TrieMap.TrieMap<Types.SlugId, Types.Category>( Text.equal, Text.hash);
     private stable var stablecategories : [(Types.SlugId, Types.Category)] = [];
 
-    private var orders = Map.HashMap<Types.OrderId, Types.Order>(0, Text.equal, Text.hash);
+    private var orders = TrieMap.TrieMap<Types.OrderId, Types.Order>(Text.equal, Text.hash);
     private stable var stableorders : [(Types.OrderId, Types.Order)] = [];
 
-    private var addressToOrder = Map.HashMap<Text, Types.OrderId>(0, Text.equal, Text.hash);
+    private var addressToOrder = TrieMap.TrieMap<Text, Types.OrderId>( Text.equal, Text.hash);
     private stable var stableaddresstoorder : [(Text, Types.OrderId)] = [];
     //For processing and storing images
     // private stable var currentMemoryOffset : Nat64 = 2;
@@ -81,12 +77,57 @@ actor {
 
     // private var imgSize : Map.HashMap<Types.ImgId, Nat> = Map.fromIter(stableimgSize.vals(), 0, Text.equal, Text.hash);
 
-    private var wishlistItems = Map.HashMap<Types.WishlistId, Types.WishlistItem>(0, Text.equal, Text.hash);
-    private var cartItems = Map.HashMap<Types.CartId, Types.CartItem>(0, Text.equal, Text.hash);
-
+    private var wishlistItems = TrieMap.TrieMap<Types.WishlistId, Types.WishlistItem>( Text.equal, Text.hash);
+    private stable var stablewishlistItems : [(Types.WishlistId, Types.WishlistItem)] = [];
+    
+    private var cartItems = TrieMap.TrieMap<Types.CartId, Types.CartItem>(Text.equal, Text.hash);
+    private stable var stablecartItems : [(Types.CartId, Types.CartItem)] = [];
     // Contact us
-    private var contacts = Map.HashMap<Types.ContactId, Types.Contact>(0, Text.equal, Text.hash);
+    private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
     private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
+
+        // -------------------------- Stablising functions to store data --------------------------------------------------------------
+
+    // Stablising the data
+    // Preupgrade function to store the data in stable variables
+    system func preupgrade() {
+        stableproducts := Iter.toArray(products.entries());
+        stablecategories := Iter.toArray(categories.entries());
+        stableorders := Iter.toArray(orders.entries());
+        stableaddresstoorder := Iter.toArray(addressToOrder.entries());
+        // stableimgOffset := Iter.toArray(imgOffset.entries());
+        // stableimgSize := Iter.toArray(imgSize.entries());
+        stablecontacts := Iter.toArray(contacts.entries());
+        stableUsers := Iter.toArray(Users.entries());
+        stablevariants := Iter.toArray(variants.entries());
+        stableusersaddresslist := Iter.toArray(usersaddresslist.entries());
+        stablewishlistItems := Iter.toArray(wishlistItems.entries());
+        stablecartItems := Iter.toArray(cartItems.entries());
+
+    };
+
+    // Postupgrade function to restore the data from stable variables
+    system func postupgrade() {
+        products := TrieMap.fromEntries(stableproducts.vals(), Text.equal, Text.hash);
+
+        categories := TrieMap.fromEntries(stablecategories.vals(), Text.equal, Text.hash);
+        
+        orders := TrieMap.fromEntries(stableorders.vals(), Text.equal, Text.hash);
+        
+        addressToOrder := TrieMap.fromEntries(stableaddresstoorder.vals(), Text.equal, Text.hash);
+
+        contacts := TrieMap.fromEntries(stablecontacts.vals(), Text.equal, Text.hash);
+
+        Users := TrieMap.fromEntries(stableUsers.vals(), Principal.equal, Principal.hash);
+
+        variants := TrieMap.fromEntries(stablevariants.vals(), Text.equal, Text.hash);
+
+        usersaddresslist := TrieMap.fromEntries(stableusersaddresslist.vals(), Principal.equal, Principal.hash);
+
+        wishlistItems := TrieMap.fromEntries(stablewishlistItems.vals(), Text.equal, Text.hash);
+
+        cartItems := TrieMap.fromEntries(stablecartItems.vals(), Text.equal, Text.hash);
+    };
 
     //  *******------------------------   Funtions  -------------------------**********
 
@@ -141,7 +182,7 @@ actor {
         return Result.fromOption(user, #UserNotFound);
     };
 
-    public shared query ({ caller }) func getUserdetailsbyid(id : Principal) : async Result.Result<Types.User, Types.GetUserError> {
+    public shared query func getUserdetailsbyid(id : Principal) : async Result.Result<Types.User, Types.GetUserError> {
         let user = Users.get(id);
         return Result.fromOption(user, #UserNotFound);
     };
@@ -198,9 +239,9 @@ actor {
     };
 
     public shared ({ caller }) func updateAddress(address : Types.Address, id : Text, callerP : Principal) : async Result.Result<(Types.Address), Types.UpdateAddressError> {
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };
+        if (Principal.isAnonymous(caller)) {
+            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        };
        
         let userP : Principal = callerP;
         let userAddresses = usersaddresslist.get(userP);
@@ -417,7 +458,7 @@ actor {
         };
     };
 
-    public shared ({ caller }) func getvariant(variant_slug : Types.SlugId) : async Result.Result<Types.Variants, Types.GetVariantError> {
+    public shared func getvariant(variant_slug : Types.SlugId) : async Result.Result<Types.Variants, Types.GetVariantError> {
         let variant = variants.get(variant_slug);
         return Result.fromOption(variant, #VariantNotFound);
     };
@@ -564,7 +605,7 @@ actor {
     // --------------------------Searching Functions----------------------------------------------------------
 
     public query func searchproductsbytitle(title : Text) : async [(Types.SlugId, Types.Product)] {
-        let result = HashMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
+        let result = TrieMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
             products,
             Text.equal,
             Text.hash,
@@ -580,7 +621,7 @@ actor {
     };
 
     public query func searchproductsbycategory(category : Types.SlugId) : async [(Types.SlugId, Types.Product)] {
-        let result = HashMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
+        let result = TrieMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
             products, // The HashMap to filter which is of type HashMap<SlugId, Product>
             Text.equal,
             Text.hash,
@@ -781,9 +822,9 @@ actor {
         id : Types.WishlistId
     ) : async Result.Result<(Types.WishlistItem), Types.UpdateWishlistItemError> {
         // commented for local development
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        };
 
         let result = wishlistItems.get(id);
         switch (result) {
@@ -807,9 +848,9 @@ actor {
     };
 
     public shared (msg) func deleteWishlistItems(id : Types.WishlistId) : async Result.Result<(), Types.DeleteWishlistItemError> {
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated);
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated);
+        };
         wishlistItems.delete(id);
         return #ok(());
     };
@@ -863,9 +904,9 @@ actor {
         color : Text,
     ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
         // commented for local development
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+        };
 
         let result = cartItems.get(id);
         switch (result) {
@@ -893,9 +934,9 @@ actor {
 
     public shared (msg) func deleteCartItems(id : Types.CartId) : async Result.Result<(), Types.DeleteCartItemsError> {
 
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated);
-        // };
+        if (Principal.isAnonymous(msg.caller)) {
+            return #err(#UserNotAuthenticated);
+        };
         cartItems.delete(id);
         return #ok(());
     };
@@ -906,7 +947,7 @@ actor {
         let caller = msg.caller;
 
         // Filter cartItems to include only those belonging to `caller`
-        let filteredCartItems = HashMap.mapFilter<Types.CartId, Types.CartItem, Types.CartItem>(
+        let filteredCartItems = TrieMap.mapFilter<Types.CartId, Types.CartItem, Types.CartItem>(
             cartItems,
             Text.equal,
             Text.hash,
@@ -935,7 +976,7 @@ actor {
         //     return #err(#UserNotAuthenticated);
         // };
         let caller = msg.caller;
-        let filteredCartItems = HashMap.mapFilter<Types.CartId, Types.CartItem, Types.CartItem>(
+        let filteredCartItems = TrieMap.mapFilter<Types.CartId, Types.CartItem, Types.CartItem>(
             cartItems,
             Text.equal,
             Text.hash,
@@ -1107,7 +1148,6 @@ actor {
     };
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
-        let userPrincipalStr = Principal.toText(msg.caller);
         // Check if the caller is an admin
         let adminstatus = await isAdmin(msg.caller);
         if (adminstatus == false) {
@@ -1143,7 +1183,6 @@ actor {
     };
 
     public shared (msg) func updateOrderStatus(id : Types.OrderId, orderStatus : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
-        let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
         let adminstatus = await isAdmin(msg.caller);
@@ -1180,7 +1219,7 @@ actor {
     };
     // Admin can see all orders
     // 📍📍📍📍📍📍
-    public query (msg) func listallOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
+    public query  func listallOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
 
         let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(orders.entries()),chunkSize);
         if (pages.size() < pageNo) {
@@ -1198,7 +1237,7 @@ actor {
         let caller = msg.caller;
 
         // Filter orders to include only those belonging to `caller`
-        let filteredOrders = HashMap.mapFilter<Types.OrderId, Types.Order, Types.Order>(
+        let filteredOrders = TrieMap.mapFilter<Types.OrderId, Types.Order, Types.Order>(
             orders,
             Text.equal,
             Text.hash,
@@ -1230,7 +1269,6 @@ actor {
         if (Principal.isAnonymous(msg.caller)) {
             return #err(#UserNotAuthenticated);
         };
-        let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
         let adminstatus = await isAdmin(msg.caller);
@@ -1258,7 +1296,6 @@ actor {
         if (Principal.isAnonymous(caller)) {
             return #err(#UserNotAuthenticated);
         };
-        let userPrincipalStr = Principal.toText(caller);
         // Check if the caller is an admin
         let adminstatus = await isAdmin(caller);
         if (adminstatus == false) {
@@ -1294,7 +1331,7 @@ actor {
 
     //----------------------------------------------  Contact_Functions  --------------------------------------------------------------------------------//
 
-    public shared (msg) func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
+    public shared func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
 
         if (co.name == "") { return #err(#EmptyName) };
         if (co.email == "") { return #err(#EmptyEmail) };
@@ -1357,7 +1394,6 @@ actor {
     };
 
     public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
-        let userPrincipalStr = Principal.toText(msg.caller);
 
         // Check if the caller is an admin
         let adminstatus = await isAdmin(msg.caller);
@@ -1417,70 +1453,13 @@ actor {
     //         };
     //     };
     // };
-    // -------------------------- Stablising functions to store data --------------------------------------------------------------
 
-    // Stablising the data
-    // Preupgrade function to store the data in stable variables
-    system func preupgrade() {
-        stableproducts := Iter.toArray(products.entries());
-        stablecategories := Iter.toArray(categories.entries());
-        stableorders := Iter.toArray(orders.entries());
-        stableaddresstoorder := Iter.toArray(addressToOrder.entries());
-        // stableimgOffset := Iter.toArray(imgOffset.entries());
-        // stableimgSize := Iter.toArray(imgSize.entries());
-        stablecontacts := Iter.toArray(contacts.entries());
-        stableUsers := Iter.toArray(Users.entries());
-    };
-
-    // Postupgrade function to restore the data from stable variables
-    system func postupgrade() {
-        products := Map.fromIter<Types.SlugId, Types.Product>(
-            stableproducts.vals(),
-            10,
-            Text.equal,
-            Text.hash,
-        );
-        categories := Map.fromIter<Types.SlugId, Types.Category>(
-            stablecategories.vals(),
-            10,
-            Text.equal,
-            Text.hash,
-        );
-        orders := Map.fromIter<Types.OrderId, Types.Order>(
-            stableorders.vals(),
-            10,
-            Text.equal,
-            Text.hash,
-        );
-        addressToOrder := Map.fromIter<Text, Types.OrderId>(
-            stableaddresstoorder.vals(),
-            10,
-            Text.equal,
-            Text.hash,
-        );
-        // stableimgOffset := [];
-        // stableimgSize := [];
-        contacts := Map.fromIter<Types.ContactId, Types.Contact>(
-            stablecontacts.vals(),
-            10,
-            Text.equal,
-            Text.hash,
-        );
-
-        Users := Map.fromIter<Principal, Types.User>(
-            stableUsers.vals(),
-            10,
-            Principal.equal,
-            Principal.hash,
-        );
-
-    };
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
-        // let adminstatus = await isAdmin(caller);
-        // if (adminstatus == false) {
-        //     return #err(#UserNotAdmin); // We require the user to be admin
-        // };
+        let adminstatus = await isAdmin(caller);
+        if (adminstatus == false) {
+            return #err(#UserNotAdmin); // We require the user to be admin
+        };
 
         let totalOrders = Iter.toArray(orders.entries()).size();
         let totalProducts = Iter.toArray(products.entries()).size();
