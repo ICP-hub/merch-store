@@ -476,6 +476,7 @@ type CreateVariantError =
  };
 type CreateProductError = 
  variant {
+   CategoryNotFound;
    EmptyTitle;
    UserNotAdmin;
    UserNotAuthenticated;

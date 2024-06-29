@@ -18,11 +18,11 @@ const CommonInput = ({
   divClass,
 }) => {
   return (
-    <div className="flex flex-col gap-1 w-full items-center">
+    <div className="flex flex-col gap-1 w-full  ">
       <label className="h-full flex items-center w-full font-medium uppercase text-xs px-3">
         {label}
       </label>
-      <div className="w-full flex ">
+      <div className=" md:w-full flex ">
         <input
           type={type}
           placeholder={placeholder}
@@ -74,10 +74,13 @@ const TelephoneInput = ({
       iti.destroy();
     };
   }, []);
+  const handleInput = (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "");
+  };
 
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-center">
         {label && (
           <label className="w-full font-medium uppercase text-xs px-3 mb-1">
             {label}
@@ -89,13 +92,16 @@ const TelephoneInput = ({
           </span>
         )}
       </div>
-      <div className={`${divClass}`}>
+      <div className={`${divClass} flex items-center w-full`}>
         <input
           type="tel"
           id="phone"
           ref={phoneInputRef}
           className={`${inputClass} outline-none`}
           disabled={disabled}
+          onInput={handleInput}
+          inputMode="numeric"
+          pattern="[0-9]*"
         />
       </div>
     </div>

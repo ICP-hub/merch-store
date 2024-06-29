@@ -44,7 +44,6 @@ const UserDetails = () => {
 
   const listusers = async () => {
     try {
-      setLoading(false);
       const userData = await backend.listUsers();
       setUser(userData);
     } catch (error) {

@@ -102,7 +102,7 @@ const ProductCard = ({ product }) => {
         setLoading(false);
       }
     } else {
-      toast.error("please login first");
+      toast.error("Please login first");
     }
   };
   const buyNowHandler = async () => {
@@ -130,7 +130,7 @@ const ProductCard = ({ product }) => {
         }, 4000);
       }
     } else {
-      toast.error("please login first");
+      toast.error("Please login first");
     }
   };
   useEffect(() => {
@@ -169,7 +169,7 @@ const ProductCard = ({ product }) => {
         setProductInLocalWishlist(true);
 
         if ("ok" in res) {
-          toast.success("item added to wishlist Successfully");
+          toast.success("Item added to wishlist Successfully");
         } else {
           // Log an error if the response does not have "ok" property
           console.error("Unexpected response from backend:", res);

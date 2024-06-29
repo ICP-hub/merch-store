@@ -93,7 +93,7 @@ const AddressDetail = () => {
   const totalDiscount = cartItemDetails?.reduce((sum, item) => {
     const discount =
       item.variantPriceBasedOnQty - item.variantSellPriceBasedOnQty;
-    return sum + discount * item.quantity;
+    return sum + discount;
   }, 0);
 
   const handleCancel = (e) => {
