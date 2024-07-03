@@ -377,34 +377,34 @@ actor {
     };
 
     // 📍📍📍📍📍
-    // public shared func listUsers(chunkSize : Nat , PageNo : Nat) : async{data : [(Principal, Types.User)]; current_page : Nat; total_pages : Nat} {
-    //     let index_pages =  Utils.paginate<(Principal , Index)>(Iter.toArray(Users.entries()), chunkSize);
-    //     if (index_pages.size() < PageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (index_pages.size() == 0) {
-    //         throw Error.reject("No users found");
-    //     };
+    public shared func listUsers(chunkSize : Nat , PageNo : Nat) : async{data : [Types.User]; current_page : Nat; total_pages : Nat} {
+        let index_pages =  Utils.paginate<(Principal , Index)>(Iter.toArray(Users.entries()), chunkSize);
+        if (index_pages.size() < PageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (index_pages.size() == 0) {
+            throw Error.reject("No users found");
+        };
 
-    //     // let data_page:[Types.User] = Array.tabulate<>(index_pages[pageNo],func x(1) = from_candid(x(1)));
-    //     let pages_data = index_pages[PageNo];
+        // let data_page:[Types.User] = Array.tabulate<>(index_pages[pageNo],func x(1) = from_candid(x(1)));
+        let pages_data = index_pages[PageNo];
+        var user_list = List.nil<Types.User>();
+        for ((k,v) in pages_data.vals()) {
+            
+            let user_blob = await stable_get(v, user_state);
+            let user : ?Types.User = from_candid(user_blob);
+            switch(user){
+                case null {
+                    throw Error.reject("no blob found in stable memory for the caller");
+                };
+                case(?val){
+                    user_list := List.push(val, user_list);
+                };
+            };
+        };
 
-    //     for ((k,v) in pages_data.vals()) {
-    //         let user_list = List.nil<(Principal,Types.User)>();
-    //         let user_blob = await stable_get(v, user_state);
-    //         let user : ?Types.User = from_candid(user_blob);
-    //         switch(user){
-    //             case null {
-    //                 throw Error.reject("no blob found in stable memory for the caller");
-    //             };
-    //             case(?val){
-    //                 List.push(user_list,(k,val));
-    //             };
-    //         };
-    //     };
-
-    //     return { data = pages[PageNo]; current_page = PageNo; total_pages = pages.size(); };
-    // };
+        return { data = List.toArray(user_list); current_page = PageNo; total_pages = index_pages.size(); };
+    };
 
     //  ***************************************** Users Address CRUD Operations *****************************************************
     public shared ({ caller }) func createAddress(
@@ -584,25 +584,28 @@ actor {
 
 
 //📍📍📍📍📍
-    // public query ({ caller }) func listUserAddresses(chunkSize:Nat , pageNo : Nat) : async {data :[(Principal, [Types.Address])]; current_page : Nat; total_pages : Nat} {
-    //     let userP = caller;
-    //     let userAddresses = usersaddresslist.get(userP);
-    //     switch (userAddresses) {
-    //         case null {
-    //             throw Error.reject("No addresses found");
-    //         };
-    //         case (?existingAddresses) {
-    //             let pages =  Utils.paginate<(Principal, [Types.Address])>([(userP, existingAddresses)], chunkSize);        
-    //             if (pages.size() < pageNo) {
-    //                 throw Error.reject("Page not found");
-    //             };
-    //             if (pages.size() == 0) {
-    //                 throw Error.reject("No addresses found");
-    //             };
-    //             return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
-    //         };
-    //     };
-    // };
+    public shared ({ caller }) func listUserAddresses() : async [Types.Address] {
+        let userP = caller;
+        let userAddresses = usersaddresslist.get(userP);
+        switch (userAddresses) {
+            case null {
+                throw Error.reject("No addresses found");
+            };
+            case (?existingAddresses) {
+                let address_blob = await stable_get(existingAddresses, address_state);
+                let addresses : ?[Types.Address] = from_candid(address_blob);
+                switch (addresses) {
+                    case null {
+                        throw Error.reject("no blob found in stable memory for the caller");
+                    };
+                    case (?val) {
+                        return val;
+                    };
+                };
+            
+            };
+        };
+    };
 
     // **************************** Variant Functions **********************************
   
@@ -877,51 +880,32 @@ actor {
     };
 
     // 📍📍📍📍📍
-    // public query func listallProducts(chunksize : Nat , pageNo : Nat) : async {data : [(Types.SlugId, Types.Product)]; current_page : Nat; total_pages : Nat} {
-    //     let pages =  Utils.paginate<(Types.SlugId,Types.Product)>(Iter.toArray(products.entries()),chunksize);
+    public shared func listallProducts(chunksize : Nat , pageNo : Nat) : async {data : [Types.Product]; current_page : Nat; total_pages : Nat} {
+        let index_pages =  Utils.paginate<(Types.SlugId,Index)>(Iter.toArray(products.entries()),chunksize);
+        
+        if (index_pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (index_pages.size() == 0) {
+            throw Error.reject("No products found");
+        };
+        let pages_data = index_pages[pageNo];
+        var product_list = List.nil<Types.Product>();
+        for ((k,v) in pages_data.vals()) {
+            let product_blob = await stable_get(v, product_state);
+            let product : ?Types.Product = from_candid(product_blob);
+            switch(product){
+                case null {
+                    throw Error.reject("no blob found in stable memory for the caller");
+                };
+                case(?val){
+                    product_list := List.push(val, product_list);
+                };
+            };
+        };
+        return { data = List.toArray(product_list); current_page = pageNo; total_pages = index_pages.size(); };
+    };
 
-    //     if (pages.size() < pageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (pages.size() == 0) {
-    //         throw Error.reject("No products found");
-    //     };
-    //     return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
-    // };
-
-    // --------------------------Searching Functions----------------------------------------------------------
-
-    // public query func searchproductsbytitle(title : Text) : async [(Types.SlugId, Types.Product)] {
-    //     let result = TrieMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
-    //         products,
-    //         Text.equal,
-    //         Text.hash,
-    //         func(k : Types.SlugId, v : Types.Product) : ?Types.Product {
-    //             if (v.title == title) {
-    //                 return ?v; // Include this item
-    //             } else {
-    //                 return null; // Exclude this item
-    //             };
-    //         },
-    //     );
-    //     return Iter.toArray(result.entries());
-    // };
-
-    // public query func searchproductsbycategory(category : Types.SlugId) : async [(Types.SlugId, Types.Product)] {
-    //     let result = TrieMap.mapFilter<Types.SlugId, Types.Product, Types.Product>(
-    //         products, // The HashMap to filter which is of type HashMap<SlugId, Product>
-    //         Text.equal,
-    //         Text.hash,
-    //         func(k : Types.SlugId, v : Types.Product) : ?Types.Product {
-    //             if (v.category == category) {
-    //                 return ?v; // Include this item
-    //             } else {
-    //                 return null; // Exclude this item
-    //             };
-    //         },
-    //     );
-    //     return Iter.toArray(result.entries());
-    // };
 
     //--------------------------------  Image_procession as blobs    --------------------------------------------------------------------------------------//
 
@@ -1241,16 +1225,35 @@ actor {
     };
 
     // 📍📍📍📍📍
-    // public query func listWishlistItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.WishlistId, Types.WishlistItem)]; current_page : Nat; total_pages : Nat} {
-    //     let pages = Utils.paginate<(Types.WishlistId, Types.WishlistItem)>(Iter.toArray(wishlistItems.entries()),chunkSize);
-    //     if (pages.size() < pageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (pages.size() == 0) {
-    //         throw Error.reject("No wishlist items found");
-    //     };
-    //     return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
-    // };
+    public shared ({caller}) func listWishlistItems(chunkSize : Nat , pageNo : Nat) : async {data :[Types.WishlistItem]; current_page : Nat; total_pages : Nat} {
+        let userWishlistItems = wishlistItems.get(caller);
+        switch (userWishlistItems) {
+            case null {
+                throw Error.reject("No wishlist items found");
+            };
+            case (?v) {
+                let items_blob = await stable_get(v, wishlist_state);
+                let items_data : ?[Types.WishlistItem] = from_candid(items_blob);
+                switch (items_data) {
+                    case null {
+                        throw Error.reject("no blob found in stable memory for the caller");
+                    };
+                    case (?val) {
+                        let pages = Utils.paginate<Types.WishlistItem>(val,chunkSize);
+        
+                        if (pages.size() < pageNo) {
+                            throw Error.reject("Page not found");
+                        };
+                        if (pages.size() == 0) {
+                            throw Error.reject("No wishlist items found");
+                        };
+                    return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size();   
+                    };
+                };
+            };
+            };
+        };
+    };  
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
 
@@ -1417,33 +1420,36 @@ actor {
                     
 
     // 📍📍📍📍📍
-    // public query (msg) func getCallerCartItems(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.CartId, Types.CartItem)]; current_page : Nat; total_pages : Nat} {
-    //     // Assuming `cartItems` is your existing HashMap<CartId, CartItem>
-    //     let caller = msg.caller;
-
-    //     // Filter cartItems to include only those belonging to `caller`
-    //     let filteredCartItems = TrieMap.mapFilter<Types.CartId, Types.CartItem, Types.CartItem>(
-    //         cartItems,
-    //         Text.equal,
-    //         Text.hash,
-    //         func(k : Types.CartId, v : Types.CartItem) : ?Types.CartItem {
-    //             if (v.principal == caller) {
-    //                 return ?v; // Include this item
-    //             } else {
-    //                 return null; // Exclude this item
-    //             };
-    //         },
-    //     );
-    //     let pages = Utils.paginate<(Types.CartId, Types.CartItem)>(Iter.toArray(filteredCartItems.entries()),chunkSize);
-    //     if (pages.size() < pageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (pages.size() == 0) {
-    //         throw Error.reject("No cart items found");
-    //     };
-    //     return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); 
-    //      };
-    // };
+    public shared (msg) func getCallerCartItems(chunkSize : Nat , pageNo : Nat) : async {data :[Types.CartItem]; current_page : Nat; total_pages : Nat} {
+        // Assuming `cartItems` is your existing HashMap<CartId, CartItem>
+        let caller = msg.caller;
+        let result = cartItems.get(caller);
+        switch (result) {
+            case null {
+                throw Error.reject("No cart items found");
+            };
+            case (?v) {
+                let cart_blob = await stable_get(v, cart_state);
+                let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
+                switch (cartitems) {
+                    case null {
+                        throw Error.reject("no blob found in stable memory for the caller");
+                    };
+                    case (?val) {
+                        let pages = Utils.paginate<Types.CartItem>(val,chunkSize);
+                        if (pages.size() < pageNo) {
+                            throw Error.reject("Page not found");
+                        };
+                        if (pages.size() == 0) {
+                            throw Error.reject("No cart items found");
+                        };
+                        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); 
+                    };
+                };
+            };
+        };
+        };
+    };
     
 
     public shared (msg) func clearallcartitmesbyprincipal() : async Result.Result<(), Types.DeleteCartItemsError> {
@@ -1707,17 +1713,35 @@ actor {
     };
     // Admin can see all orders
     // 📍📍📍📍📍📍
-    // public query  func listallOrders(chunkSize : Nat , pageNo : Nat) : async [(Types.OrderId, Types.Order)] {
+    public shared (msg) func listallOrders(chunkSize : Nat , pageNo : Nat) : async {data : [Types.Order]; current_page : Nat; total_pages : Nat} {
+        // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     throw Error.reject("You are not an admin !") // We require the user to be admin
+        // };
 
-    //     let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(orders.entries()),chunkSize);
-    //     if (pages.size() < pageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (pages.size() == 0) {
-    //         throw Error.reject("No orders found");
-    //     };
-    //     return pages[pageNo];
-    // };
+        let pages = Utils.paginate<(Types.OrderId, Index)>(Iter.toArray(orders.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No orders found");
+        };
+        let pages_data = pages[pageNo];
+        var order_list = List.nil<Types.Order>();
+        for ((k,v) in pages_data.vals()){
+            let order_blob = await stable_get(v, order_state);
+            let order : ?Types.Order = from_candid(order_blob);
+            switch(order){
+                case null {
+                    throw Error.reject("no blob found in stable memory for the caller");
+                };
+                case(?val){
+                    order_list := List.push(val, order_list);
+                };
+            };
+        };
+        return { data = List.toArray(order_list); current_page = pageNo; total_pages = pages.size() };
+    };
 
     // Users can see their orders
 
@@ -1725,18 +1749,6 @@ actor {
     //     let caller = msg.caller;
 
     //     // Filter orders to include only those belonging to `caller`
-    //     let filteredOrders = TrieMap.mapFilter<Types.OrderId, Types.Order, Types.Order>(
-    //         orders,
-    //         Text.equal,
-    //         Text.hash,
-    //         func(k : Types.OrderId, v : Types.Order) : ?Types.Order {
-    //             if (v.userid == caller) {
-    //                 return ?v; // Include this item
-    //             } else {
-    //                 return null; // Exclude this item
-    //             };
-    //         },
-    //     );
     //     let pages = Utils.paginate<(Types.OrderId, Types.Order)>(Iter.toArray(filteredOrders.entries()),chunkSize);
     //     if (pages.size() < pageNo) {
     //         throw Error.reject("Page not found");
@@ -1965,9 +1977,34 @@ actor {
         return #ok(());
     };
 
-    // public query func listContacts() : async [(Types.ContactId, Types.Contact)] {
-    //     return Iter.toArray(contacts.entries());
-    // };
+    public shared ({caller}) func listContacts(chunkSize : Nat , pageNo : Nat) : async {data : [Types.Contact]; current_page : Nat; total_pages : Nat} {
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     throw Error.reject("You are not an admin !") 
+        // };
+        let pages = Utils.paginate<(Types.ContactId, Index)>(Iter.toArray(contacts.entries()),chunkSize);
+        if (pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (pages.size() == 0) {
+            throw Error.reject("No contacts found");
+        };
+        let pages_data = pages[pageNo];
+        var contact_list = List.nil<Types.Contact>();
+        for ((k,v) in pages_data.vals()){
+            let contact_blob = await stable_get(v, contact_state);
+            let contact : ?Types.Contact = from_candid(contact_blob);
+            switch(contact){
+                case null {
+                    throw Error.reject("no blob found in stable memory for the caller");
+                };
+                case(?val){
+                    contact_list := List.push(val, contact_list);
+                };
+            };
+        };
+        return { data = List.toArray(contact_list); current_page = pageNo; total_pages = pages.size() };
+    };
 
     // ----------------------------------------Rivew & Ratings functions-------------------------------------------------------------
 
