@@ -41,7 +41,7 @@ dfx deploy
 - all commands for locally run
 
 ```bash
- dfx generate
+  dfx generate
   cp src/declarations/backend/* .dfx/local/canisters/backend/
   dfx deploy
   dfx deploy --network ic

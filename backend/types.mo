@@ -2,8 +2,10 @@
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
-import Nat32 "mo:base/Nat32";
+import Nat64 "mo:base/Nat64";
 module {
+    public type Index = Nat64;
+
     public type ProductId = Nat;
     // Slug is a unique identifier for a product
     public type SlugId = Text;
@@ -388,12 +390,10 @@ module {
     // Backend data for products
 
     public type CartItem = {
-        id : CartId;
         product_slug : Text;
         size : Text;
         color : Text;
         quantity : Nat8;
-        principal : Principal;
         time_created : Time.Time;
         time_updated : Time.Time;
     };
@@ -405,6 +405,7 @@ module {
         #EmptyProductSlug;
         #ProductSlugAlreadyExists;
         #UserNotAdmin;
+        #CartItemAlreadyExists;
     };
 
     public type GetCartItemsError = {
@@ -415,11 +416,14 @@ module {
         #UserNotAuthenticated;
         #UserNotAdmin;
         #CartItemNotFound;
+        #CartisEmpty;
     };
 
     public type DeleteCartItemsError = {
         #UserNotAdmin;
         #UserNotAuthenticated;
+        #CartisEmpty;
+        #CartItemNotFound
     };
 
     // WishList
@@ -443,12 +447,12 @@ module {
     public type DeleteWishlistItemError = {
         #UserNotAdmin;
         #UserNotAuthenticated;
+        #WishlistItemNotFound;
+        #listisempty;
     };
 
     public type WishlistItem = {
-        id : WishlistId;
         product_slug : Text;
-        principal : Principal;
         time_created : Time.Time;
         time_updated : Time.Time;
     };
@@ -482,6 +486,7 @@ module {
         #EmptyName;
         #EmptyEmail;
         #EmptyMessage;
+        #ContactAlreadyExists;
     };
 
     public type GetContactError = {
