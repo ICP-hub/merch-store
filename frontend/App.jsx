@@ -55,6 +55,7 @@ import UserDetails from "./pages/admin/UserDetails";
 import Shipping from "./pages/admin/Shipping";
 import "intl-tel-input/build/css/intlTelInput.css";
 import "./components/common/Styles/itelinput.css";
+// import { useAuth } from "./auth/useClient";
 
 const router = createBrowserRouter([
   {
@@ -88,7 +89,7 @@ const router = createBrowserRouter([
   {
     path: "/my-address",
     element: <MyAddressPage></MyAddressPage>,
-  },  
+  },
 
   {
     path: "/my-order-detail/:id",
@@ -103,14 +104,14 @@ const router = createBrowserRouter([
     path: "/my-order",
     element: <MyOrderPage></MyOrderPage>,
   },
-    {
+  {
     path: "/my-profile",
     element: (
       <Protected>
         <MyProfilePage></MyProfilePage>
       </Protected>
     ),
-  },  
+  },
   {
     path: "/my-wishlist",
     element: <MyWishlistPage></MyWishlistPage>,
@@ -131,10 +132,10 @@ const router = createBrowserRouter([
     path: "/shipping-policy",
     element: <ShippingPolicyPage></ShippingPolicyPage>,
   },
-    {
+  {
     path: "/shipping-address",
     element: <ShippingAddressPage></ShippingAddressPage>,
-  }, 
+  },
   {
     path: "/about",
     element: <TeamPage></TeamPage>,
@@ -275,6 +276,8 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  // const { backendActor } = useAuth();
+  // console.log("backend actore is ", backendActor);
   useEffect(() => {
     AOS.init();
   }, []);

@@ -1,66 +1,69 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react";
 
-import { ConnectDialog, useConnect, useDialog } from "@connect2ic/react"
+import { ConnectDialog, useConnect, useDialog } from "@connect2ic/react";
 
-import { Navigate, useNavigate } from "react-router-dom"
-import WELCOME from "../assets/welcome.svg"
-import WAVES from "vanta/dist/vanta.waves.min"
-import Button from "../components/common/Button"
-import LOGO from "../assets/logo.svg"
-import toast from "react-hot-toast"
-import AnimationView from "../components/common/AnimationView"
-import { TiChevronLeftOutline } from "react-icons/ti"
-import { PiWalletBold } from "react-icons/pi"
+import { Navigate, useNavigate } from "react-router-dom";
+import WELCOME from "../assets/welcome.svg";
+import WAVES from "vanta/dist/vanta.waves.min";
+import Button from "../components/common/Button";
+import LOGO from "../assets/logo.svg";
+import toast from "react-hot-toast";
+import AnimationView from "../components/common/AnimationView";
+import { TiChevronLeftOutline } from "react-icons/ti";
+import { PiWalletBold } from "react-icons/pi";
+import { useAuth } from "../auth/useClient";
 
 export default function LoginPage() {
-  const { open } = useDialog()
-  const { isConnected, disconnect } = useConnect()
-  const [vantaEffect, setVantaEffect] = useState(null)
-  const myRef = useRef(null)
-  const navigate = useNavigate()
+  // const { open } = useDialog();
+  // const { isConnected, disconnect } = useConnect()
+  const { isConnected, disconnect, login } = useAuth();
+  const [vantaEffect, setVantaEffect] = useState(null);
+  const myRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let intervalId
+    let intervalId;
 
     if (!vantaEffect) {
       // Apply the smooth background transition class initially
-      myRef.current.classList.add("smooth-bg")
+      myRef.current.classList.add("smooth-bg");
 
       setVantaEffect(
         WAVES({
           el: myRef.current,
           color: getRandomColor(), // Set initial color
-        }),
-      )
+        })
+      );
     }
 
     const changeColor = () => {
       setVantaEffect((prevEffect) => {
-        prevEffect.setOptions({ color: getRandomColor() })
-        return prevEffect
-      })
-    }
+        prevEffect.setOptions({ color: getRandomColor() });
+        return prevEffect;
+      });
+    };
 
     const startColorChange = () => {
-      intervalId = setInterval(changeColor, 10000) // Change color every 10 seconds
-    }
+      intervalId = setInterval(changeColor, 10000); // Change color every 10 seconds
+    };
 
-    startColorChange()
+    startColorChange();
 
     return () => {
-      clearInterval(intervalId)
-    }
-  }, [vantaEffect])
+      clearInterval(intervalId);
+    };
+  }, [vantaEffect]);
 
   const loginHandler = () => {
-    open()
-  }
+    // open();
+    login();
+  };
 
   const logoutHandler = () => {
-    disconnect()
-    toast.success("Logout successfully.")
-  }
-  console.log(isConnected)
+    disconnect();
+    toast.success("Logout successfully.");
+  };
+  // console.log(isConnected);
 
   return (
     <>
@@ -115,23 +118,23 @@ export default function LoginPage() {
         </div>
       </AnimationView>
     </>
-  )
+  );
 }
 
 const getRandomColor = () => {
-  const minDarkness = 20 // Minimum darkness level (0-255)
-  const maxDarkness = 100 // Maximum darkness level (0-255)
-  const range = maxDarkness - minDarkness + 1
+  const minDarkness = 20; // Minimum darkness level (0-255)
+  const maxDarkness = 100; // Maximum darkness level (0-255)
+  const range = maxDarkness - minDarkness + 1;
 
   const red = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const green = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
   const blue = Math.floor(Math.random() * range + minDarkness)
     .toString(16)
-    .padStart(2, "0")
+    .padStart(2, "0");
 
-  return `#${red}${green}${blue}`
-}
+  return `#${red}${green}${blue}`;
+};

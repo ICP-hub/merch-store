@@ -1,12 +1,9 @@
 type WishlistItem = 
  record {
-   id: WishlistId;
-   "principal": principal;
    product_slug: text;
    time_created: Time;
    time_updated: Time;
  };
-type WishlistId = text;
 type Variants = 
  record {
    color: text;
@@ -71,12 +68,6 @@ type UpdatepaymentStatusError =
    UserNotAdmin;
    UserNotAuthenticated;
  };
-type UpdateWishlistItemError = 
- variant {
-   UserNotAdmin;
-   UserNotAuthenticated;
-   WishlistItemNotFound;
- };
 type UpdateVariantError = 
  variant {
    EmptyColor;
@@ -132,6 +123,7 @@ type UpdateCategoryError =
 type UpdateCartItemsError = 
  variant {
    CartItemNotFound;
+   CartisEmpty;
    UserNotAdmin;
    UserNotAuthenticated;
  };
@@ -149,6 +141,20 @@ type UpdateAddressError =
    EmptyState;
    UserNotAuthenticated;
  };
+type TransferError = 
+ variant {
+   BadBurn: record {min_burn_amount: nat;};
+   BadFee: record {expected_fee: nat;};
+   CreatedInFuture: record {ledger_time: nat64;};
+   Duplicate: record {duplicate_of: nat;};
+   GenericError: record {
+                   error_code: nat;
+                   message: text;
+                 };
+   InsufficientFunds: record {balance: nat;};
+   TemporarilyUnavailable;
+   TooOld;
+ };
 type Time = int;
 type StatisticalDetail = 
  record {
@@ -160,55 +166,78 @@ type StatisticalDetail =
  };
 type SlugId = text;
 type ShippingAmount = record {shipping_amount: float64;};
+type Result__1 = 
+ variant {
+   Err: TransferError;
+   Ok: nat;
+ };
 type Result_9 = 
+ variant {
+   err: UpdateAddressError;
+   ok: Address;
+ };
+type Result_8 = 
  variant {
    err: UpdateCartItemsError;
    ok: CartItem;
  };
-type Result_8 = 
+type Result_7 = 
  variant {
    err: UpdateCategoryError;
-   ok: Category;
+   ok: record {
+         Category;
+         Index;
+       };
  };
-type Result_7 = 
+type Result_6 = 
  variant {
    err: UpdateContactError;
    ok: Contact;
  };
-type Result_6 = 
+type Result_5 = 
  variant {
    err: UpdatepaymentStatusError;
    ok: Order;
  };
-type Result_5 = 
- variant {
-   err: UpdateProductError;
-   ok: Product;
- };
 type Result_4 = 
  variant {
-   err: UpdateOrderError;
-   ok: Order;
+   err: UpdateProductError;
+   ok: record {
+         Product;
+         Index;
+       };
  };
 type Result_34 = 
  variant {
    err: CreateCartItemsError;
-   ok: CartItem;
+   ok: record {
+         CartItem;
+         Index;
+       };
  };
 type Result_33 = 
  variant {
    err: CreateWishlistItemError;
-   ok: WishlistItem;
+   ok: record {
+         WishlistItem;
+         Index;
+       };
  };
 type Result_32 = 
  variant {
    err: CreateAddressError;
-   ok: Address;
+   ok: record {
+         Address;
+         Index;
+       };
  };
 type Result_31 = 
  variant {
    err: CreateCategoryError;
-   ok: Category;
+   ok: record {
+         Category;
+         Index;
+       };
  };
 type Result_30 = 
  variant {
@@ -217,8 +246,8 @@ type Result_30 =
  };
 type Result_3 = 
  variant {
-   err: UpdateUserError;
-   ok: User;
+   err: UpdateOrderError;
+   ok: Order;
  };
 type Result_29 = 
  variant {
@@ -272,8 +301,11 @@ type Result_20 =
  };
 type Result_2 = 
  variant {
-   err: UpdateWishlistItemError;
-   ok: WishlistItem;
+   err: UpdateUserError;
+   ok: record {
+         User;
+         Index;
+       };
  };
 type Result_19 = 
  variant {
@@ -322,8 +354,11 @@ type Result_11 =
  };
 type Result_10 = 
  variant {
-   err: UpdateAddressError;
-   ok: Address;
+   err: OrderError;
+   ok: record {
+         Order;
+         Result__1;
+       };
  };
 type Result_1 = 
  variant {
@@ -367,6 +402,7 @@ type OrderError =
    MissingData;
    OrderNotFound;
    PaymentAddressAlreadyUsed;
+   PaymentFailed;
    UnableToCreate;
    UnableToUpdate;
    UserNotAuthenticated;
@@ -402,11 +438,17 @@ type NewOrder =
    totalAmount: float64;
    userid: principal;
  };
+type Index = nat64;
 type GetVariantError = variant {VariantNotFound;};
 type GetUserError = variant {UserNotFound;};
 type GetStatisticalDetailError = variant {UserNotAdmin;};
 type GetProductError = variant {ProductNotFound;};
 type GetPaymentStatusError = variant {OrderNotFound;};
+type GetExchangeRateResult = 
+ variant {
+   Err: ExchangeRateError;
+   Ok: ExchangeRate;
+ };
 type GetContactError = 
  variant {
    ContactNotFound;
@@ -415,10 +457,52 @@ type GetContactError =
  };
 type GetCategoryError = variant {CategoryNotFound;};
 type GetAddressError = variant {AddressNotFound;};
+type ExchangeRateMetadata = 
+ record {
+   base_asset_num_queried_sources: nat64;
+   base_asset_num_received_rates: nat64;
+   decimals: nat32;
+   forex_timestamp: opt nat64;
+   quote_asset_num_queried_sources: nat64;
+   quote_asset_num_received_rates: nat64;
+   standard_deviation: nat64;
+ };
+type ExchangeRateError = 
+ variant {
+   AnonymousPrincipalNotAllowed;
+   CryptoBaseAssetNotFound;
+   CryptoQuoteAssetNotFound;
+   FailedToAcceptCycles;
+   ForexAssetsNotFound;
+   ForexBaseAssetNotFound;
+   ForexInvalidTimestamp;
+   ForexQuoteAssetNotFound;
+   InconsistentRatesReceived;
+   NotEnoughCycles;
+   Other: record {
+            code: nat32;
+            description: text;
+          };
+   Pending;
+   RateLimited;
+   StablecoinRateNotFound;
+   StablecoinRateTooFewRates;
+   StablecoinRateZeroRate;
+ };
+type ExchangeRate = 
+ record {
+   base_asset: Asset;
+   metadata: ExchangeRateMetadata;
+   quote_asset: Asset;
+   rate: nat64;
+   timestamp: nat64;
+ };
 type DeleteWishlistItemError = 
  variant {
    UserNotAdmin;
    UserNotAuthenticated;
+   WishlistItemNotFound;
+   listisempty;
  };
 type DeleteVariantError = 
  variant {
@@ -449,6 +533,8 @@ type DeleteCategoryError =
  };
 type DeleteCartItemsError = 
  variant {
+   CartItemNotFound;
+   CartisEmpty;
    UserNotAdmin;
    UserNotAuthenticated;
  };
@@ -483,6 +569,7 @@ type CreateProductError =
  };
 type CreateContactError = 
  variant {
+   ContactAlreadyExists;
    EmptyEmail;
    EmptyMessage;
    EmptyName;
@@ -496,6 +583,7 @@ type CreateCategoryError =
  };
 type CreateCartItemsError = 
  variant {
+   CartItemAlreadyExists;
    EmptyColor;
    EmptyProductSlug;
    EmptySize;
@@ -538,8 +626,6 @@ type Category =
 type CartItem = 
  record {
    color: text;
-   id: CartId;
-   "principal": principal;
    product_slug: text;
    quantity: nat8;
    size: text;
@@ -547,6 +633,16 @@ type CartItem =
    time_updated: Time;
  };
 type CartId = text;
+type AssetClass = 
+ variant {
+   Cryptocurrency;
+   FiatCurrency;
+ };
+type Asset = 
+ record {
+   class: AssetClass;
+   symbol: text;
+ };
 type Address = 
  record {
    address_type: text;
@@ -569,85 +665,81 @@ service : {
   createAddress: (UserAddress) -> (Result_32);
   createCategory: (text, text, bool, bool) -> (Result_31);
   createContact: (UserContact) -> (Result_30);
-  createOrder: (NewOrder) -> (Result_16);
   createProduct: (UserProduct, vec VariantSize, vec VariantColor) ->
    (Result_29);
   createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_28);
-  deleteCartItems: (CartId) -> (Result_27);
+  deleteCartItems: (text) -> (Result_27);
   deleteCategory: (SlugId) -> (Result_26);
   deleteContact: (ContactId) -> (Result_25);
   deleteOrder: (OrderId) -> (Result_24);
   deleteProduct: (SlugId) -> (Result_23);
-  deleteWishlistItems: (WishlistId) -> (Result_22);
+  deleteWishlistItems: (text) -> (Result_22);
   deleteaddress: (text) -> (Result_21);
   deletevariant: (SlugId) -> (Result_20);
   getAddress: (text) -> (Result_19);
-  getCallerCartItems: () -> (vec record {
-                                   CartId;
-                                   CartItem;
-                                 }) query;
-  getCategory: (SlugId) -> (Result_18) query;
-  getContact: (ContactId) -> (Result_17) query;
-  getOrder: (text) -> (Result_16) query;
-  getProduct: (SlugId) -> (Result_15) query;
-  getUserdetailsbycaller: () -> (Result_14) query;
-  getUserdetailsbyid: (principal) -> (Result_14) query;
-  getpaymentstatus: () -> (Result_13);
+  getCallerCartItems: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec CartItem;
+      total_pages: nat;
+    });
+  getCategory: (SlugId) -> (Result_18);
+  getContact: (ContactId) -> (Result_17);
+  getOrder: (text) -> (Result_16);
+  getProduct: (SlugId) -> (Result_15);
+  getUserdetailsbycaller: () -> (Result_14);
+  getUserdetailsbyid: (principal) -> (Result_14);
+  get_exchange_rates: (Asset, Asset) -> (GetExchangeRateResult);
+  getpaymentstatus: (text) -> (Result_13);
   getshippingamount: () -> (ShippingAmount) query;
   getstatisticaldetailforadmin: () -> (Result_12);
   getvariant: (SlugId) -> (Result_11);
   isAdmin: (principal) -> (bool);
-  listCategories: () -> (vec record {
-                               SlugId;
-                               Category;
-                             }) query;
-  listContacts: () -> (vec record {
-                             ContactId;
-                             Contact;
-                           }) query;
-  listUserAddresses: () -> (vec record {
-                                  principal;
-                                  vec Address;
-                                }) query;
-  listUserOrders: () -> (vec record {
-                               OrderId;
-                               Order;
-                             }) query;
-  listUsers: () -> (vec record {
-                          principal;
-                          User;
-                        }) query;
-  listWishlistItems: () -> (vec record {
-                                  WishlistId;
-                                  WishlistItem;
-                                }) query;
-  listallOrders: () -> (vec record {
-                              OrderId;
-                              Order;
-                            }) query;
-  listallProducts: () -> (vec record {
-                                SlugId;
-                                Product;
-                              }) query;
-  searchproductsbycategory: (SlugId) -> (vec record {
-                                               SlugId;
-                                               Product;
-                                             }) query;
-  searchproductsbytitle: (text) -> (vec record {
-                                          SlugId;
-                                          Product;
-                                        }) query;
-  updateAddress: (Address, text, principal) -> (Result_10);
-  updateCartItems: (CartId, nat8, text, text) -> (Result_9);
-  updateCategory: (SlugId, text, text, bool, bool) -> (Result_8);
-  updateContact: (ContactId, bool) -> (Result_7);
-  updateOrderStatus: (OrderId, text) -> (Result_4);
-  updatePaymentstatus: (OrderId, text) -> (Result_6);
+  listContacts: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec Contact;
+      total_pages: nat;
+    });
+  listUserAddresses: () -> (vec Address);
+  listUsers: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec User;
+      total_pages: nat;
+    });
+  listWishlistItems: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec WishlistItem;
+      total_pages: nat;
+    });
+  listallOrders: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec Order;
+      total_pages: nat;
+    });
+  listallProducts: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec Product;
+      total_pages: nat;
+    });
+  place_order: (NewOrder, principal, principal, nat, variant {
+                                                       ckbtc;
+                                                       icp;
+                                                     }) -> (Result_10);
+  updateAddress: (Address, text, principal) -> (Result_9);
+  updateCartItems: (CartId, nat8, text, text) -> (Result_8);
+  updateCategory: (SlugId, text, text, bool, bool) -> (Result_7);
+  updateContact: (ContactId, bool) -> (Result_6);
+  updateOrderStatus: (OrderId, text) -> (Result_3);
+  updatePaymentstatus: (OrderId, text) -> (Result_5);
   updateProduct: (SlugId, UserProduct, vec VariantSize, vec VariantColor) ->
-   (Result_5);
-  updateTrackingUrl: (OrderId, text) -> (Result_4);
-  updateUser: (text, text, text) -> (Result_3);
-  updateWishlistItems: (WishlistId) -> (Result_2);
+   (Result_4);
+  updateTrackingUrl: (OrderId, text) -> (Result_3);
+  updateUser: (text, text, text) -> (Result_2);
   updateshippingamount: (ShippingAmount) -> (Result_1);
   updatevariant: (SlugId, text, text, nat, float64, float64) -> (Result);
 }

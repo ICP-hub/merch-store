@@ -44,6 +44,7 @@ import NoDataFound from "./NoDataFound";
 import TrendingProducts from "./TrendingProducts";
 import CartItemsSmallLoader from "../cart/CartItemsSmallLoader";
 import { Principal } from "@dfinity/principal";
+import { useAuth, useBackend } from "../../auth/useClient";
 
 const getRandomColor = () => {
   const minDarkness = 20; // Minimum darkness level (0-255)
@@ -71,12 +72,14 @@ const Header = ({ title }) => {
   const navigate = useNavigate();
   const [vantaEffect, setVantaEffect] = useState(null);
   const myRef = useRef(null);
-  const { isConnected, disconnect, principal } = useConnect();
+  // const { isConnected, disconnect, principal } = useConnect();
+  const { isConnected, disconnect, principal } = useAuth();
   const [carts, setCarts] = useState([]);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
   const maxInitialDisplay = 3;
-  const { open } = useDialog();
+  // const { open } = useDialog();
   const [isAdmin, setIsAdmin] = useState(false); // Add isAdmin state
 
   useEffect(() => {

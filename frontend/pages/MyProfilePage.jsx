@@ -22,6 +22,7 @@ import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
 import useClipboard from "react-use-clipboard";
 import { TailSpin } from "react-loader-spinner";
 import { CommonInput } from "../components/common/InputFields";
+import { useAuth, useBackend } from "../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components: MyProfilePage.
@@ -53,9 +54,11 @@ const MyProfilePageContainerMain = () => {
 /*  @  MyProfilePageContainerMain : MyProAccount.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProAccount = () => {
-  const { principal, isConnected } = useConnect();
+  // const { principal, isConnected } = useConnect();
 
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backend } = useBackend();
+  const { principal, isConnected } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [email, setEmail] = useState(""); // Add state for email
