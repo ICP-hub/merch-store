@@ -354,7 +354,7 @@ const Header = ({ title }) => {
                             {/* <Avvvatars style={"shape"} value={principal} size={40}  /> */}
                             <Avatar
                               size={40}
-                              name={principal}
+                              name={principal?.toText()}
                               variant="beam"
                               colors={[
                                 "#92A1C6",
