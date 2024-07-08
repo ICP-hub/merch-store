@@ -15,13 +15,11 @@ const TrendingProducts = () => {
   const { isLoading, productList, getProductList } = ProductApiHandler();
 
   // Filter trending products from productList
-  const trendingProducts = productList?.filter(
-    ([prodSlug, { trending, active }]) => {
-      if (trending && active) {
-        return productList;
-      }
+  const trendingProducts = productList?.filter((item) => {
+    if (item.trending && item.active) {
+      return productList;
     }
-  );
+  });
 
   useEffect(() => {
     getProductList();
@@ -85,7 +83,7 @@ const TrendingProducts = () => {
               <Slider {...settings}>
                 {trendingProducts
                   .slice(0, maxInitialDisplay)
-                  .map(([prodSlug, prodDetails], index) => (
+                  .map(( prodDetails, index) => (
                     <TrendingProductCard key={index} product={prodDetails} />
                   ))}
               </Slider>

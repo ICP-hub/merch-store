@@ -30,18 +30,14 @@ const defaultOptions = {
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageBottom = ({ productList, isLoading }) => {
   // Filter new Arrival from productList : last index will be the latest
-  const newArrivalList = productList?.filter(([prodSlug, { newArrival }]) => {
-    if (newArrival) {
+  const newArrivalList = productList?.filter((item) => {
+    if (item.newArrival) {
       return productList;
     }
   });
+  console.log(newArrivalList, "newArriwallist");
   // Get the lastest product based on time updated
-  const newArrivalProd = newArrivalList.reduce((latest, current) => {
-    const [, { time_updated: currentTime }] = current;
-    const [, { time_updated: latestTime }] = latest;
-
-    return Number(currentTime) > Number(latestTime) ? current : latest;
-  }, newArrivalList[0]);
+  const newArrivalProd = newArrivalList[0];
 
   return (
     <div className="flex flex-col py-8  rounded-2xl gap-8 tracking-wider">
@@ -66,7 +62,7 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
     return null;
   }
 
-  const { title, description, variantColor, slug } = newArrivalProd[1];
+  const { title, description, variantColor, slug } = newArrivalProd;
   const discount =
     ((variantColor[0].variant_price - variantColor[0].variant_sale_price) /
       variantColor[0].variant_price) *

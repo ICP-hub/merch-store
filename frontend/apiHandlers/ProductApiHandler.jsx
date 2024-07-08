@@ -1,15 +1,13 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
+import { useAuth, useBackend } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
-const useBackend = () => {
-  return useCanister("backend");
-};
 
 // API handler for product-related functionality
 const ProductApiHandler = () => {
   // Init backend
-  const [backend] = useBackend();
+  const { backend } = useBackend();
 
   // State variables for product list, loading status, and category list
   const [productList, setProductList] = useState(null);
@@ -24,9 +22,10 @@ const ProductApiHandler = () => {
   const getProductList = async () => {
     try {
       setIsLoading(true);
-      const response = await backend.listallProducts();
-      setProductList(response);
-      setInitialProductList(response);
+      const response = await backend.listallProducts(3, 0);
+      console.log(response);
+      setProductList(response.data);
+      setInitialProductList(response.data);
     } catch (err) {
       console.error("Error fetching product list:", err);
     } finally {

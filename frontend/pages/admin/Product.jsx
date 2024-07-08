@@ -7,10 +7,11 @@ import Table, {
   StatusPill,
 } from "./utils/Table"; // Update the import
 /* import item1 from "../../assets/merchandise1.png";
- */ import { useCanister } from "@connect2ic/react";
+ */ import { useBackend } from "../../auth/useClient";
 import { CiCirclePlus } from "react-icons/ci";
 import { InfinitySpin } from "react-loader-spinner";
 import IcpLogo from "../../assets/IcpLogo";
+
 const Products = () => {
   const columns = React.useMemo(
     () => [
@@ -54,7 +55,7 @@ const Products = () => {
     []
   );
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -64,9 +65,9 @@ const Products = () => {
 
   const listAllProducts = async () => {
     try {
-      const items = await backend.listallProducts();
-      setProducts(items);
-      console.log(items);
+      const items = await backend.listallProducts(1, 0);
+      setProducts(items.data);
+      console.log(items.data);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {
@@ -74,9 +75,8 @@ const Products = () => {
     }
   };
 
-  const data = useMemo(() => products, [products]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => ({
+  const extractedData = products.map((data, key) => ({
     title: data.title,
     slug: data.slug,
     category: data.category,

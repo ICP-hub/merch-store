@@ -6,10 +6,11 @@ import TopBar from "../../components/admin/common/TopBar";
 import LeftSidebar from "../../components/admin/common/LeftSidebar";
 import FullScreenInfinityLoader from "./FullScreenInfinityLoader";
 import { Principal } from "@dfinity/principal";
+import { useAuth, useBackend } from "../../auth/useClient";
 
 function ProtectedAdmin({ children }) {
-  const [backend] = useCanister("backend");
-  const { principal, isConnected } = useConnect();
+  const { backend } = useBackend();
+  const { principal, isConnected } = useAuth();
   const [loading, setLoading] = useState(true);
   const [sidebar, setSidebar] = useState(isBrowser ? true : false);
   const [isAdmin, setIsAdmin] = useState(false); // Add isAdmin state
@@ -35,6 +36,7 @@ function ProtectedAdmin({ children }) {
     const checkIsAdmin = async () => {
       try {
         if (isConnected) {
+          console.log(principal);
           const res = await backend.isAdmin(Principal.fromText(principal));
           setIsAdmin(res);
           setIsAdminChecked(true);

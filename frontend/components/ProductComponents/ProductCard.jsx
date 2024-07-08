@@ -8,7 +8,7 @@ import { BsFillStarFill } from "react-icons/bs";
 import Button from "../common/Button";
 import { IoHeartOutline, IoHeart } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { useCanister, useConnect } from "@connect2ic/react";
+import { useBackend, useAuth } from "../../auth/useClient";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 import { useEffect } from "react";
@@ -19,13 +19,13 @@ import IcpLogo from "../../assets/IcpLogo";
 /*  @ Component ProductCard.
 /* ----------------------------------------------------------------------------------------------------- */
 const ProductCard = ({ product }) => {
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
   const [loading3, setLoading3] = useState(false);
   const [wishlist, setWishlist] = useState([]);
+  const { backend } = useBackend();
 
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
 
-  const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [click, setClick] = useState(false);
@@ -37,8 +37,9 @@ const ProductCard = ({ product }) => {
 
   const listCarts = async () => {
     try {
-      const cart = await backend.getCallerCartItems();
-      setCarts(cart);
+      const cart = await backend.getCallerCartItems(1, 0);
+      setCarts(cart.data);
+      console.log(cart);
     } catch (error) {
       console.error("Error listing carts:", error);
     } finally {
@@ -61,7 +62,7 @@ const ProductCard = ({ product }) => {
         let quantity1;
 
         carts.some((item) => {
-          if (item[1]?.product_slug === product[0]) {
+          if (item[1]?.product_slug === product.slug) {
             isProductInCart = true;
             cartId = item[1]?.id;
             quantity1 = item[1]?.quantity;
@@ -75,16 +76,16 @@ const ProductCard = ({ product }) => {
           const res = await backend.updateCartItems(
             cartId,
             quantity1,
-            product[1].variantSize[0].size,
-            product[1].variantColor[0].color
+            product.variantSize[0].size,
+            product.variantColor[0].color
           );
           toast.success("item updated successfully");
           console.log(res);
         } else {
           const res = await backend.addtoCartItems(
-            product[0],
-            product[1].variantSize[0].size,
-            product[1].variantColor[0].color,
+            product.slug,
+            product.variantSize[0].size,
+            product.variantColor[0].color,
             quantity
           );
 
@@ -114,9 +115,9 @@ const ProductCard = ({ product }) => {
 
         if ("ok" in res) {
           const res = await backend.addtoCartItems(
-            product[0],
-            product[1].variantSize[0].size,
-            product[1].variantColor[0].color,
+            product.slug,
+            product.variantSize[0].size,
+            product.variantColor[0].color,
             quantity
           );
         } else {
@@ -141,8 +142,8 @@ const ProductCard = ({ product }) => {
     try {
       //setLoading4(true)
 
-      const wishlist2 = await backend.listWishlistItems();
-      setWishlist(wishlist2);
+      const wishlist2 = await backend.listWishlistItems(1, 0);
+      setWishlist(wishlist2.data);
     } catch (error) {
       console.error("Error listing wishlist:", error);
     } finally {
@@ -154,18 +155,16 @@ const ProductCard = ({ product }) => {
     // Check if the product is in the local cart
     const isProductInWishlist = wishlist.some(
       (item) =>
-        item[1].product_slug === product[0] &&
-        item[1].principal.toText() === principal
+        item.slug === product.slug && item[1].principal.toText() === principal
     );
     setProductInLocalWishlist(isProductInWishlist);
   }, [wishlist, product, principal]);
-  // add to wishlist functionality for adding items to the wishlist
 
   const AddToWishlist = async () => {
     if (isConnected) {
       try {
         setLoading3(true);
-        const res = await backend.addtoWishlist(product[0]);
+        const res = await backend.addtoWishlist(product.slug);
         setProductInLocalWishlist(true);
 
         if ("ok" in res) {
@@ -190,7 +189,7 @@ const ProductCard = ({ product }) => {
     try {
       const wishlistItem = wishlist.filter(
         (item) =>
-          item[1].product_slug === product[0] &&
+          item[1].product_slug === product.slug &&
           item[1].principal.toText() === principal
       );
 
@@ -228,7 +227,7 @@ const ProductCard = ({ product }) => {
   // Destructure product to extract required
   const extractProductInfo = (product) => {
     const { title, category, description, variantColor, variantSize, slug } =
-      product[1];
+      product;
     const { color, img1, img2, img3, variant_price, variant_sale_price } =
       variantColor[0];
     const { size } = variantSize[0];

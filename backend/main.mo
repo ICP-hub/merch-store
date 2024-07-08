@@ -270,7 +270,7 @@ actor {
     private let adminPrincipals : [Text] = [
         "7yywi-leri6-n33rr-vskr6-yb4nd-dvj6j-xg2b4-reiw6-dljs7-slclz-2ae",
         "jkssc-r7bft-rhxnv-xskty-gwy2y-nabjd-asvau-ijwcf-nyvbq-dcazp-zae",
-        "h7yxq-n6yb2-6js2j-af5hk-h4inj-edrce-oevyj-kbs7a-76kft-vrqrw-nqe",
+        "ze4vy-q7dc7-tevo4-gi5h4-lqr4b-af3x6-vmiyl-3ya53-dbmc4-qbc6e-yqe",
         "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
         "mmi6f-vbi3x-r3ytg-dath5-qfi5s-rbq3r-75avw-q3ele-ajsft-llzwc-dae",
         "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe",
@@ -618,13 +618,8 @@ actor {
         variant_sale_price : Float
 
     ) : async Result.Result<(Types.Variants), Types.CreateVariantError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
+        
 
         if (size == "") {
             return #err(#EmptySize);
@@ -652,10 +647,7 @@ actor {
     };
 
     public shared ({ caller }) func deletevariant(variant_slug : Types.SlugId) : async Result.Result<(), Types.DeleteVariantError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         variants.delete(variant_slug);
         return #ok(());
     };
@@ -668,10 +660,7 @@ actor {
         variant_price : Float,
         variant_sale_price : Float,
     ) : async Result.Result<(Types.Variants), Types.UpdateVariantError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         if (size == "") {
             return #err(#EmptySize);
@@ -737,10 +726,7 @@ actor {
     //  ------------------   Products_Functions ----------------
 
     public shared ({ caller }) func createProduct(p : Types.UserProduct, vs : [Types.VariantSize], vc : [Types.VariantColor]) : async Result.Result<(Types.Product), Types.CreateProductError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         let category_slug = p.category;
 
         if (checkifcategoryexists(category_slug) == false) {
@@ -792,10 +778,7 @@ actor {
         vc : [Types.VariantColor],
         //img : Text,
     ) : async Result.Result<(Types.Product,Index), Types.UpdateProductError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         if (p.title == "") {
             return #err(#EmptyTitle);
@@ -847,10 +830,7 @@ actor {
 
     // Delete the Products
     public shared (msg) func deleteProduct(id : Types.SlugId) : async Result.Result<(), Types.DeleteProductError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         products.delete(id);
         return #ok(());
     };
@@ -960,10 +940,7 @@ actor {
     // ------------------------------------  CATEGORY_FUNCTIONS  ---------------------------------------------
 
     public shared (msg) func createCategory(name : Text, cat_img : Text, featured : Bool, active : Bool) : async Result.Result<(Types.Category, Index), Types.CreateCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         if (name == "") { return #err(#EmptyName) };
         let new_slug = Utils.slugify(name);
         let result = categories.get(new_slug);
@@ -996,10 +973,7 @@ actor {
         feaured : Bool,
         active : Bool,
     ) : async Result.Result<(Types.Category, Index), Types.UpdateCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         if (name == "") {
             return #err(#EmptyName);
@@ -1061,10 +1035,7 @@ actor {
     };
 
     public shared (msg) func deleteCategory(id : Types.SlugId) : async Result.Result<(), Types.DeleteCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         categories.delete(id);
         return #ok(());
     };
@@ -1322,9 +1293,7 @@ actor {
         color : Text,
     ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
         // commented for local development
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
+        
 
         let result = cartItems.get(msg.caller);
         switch (result) {
@@ -1464,10 +1433,7 @@ actor {
     //  -----------------------------------   Orders_Functions --------------------------------------------------------------------------------------------
 
     public shared ({ caller }) func updateshippingamount(s : Types.ShippingAmount) : async Result.Result<(Types.ShippingAmount), Types.UpdateShippingAmountError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         if (s.shipping_amount == 0.00) {
             return #err(#EmptyShippingAmount);
@@ -1621,10 +1587,7 @@ actor {
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         let result = orders.get(id);
         switch (result) {
@@ -1668,10 +1631,7 @@ actor {
     public shared (msg) func updateOrderStatus(id : Types.OrderId, orderStatus : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         let result = orders.get(id);
         switch (result) {
@@ -1789,10 +1749,7 @@ actor {
         };
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         orders.delete(id);
         return #ok(());
     };
@@ -1825,10 +1782,7 @@ actor {
             return #err(#UserNotAuthenticated);
         };
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         let result = orders.get(id);
         switch (result) {
             case null {
@@ -1908,10 +1862,7 @@ actor {
         if (Principal.isAnonymous(msg.caller)) {
             return #err(#UserNotAuthenticated);
         };
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         let result = contacts.get(id);
         switch (result) {
@@ -1969,10 +1920,7 @@ actor {
     public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
         contacts.delete(id);
         return #ok(());
     };
@@ -2054,10 +2002,7 @@ actor {
 
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        
 
         let totalOrders = Iter.toArray(orders.entries()).size();
         let totalProducts = Iter.toArray(products.entries()).size();

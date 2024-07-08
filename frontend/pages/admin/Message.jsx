@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+import { useAuth, useBackend } from "../../auth/useClient";
 import Table, {
   DetailButton,
   SelectColumnFilter,
@@ -37,7 +37,7 @@ const Message = () => {
     []
   );
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState();
 
@@ -48,8 +48,9 @@ const Message = () => {
   const listAllMessage = async () => {
     try {
       setLoading(true);
-      const message = await backend.listContacts();
-      setMessages(message);
+      const message = await backend.listContacts(1, 0);
+      console.log(message.data);
+      setMessages(message.data);
     } catch (error) {
       console.error("Error listing all Message:", error);
     } finally {
@@ -57,9 +58,8 @@ const Message = () => {
     }
   };
 
-  const data = useMemo(() => messages, [messages]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => data);
+  const extractedData = messages.map((data) => data);
   console.log(extractedData);
 
   return (

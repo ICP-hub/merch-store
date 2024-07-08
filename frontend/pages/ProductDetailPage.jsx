@@ -24,6 +24,7 @@ import img3 from "../assets/product/p2-back.jpeg";
 
 import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import IcpLogo from "../assets/IcpLogo.jsx";
+import { useAuth, useBackend } from "../auth/useClient.jsx";
 
 const ProductDetailPage = () => {
   return (
@@ -37,9 +38,9 @@ const ProductDetailPage = () => {
   );
 };
 const ProductDetail = () => {
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
 
   const [loading3, setLoading3] = useState(false);
@@ -51,7 +52,7 @@ const ProductDetail = () => {
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState();
-  const { open } = useDialog();
+ 
   const [sellingPrice, setSellingPrice] = useState();
   const { slug } = useParams();
   const [selectedColor, setSelectedColor] = useState();
@@ -280,7 +281,7 @@ const ProductDetail = () => {
       }
     } else {
       toast.error("please login first");
-      open();
+   
     }
   };
 

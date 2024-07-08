@@ -155,118 +155,62 @@ const router = createBrowserRouter([
   {
     path: "/admin",
 
-    element: (
-      <ProtectedAdmin>
-        <AdminHome></AdminHome>
-      </ProtectedAdmin>
-    ),
+    element: <AdminHome></AdminHome>,
   },
   {
     path: "/admin/Products",
-    element: (
-      <ProtectedAdmin>
-        <Products />
-      </ProtectedAdmin>
-    ),
+    element: <Products />,
   },
   {
     path: "/admin/orders",
 
-    element: (
-      <ProtectedAdmin>
-        <Order />
-      </ProtectedAdmin>
-    ),
+    element: <Order />,
   },
 
   {
     path: "/admin/orders/:id",
-    element: (
-      <ProtectedAdmin>
-        <OrderDetail />
-      </ProtectedAdmin>
-    ),
+    element: <OrderDetail />,
   },
   {
     path: "/admin/invoice/:orderId",
-    element: (
-      <ProtectedAdmin>
-        <Invoice />
-      </ProtectedAdmin>
-    ),
+    element: <Invoice />,
   },
   {
     path: "/admin/categories",
-    element: (
-      <ProtectedAdmin>
-        <Categories />
-      </ProtectedAdmin>
-    ),
+    element: <Categories />,
   },
   {
     path: "/admin/users-list",
-    element: (
-      <ProtectedAdmin>
-        <UserDetails />
-      </ProtectedAdmin>
-    ),
+    element: <UserDetails />,
   },
   {
     path: "/admin/categories/:slug",
-    element: (
-      <ProtectedAdmin>
-        <CategoryDetail />
-      </ProtectedAdmin>
-    ),
+    element: <CategoryDetail />,
   },
   {
     path: "/admin/categories/create-category",
-    element: (
-      <ProtectedAdmin>
-        <CreateCategory />
-      </ProtectedAdmin>
-    ),
+    element: <CreateCategory />,
   },
   {
     path: "/admin/products/create-product",
-    element: (
-      <ProtectedAdmin>
-        <CreateProduct />
-      </ProtectedAdmin>
-    ),
+    element: <CreateProduct />,
   },
 
   {
     path: "/admin/Products/:slug",
-    element: (
-      <ProtectedAdmin>
-        <ProductDetail />
-      </ProtectedAdmin>
-    ),
+    element: <ProductDetail />,
   },
   {
     path: "/admin/messages",
-    element: (
-      <ProtectedAdmin>
-        <Message />
-      </ProtectedAdmin>
-    ),
+    element: <Message />,
   },
   {
     path: "/admin/messages/:id",
-    element: (
-      <ProtectedAdmin>
-        <MessageDetail />
-      </ProtectedAdmin>
-    ),
+    element: <MessageDetail />,
   },
   {
     path: "/admin/shipping",
-    element: (
-      <ProtectedAdmin>
-        <Shipping />
-      </ProtectedAdmin>
-    ),
+    element: <Shipping />,
   },
 
   {

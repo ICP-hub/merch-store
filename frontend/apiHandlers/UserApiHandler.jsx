@@ -1,15 +1,12 @@
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../auth/useClient";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 // Custom hook : initialize the backend Canister
-const useBackend = () => {
-  return useCanister("backend");
-};
 
 const UserApiHanlder = () => {
   // Init backend
-  const [backend] = useBackend();
+  const { backend } = useBackend();
   const [isLoading, setIsLoading] = useState("");
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   // Create Contact

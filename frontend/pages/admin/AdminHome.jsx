@@ -12,9 +12,10 @@ import { Link } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import { PiImagesSquareThin, PiUserThin } from "react-icons/pi";
+import { useAuth, useBackend } from "../../auth/useClient";
 
 const AdminHome = () => {
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [statistics, setStatistics] = useState([]);
