@@ -27,6 +27,7 @@ import Blob "mo:base/Blob";
 actor {
 
     let g = Source.Source();
+    
     //Products
     public type Index = Nat64;
     public type Elem = {
@@ -387,7 +388,7 @@ actor {
         };
 
         // let data_page:[Types.User] = Array.tabulate<>(index_pages[pageNo],func x(1) = from_candid(x(1)));
-        let pages_data = index_pages[PageNo];
+        var pages_data = index_pages[PageNo];
         var user_list = List.nil<Types.User>();
         for ((k,v) in pages_data.vals()) {
             
@@ -1070,16 +1071,31 @@ actor {
     };
 
     // 📍📍📍📍📍
-    // public query func listCategories(chunkSize : Nat , pageNo : Nat) : async {data :[(Types.SlugId, Types.Category)]; current_page : Nat; total_pages : Nat} {
-    //     let pages = Utils.paginate<(Types.SlugId, Types.Category)>(Iter.toArray(categories.entries()),chunkSize);
-    //     if (pages.size() < pageNo) {
-    //         throw Error.reject("Page not found");
-    //     };
-    //     if (pages.size() == 0) {
-    //         throw Error.reject("No categories found");
-    //     };
-    //     return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); };
-    // };
+    public shared func listCategories(chunkSize : Nat , pageNo : Nat) : async {data :[Types.Category]; current_page : Nat; total_pages : Nat} {
+        let index_pages = Utils.paginate<(Types.SlugId, Index)>(Iter.toArray(categories.entries()),chunkSize);
+        if (index_pages.size() < pageNo) {
+            throw Error.reject("Page not found");
+        };
+        if (index_pages.size() == 0) {
+            throw Error.reject("No categories found");
+        };
+        var pages_data = index_pages[pageNo];
+        var category_list = List.nil<Types.Category>();
+        for ((k,v) in pages_data.vals()) {
+            let category_blob = await stable_get(v, category_state);
+            let category : ?Types.Category = from_candid(category_blob);
+            switch(category){
+                case null {
+                    throw Error.reject("no blob found in stable memory for the caller");
+                };
+                case(?val){
+                    category_list := List.push(val, category_list);
+                };
+            };
+        };
+        return { data = List.toArray(category_list); current_page = pageNo; total_pages = index_pages.size(); };
+        
+    };
 
     func checkifcategoryexists(slug : Text) : Bool {
         let result = categories.get(slug);
