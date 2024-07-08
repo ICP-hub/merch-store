@@ -404,7 +404,7 @@ actor {
             };
         };
 
-        return { data = List.toArray(user_list); current_page = PageNo; total_pages = index_pages.size(); };
+        return { data = List.toArray(user_list); current_page = PageNo + 1; total_pages = index_pages.size(); };
     };
 
     //  ***************************************** Users Address CRUD Operations *****************************************************
@@ -904,7 +904,7 @@ actor {
                 };
             };
         };
-        return { data = List.toArray(product_list); current_page = pageNo; total_pages = index_pages.size(); };
+        return { data = List.toArray(product_list); current_page = pageNo + 1; total_pages = index_pages.size(); };
     };
 
 
@@ -1093,7 +1093,7 @@ actor {
                 };
             };
         };
-        return { data = List.toArray(category_list); current_page = pageNo; total_pages = index_pages.size(); };
+        return { data = List.toArray(category_list); current_page = pageNo + 1; total_pages = index_pages.size(); };
         
     };
 
@@ -1263,7 +1263,7 @@ actor {
                         if (pages.size() == 0) {
                             throw Error.reject("No wishlist items found");
                         };
-                    return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size();   
+                    return { data = pages[pageNo]; current_page = pageNo + 1; total_pages = pages.size();   
                     };
                 };
             };
@@ -1459,7 +1459,7 @@ actor {
                         if (pages.size() == 0) {
                             throw Error.reject("No cart items found");
                         };
-                        return { data = pages[pageNo]; current_page = pageNo; total_pages = pages.size(); 
+                        return { data = pages[pageNo]; current_page = pageNo + 1; total_pages = pages.size(); 
                     };
                 };
             };
@@ -1756,7 +1756,7 @@ actor {
                 };
             };
         };
-        return { data = List.toArray(order_list); current_page = pageNo; total_pages = pages.size() };
+        return { data = List.toArray(order_list); current_page = pageNo + 1; total_pages = pages.size() };
     };
 
     // Users can see their orders
@@ -2019,7 +2019,7 @@ actor {
                 };
             };
         };
-        return { data = List.toArray(contact_list); current_page = pageNo; total_pages = pages.size() };
+        return { data = List.toArray(contact_list); current_page = pageNo + 1; total_pages = pages.size() };
     };
 
     // ----------------------------------------Rivew & Ratings functions-------------------------------------------------------------
