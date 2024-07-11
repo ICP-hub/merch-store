@@ -622,10 +622,10 @@ actor {
         if (Principal.isAnonymous(msg.caller)) {
             return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         };
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         if (size == "") {
             return #err(#EmptySize);
@@ -653,10 +653,10 @@ actor {
     };
 
     public shared ({ caller }) func deletevariant(variant_slug : Types.SlugId) : async Result.Result<(), Types.DeleteVariantError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         variants.delete(variant_slug);
         return #ok(());
     };
@@ -669,10 +669,10 @@ actor {
         variant_price : Float,
         variant_sale_price : Float,
     ) : async Result.Result<(Types.Variants), Types.UpdateVariantError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         if (size == "") {
             return #err(#EmptySize);
@@ -738,10 +738,10 @@ actor {
     //  ------------------   Products_Functions ----------------
 
     public shared ({ caller }) func createProduct(p : Types.UserProduct, vs : [Types.VariantSize], vc : [Types.VariantColor]) : async Result.Result<(Types.Product), Types.CreateProductError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         let category_slug = p.category;
 
         if (checkifcategoryexists(category_slug) == false) {
@@ -793,10 +793,10 @@ actor {
         vc : [Types.VariantColor],
         //img : Text,
     ) : async Result.Result<(Types.Product,Index), Types.UpdateProductError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         if (p.title == "") {
             return #err(#EmptyTitle);
@@ -848,10 +848,10 @@ actor {
 
     // Delete the Products
     public shared (msg) func deleteProduct(id : Types.SlugId) : async Result.Result<(), Types.DeleteProductError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         products.delete(id);
         return #ok(());
     };
@@ -961,10 +961,10 @@ actor {
     // ------------------------------------  CATEGORY_FUNCTIONS  ---------------------------------------------
 
     public shared (msg) func createCategory(name : Text, cat_img : Text, featured : Bool, active : Bool) : async Result.Result<(Types.Category, Index), Types.CreateCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         if (name == "") { return #err(#EmptyName) };
         let new_slug = Utils.slugify(name);
         let result = categories.get(new_slug);
@@ -997,10 +997,10 @@ actor {
         feaured : Bool,
         active : Bool,
     ) : async Result.Result<(Types.Category, Index), Types.UpdateCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         if (name == "") {
             return #err(#EmptyName);
@@ -1062,10 +1062,10 @@ actor {
     };
 
     public shared (msg) func deleteCategory(id : Types.SlugId) : async Result.Result<(), Types.DeleteCategoryError> {
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         categories.delete(id);
         return #ok(());
     };
@@ -1291,44 +1291,45 @@ actor {
             time_created = Time.now();
             time_updated = Time.now();
         };
+        
         switch (cartItems.get(userP)) {
             case null {
-                let cartitems = [cartItem];
-                let cart_blob = to_candid(cartitems);
+                var cartobject = {userprincipal : Principal  = userP ;cartItemarray : [Types.CartItem] = [cartItem]};
+                let cart_blob = to_candid(cartobject);
                 let cart_index = await stable_add(cart_blob, cart_state);
                 cartItems.put(userP, cart_index);
                 return #ok(cartItem, cart_index);
             };
             case (?v) {
                 let cart_blob = await stable_get(v, cart_state);
-                let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
+                var cartitems : ?{userprincipal : Principal ;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
                 switch (cartitems) {
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                        let newCartItems = List.fromArray(val);
+                        let newCartItems = List.fromArray(val.cartItemarray);
                         let result = List.find<Types.CartItem>(
                         newCartItems,
                         func(a : Types.CartItem) : Bool {
                         return a.product_slug == product_slug;
-                    });
-                  switch (result) {
-                    case (null) {
-                        ignore List.push(cartItem, newCartItems);
-                        let newCartBlob = to_candid(newCartItems);
-                        let index = await update_stable(v, newCartBlob, cart_state);
-                        return #ok(cartItem, index);
+                        });
+                        switch (result) {
+                            case (null) {
+                                ignore List.push(cartItem, newCartItems);
+                                let newobject : {userprincipal : Principal ;cartItemarray: [Types.CartItem]} = {userprincipal = userP ;cartItemarray = List.toArray(newCartItems)};
+                                let newCartBlob = to_candid(newobject);
+                                let index = await update_stable(v, newCartBlob, cart_state);
+                                return #ok(cartItem, index);
+                            };
+                            case (_) {
+                                return #err(#CartItemAlreadyExists);
+                            };
+                        };
                     };
-                    case (_) {
-                        return #err(#CartItemAlreadyExists);
-                    };
-                
                 };
             };
-            };
-            };
-            };
+        };
     };
 
     public shared (msg) func updateCartItems(
@@ -1381,9 +1382,9 @@ actor {
                                 return #ok(cartItem);
                             };
                         };
+                    };
+                };
             };
-        };
-        };
         };
     };
 
@@ -1399,13 +1400,13 @@ actor {
                 };
                 case (?v) {
                     let cart_blob = await stable_get(v, cart_state);
-                    let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
-                    switch (cartitems) {
+                    var cartitemsobject : ?{userprincipal : Principal ;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
+                    switch (cartitemsobject) {
                         case null {
                             throw Error.reject("no blob found in stable memory for the caller");
                         };
                         case (?val) {
-                            let newCartItems = List.fromArray(val);
+                            let newCartItems = List.fromArray(val.cartItemarray);
                             let result = List.find<Types.CartItem>(
                                 newCartItems,
                                 func(a : Types.CartItem) : Bool {
@@ -1423,7 +1424,8 @@ actor {
                                             return a.product_slug != product_slug;
                                             },
                                     );
-                                    let newCartBlob = to_candid(updatedCartItems);
+                                    let newcartitemsobject = {userprincipal = msg.caller ;cartItemarray = List.toArray(updatedCartItems)};
+                                    let newCartBlob = to_candid(newcartitemsobject);
                                     ignore await update_stable(v, newCartBlob, cart_state);
                                     return #ok(());
                                 };
@@ -1446,13 +1448,12 @@ actor {
             };
             case (?v) {
                 let cart_blob = await stable_get(v, cart_state);
-                let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
+                Debug.print("cart_blob is " # debug_show(cart_blob));
+                let cartitems : ?{userprincipal : Principal;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
                 switch (cartitems) {
-                    case null {
-                        throw Error.reject("no blob found in stable memory for the caller");
-                    };
                     case (?val) {
-                        let pages = Utils.paginate<Types.CartItem>(val,chunkSize);
+                        Debug.print("items are " # debug_show(val));
+                        let pages = Utils.paginate<Types.CartItem>(val.cartItemarray,chunkSize);
                         if (pages.size() < pageNo) {
                             throw Error.reject("Page not found");
                         };
@@ -1461,6 +1462,9 @@ actor {
                         };
                         return { data = pages[pageNo]; current_page = pageNo + 1; total_pages = pages.size(); 
                     };
+                };
+                case (_){
+                    throw Error.reject("no blob found in stable memory for the caller");
                 };
             };
         };
@@ -1480,10 +1484,10 @@ actor {
     //  -----------------------------------   Orders_Functions --------------------------------------------------------------------------------------------
 
     public shared ({ caller }) func updateshippingamount(s : Types.ShippingAmount) : async Result.Result<(Types.ShippingAmount), Types.UpdateShippingAmountError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         if (s.shipping_amount == 0.00) {
             return #err(#EmptyShippingAmount);
@@ -1637,10 +1641,10 @@ actor {
 
     public shared (msg) func updateTrackingUrl(id : Types.OrderId, awb : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         let result = orders.get(id);
         switch (result) {
@@ -1684,10 +1688,10 @@ actor {
     public shared (msg) func updateOrderStatus(id : Types.OrderId, orderStatus : Text) : async Result.Result<(Types.Order), Types.UpdateOrderError> {
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         let result = orders.get(id);
         switch (result) {
@@ -1805,10 +1809,10 @@ actor {
         };
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         orders.delete(id);
         return #ok(());
     };
@@ -1841,10 +1845,10 @@ actor {
             return #err(#UserNotAuthenticated);
         };
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         let result = orders.get(id);
         switch (result) {
             case null {
@@ -1924,10 +1928,10 @@ actor {
         if (Principal.isAnonymous(msg.caller)) {
             return #err(#UserNotAuthenticated);
         };
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         let result = contacts.get(id);
         switch (result) {
@@ -1985,10 +1989,10 @@ actor {
     public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
 
         // Check if the caller is an admin
-        let adminstatus = await isAdmin(msg.caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+      // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
         contacts.delete(id);
         return #ok(());
     };
@@ -2070,10 +2074,10 @@ actor {
 
 
     public shared ({ caller }) func getstatisticaldetailforadmin() : async Result.Result<(Types.StatisticalDetail), Types.GetStatisticalDetailError> {
-        let adminstatus = await isAdmin(caller);
-        if (adminstatus == false) {
-            return #err(#UserNotAdmin); // We require the user to be admin
-        };
+        // let adminstatus = await isAdmin(caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
 
         let totalOrders = Iter.toArray(orders.entries()).size();
         let totalProducts = Iter.toArray(products.entries()).size();
