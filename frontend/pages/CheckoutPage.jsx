@@ -411,7 +411,7 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
     }
 
     if (userAddressList && userAddressList.length > 0) {
-      const addresses = userAddressList.map((address) => address[0]);
+      const addresses = userAddressList.map((address) => address);
       console.log(addresses, "enfwefn");
       setUserAddress(addresses[0]);
     }
