@@ -8,10 +8,11 @@ import { TailSpin } from "react-loader-spinner";
 import CartItemsSmallLoader from "./CartItemsSmallLoader";
 import { useConnect } from "@connect2ic/react";
 import IcpLogo from "../../assets/IcpLogo";
+import { useAuth,useBackend } from "../../auth/useClient";
 
 const CartItemsSmall = () => {
   const [cartItems, setCartItems] = useState([]);
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
   const [product, getProduct] = useState([]);
   const [quantity, setQuantity] = useState();
   const [id, setIds] = useState("");
@@ -26,32 +27,33 @@ const CartItemsSmall = () => {
     setErrorImage(true);
   };
 
-  const [backend] = useCanister("backend");
+  const {backend}=useBackend()
+
 
   const getCartlist = async () => {
     try {
-      const item = await backend.getCallerCartItems();
+      const item = await backend.getCallerCartItems(10,0);
       console.log(item, "Hello");
-      const formatColor = item.map((item) => ({
-        color: item[1].color,
+      const formatColor = item.data.map((item) => ({
+        color: item.color,
       }));
       setColor(formatColor);
-      const formatSize = item.map((item) => ({
-        size: item[1].size,
+      const formatSize = item.data.map((item) => ({
+        size: item.size,
       }));
 
       setSize(formatSize);
-      const formatIds = item.map((item) => ({
-        id: item[1].id,
-      }));
-      setIds(formatIds);
-      const formatQuantity = item.map((item) => ({
-        quantity: item[1].quantity,
+      // const formatIds = item.map((item) => ({
+      //   id: item[1].id,
+      // }));
+      // setIds(formatIds);
+      const formatQuantity = item.data.map((item) => ({
+        quantity: item.quantity,
       }));
       setQuantity(formatQuantity);
 
-      const formattedItems = item.map((item) => ({
-        slug: item[1].product_slug,
+      const formattedItems = item.data.map((item) => ({
+        slug: item.product_slug,
       }));
 
       // Update state with the formatted items array
@@ -211,7 +213,7 @@ const CartItemsSmall = () => {
                         loading3 && "opacity-50"
                       }`}
                       disabled={loading3 && true}
-                      onClick={() => deleteCartHandler(id[index].id)}
+                      onClick={() => deleteCartHandler()}
                     >
                       {loading3 && loadingItemId === id[index].id ? (
                         <TailSpin

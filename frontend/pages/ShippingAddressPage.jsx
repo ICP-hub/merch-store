@@ -52,8 +52,8 @@ const AddressDetail = () => {
   const { ShippingAddressPageLoader } = LoadingScreen();
 
   // Get cart item details
-  const cartItemDetails = 
-  (cartItems, productList);
+  const cartItemDetails = getCartItemDetails(cartItems, productList);
+  console.log(cartItemDetails, "cart items details");
   // console.log("Cart Item Details", cartItemDetails);
   const totalPrice = totalCartSellPrice(cartItemDetails);
   // console.log(cartItemDetails);

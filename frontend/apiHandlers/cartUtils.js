@@ -75,7 +75,7 @@ export const getCartItemDetails = (cartItems, productList) => {
             // If matching variant: return obj: product, orderId, size, color, variantPrice, variantSellPrice, variantSellPriceBasedOnQty
             return {
               product: matchingProduct,
-              orderId,
+
               quantity,
               size,
               color,

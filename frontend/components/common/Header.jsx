@@ -102,8 +102,8 @@ const Header = ({ title }) => {
     const listCarts = async () => {
       try {
         setLoading(true);
-        const cart = await backend.getCallerCartItems();
-        setCarts(cart);
+        const cart = await backend.getCallerCartItems(10,0);
+        setCarts(cart.data);
       } catch (error) {
         console.error("Error listing carts:", error);
       } finally {

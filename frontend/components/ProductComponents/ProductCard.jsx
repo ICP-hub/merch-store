@@ -74,29 +74,18 @@ const ProductCard = ({ product }) => {
       quantity1 = quantity1 + 1;
       console.log(quantity1, "befssfsfwb");
 
-      if (isProductInCart) {
-        const res = await backend.updateCartItems(
-          product.slug,
-          quantity1,
-          product.variantSize[0].size,
-          product.variantColor[0].color
-        );
-        toast.success("item updated successfully");
-        console.log(res);
-      } else {
-        const res = await backend.addtoCartItems(
-          product.slug,
-          product.variantSize[0].size,
-          product.variantColor[0].color,
-          quantity
-        );
+      const res = await backend.addtoCartItems(
+        product.slug,
+        product.variantSize[0].size,
+        product.variantColor[0].color,
+        quantity
+      );
 
-        if ("ok" in res) {
-          toast.success("Item added to cart");
-        } else {
-          // Log an error if the response does not have "ok" property
-          console.error("Unexpected response from backend:", res);
-        }
+      if ("ok" in res) {
+        toast.success("Item added to cart");
+      } else {
+        // Log an error if the response does not have "ok" property
+        console.error("Unexpected response from backend:", res);
       }
     } catch (error) {
       // Log the error for debugging
@@ -162,7 +151,11 @@ const ProductCard = ({ product }) => {
     if (isConnected) {
       try {
         setLoading3(true);
-        const res = await backend.addtoWishlist(product.slug);
+        const res = await backend.addtoWishlist(
+          product.slug,
+          product.variantSize[0].size,
+          product.variantColor[0].color
+        );
         setProductInLocalWishlist(true);
 
         if ("ok" in res) {
@@ -178,7 +171,7 @@ const ProductCard = ({ product }) => {
         setLoading3(false);
       }
     } else {
-      toast.error("You need to login first");
+      toast.error("You need to login first");   
       // open();
     }
   };

@@ -19,7 +19,6 @@ export interface Address {
 export interface Asset { 'class' : AssetClass, 'symbol' : string }
 export type AssetClass = { 'Cryptocurrency' : null } |
   { 'FiatCurrency' : null };
-export type CartId = string;
 export interface CartItem {
   'time_created' : Time,
   'color' : string,
@@ -152,6 +151,8 @@ export type GetStatisticalDetailError = { 'UserNotAdmin' : null };
 export type GetUserError = { 'UserNotFound' : null };
 export type GetVariantError = { 'VariantNotFound' : null };
 export type Index = bigint;
+export type List = [] | [[WishlistItem, List]];
+export type List_1 = [] | [[CartItem, List_1]];
 export interface NewOrder {
   'awb' : string,
   'paymentStatus' : string,
@@ -217,59 +218,57 @@ export type Result = { 'ok' : Variants } |
   { 'err' : UpdateVariantError };
 export type Result_1 = { 'ok' : ShippingAmount } |
   { 'err' : UpdateShippingAmountError };
-export type Result_10 = { 'ok' : [Order, Result__1] } |
-  { 'err' : OrderError };
-export type Result_11 = { 'ok' : Variants } |
+export type Result_10 = { 'ok' : Variants } |
   { 'err' : GetVariantError };
-export type Result_12 = { 'ok' : StatisticalDetail } |
+export type Result_11 = { 'ok' : StatisticalDetail } |
   { 'err' : GetStatisticalDetailError };
-export type Result_13 = { 'ok' : string } |
+export type Result_12 = { 'ok' : string } |
   { 'err' : GetPaymentStatusError };
-export type Result_14 = { 'ok' : User } |
+export type Result_13 = { 'ok' : User } |
   { 'err' : GetUserError };
-export type Result_15 = { 'ok' : Product } |
+export type Result_14 = { 'ok' : Product } |
   { 'err' : GetProductError };
-export type Result_16 = { 'ok' : Order } |
+export type Result_15 = { 'ok' : Order } |
   { 'err' : OrderError };
-export type Result_17 = { 'ok' : Contact } |
+export type Result_16 = { 'ok' : Contact } |
   { 'err' : GetContactError };
-export type Result_18 = { 'ok' : Category } |
+export type Result_17 = { 'ok' : Category } |
   { 'err' : GetCategoryError };
-export type Result_19 = { 'ok' : Address } |
+export type Result_18 = { 'ok' : Address } |
   { 'err' : GetAddressError };
+export type Result_19 = { 'ok' : null } |
+  { 'err' : DeleteVariantError };
 export type Result_2 = { 'ok' : [User, Index] } |
   { 'err' : UpdateUserError };
 export type Result_20 = { 'ok' : null } |
-  { 'err' : DeleteVariantError };
-export type Result_21 = { 'ok' : null } |
   { 'err' : DeleteAddressError };
-export type Result_22 = { 'ok' : null } |
+export type Result_21 = { 'ok' : wishlistItemobject } |
   { 'err' : DeleteWishlistItemError };
-export type Result_23 = { 'ok' : null } |
+export type Result_22 = { 'ok' : null } |
   { 'err' : DeleteProductError };
-export type Result_24 = { 'ok' : null } |
+export type Result_23 = { 'ok' : null } |
   { 'err' : DeleteOrderError };
-export type Result_25 = { 'ok' : null } |
+export type Result_24 = { 'ok' : null } |
   { 'err' : DeleteContactError };
-export type Result_26 = { 'ok' : null } |
+export type Result_25 = { 'ok' : null } |
   { 'err' : DeleteCategoryError };
-export type Result_27 = { 'ok' : null } |
+export type Result_26 = { 'ok' : null } |
   { 'err' : DeleteCartItemsError };
-export type Result_28 = { 'ok' : Variants } |
+export type Result_27 = { 'ok' : Variants } |
   { 'err' : CreateVariantError };
-export type Result_29 = { 'ok' : Product } |
+export type Result_28 = { 'ok' : Product } |
   { 'err' : CreateProductError };
+export type Result_29 = { 'ok' : Contact } |
+  { 'err' : CreateContactError };
 export type Result_3 = { 'ok' : Order } |
   { 'err' : UpdateOrderError };
-export type Result_30 = { 'ok' : Contact } |
-  { 'err' : CreateContactError };
-export type Result_31 = { 'ok' : [Category, Index] } |
+export type Result_30 = { 'ok' : [Category, Index] } |
   { 'err' : CreateCategoryError };
-export type Result_32 = { 'ok' : [Address, Index] } |
+export type Result_31 = { 'ok' : [Address, Index] } |
   { 'err' : CreateAddressError };
-export type Result_33 = { 'ok' : [WishlistItem, Index] } |
+export type Result_32 = { 'ok' : [wishlistItemobject, Index] } |
   { 'err' : CreateWishlistItemError };
-export type Result_34 = { 'ok' : [CartItem, Index] } |
+export type Result_33 = { 'ok' : [cartItemobject, Index] } |
   { 'err' : CreateCartItemsError };
 export type Result_4 = { 'ok' : [Product, Index] } |
   { 'err' : UpdateProductError };
@@ -279,10 +278,10 @@ export type Result_6 = { 'ok' : Contact } |
   { 'err' : UpdateContactError };
 export type Result_7 = { 'ok' : [Category, Index] } |
   { 'err' : UpdateCategoryError };
-export type Result_8 = { 'ok' : CartItem } |
-  { 'err' : UpdateCartItemsError };
-export type Result_9 = { 'ok' : Address } |
+export type Result_8 = { 'ok' : Address } |
   { 'err' : UpdateAddressError };
+export type Result_9 = { 'ok' : [Order, Result__1] } |
+  { 'err' : OrderError };
 export type Result__1 = { 'Ok' : bigint } |
   { 'Err' : TransferError };
 export interface ShippingAmount { 'shipping_amount' : number }
@@ -316,10 +315,6 @@ export type UpdateAddressError = { 'EmptyCountry' : null } |
   { 'EmptyEmail' : null } |
   { 'EmptyPincode' : null } |
   { 'EmptyState' : null };
-export type UpdateCartItemsError = { 'UserNotAdmin' : null } |
-  { 'CartItemNotFound' : null } |
-  { 'CartisEmpty' : null } |
-  { 'UserNotAuthenticated' : null };
 export type UpdateCategoryError = { 'UserNotAdmin' : null } |
   { 'CategoryNotFound' : null } |
   { 'UserNotAuthenticated' : null } |
@@ -408,33 +403,43 @@ export interface Variants {
 }
 export interface WishlistItem {
   'time_created' : Time,
+  'color' : string,
+  'size' : string,
   'product_slug' : string,
   'time_updated' : Time,
 }
+export interface cartItemobject {
+  'cartItemlist' : List_1,
+  'userprincipal' : Principal,
+}
+export interface wishlistItemobject {
+  'wishlistItem' : List,
+  'userprincipal' : Principal,
+}
 export interface _SERVICE {
-  'addtoCartItems' : ActorMethod<[string, string, string, number], Result_34>,
-  'addtoWishlist' : ActorMethod<[string], Result_33>,
-  'clearallcartitmesbyprincipal' : ActorMethod<[], Result_27>,
-  'createAddress' : ActorMethod<[UserAddress], Result_32>,
-  'createCategory' : ActorMethod<[string, string, boolean, boolean], Result_31>,
-  'createContact' : ActorMethod<[UserContact], Result_30>,
+  'addtoCartItems' : ActorMethod<[string, string, string, number], Result_33>,
+  'addtoWishlist' : ActorMethod<[string, string, string], Result_32>,
+  'clearallcartitmesbyprincipal' : ActorMethod<[], Result_26>,
+  'createAddress' : ActorMethod<[UserAddress], Result_31>,
+  'createCategory' : ActorMethod<[string, string, boolean, boolean], Result_30>,
+  'createContact' : ActorMethod<[UserContact], Result_29>,
   'createProduct' : ActorMethod<
     [UserProduct, Array<VariantSize>, Array<VariantColor>],
-    Result_29
+    Result_28
   >,
   'createVariant' : ActorMethod<
     [SlugId, string, string, bigint, number, number],
-    Result_28
+    Result_27
   >,
-  'deleteCartItems' : ActorMethod<[string], Result_27>,
-  'deleteCategory' : ActorMethod<[SlugId], Result_26>,
-  'deleteContact' : ActorMethod<[ContactId], Result_25>,
-  'deleteOrder' : ActorMethod<[OrderId], Result_24>,
-  'deleteProduct' : ActorMethod<[SlugId], Result_23>,
-  'deleteWishlistItems' : ActorMethod<[string], Result_22>,
-  'deleteaddress' : ActorMethod<[string], Result_21>,
-  'deletevariant' : ActorMethod<[SlugId], Result_20>,
-  'getAddress' : ActorMethod<[string], Result_19>,
+  'deleteCartItems' : ActorMethod<[string, string, string], Result_26>,
+  'deleteCategory' : ActorMethod<[SlugId], Result_25>,
+  'deleteContact' : ActorMethod<[ContactId], Result_24>,
+  'deleteOrder' : ActorMethod<[OrderId], Result_23>,
+  'deleteProduct' : ActorMethod<[SlugId], Result_22>,
+  'deleteWishlistItems' : ActorMethod<[string, string, string], Result_21>,
+  'deleteaddress' : ActorMethod<[string], Result_20>,
+  'deletevariant' : ActorMethod<[SlugId], Result_19>,
+  'getAddress' : ActorMethod<[string], Result_18>,
   'getCallerCartItems' : ActorMethod<
     [bigint, bigint],
     {
@@ -443,17 +448,17 @@ export interface _SERVICE {
       'current_page' : bigint,
     }
   >,
-  'getCategory' : ActorMethod<[SlugId], Result_18>,
-  'getContact' : ActorMethod<[ContactId], Result_17>,
-  'getOrder' : ActorMethod<[string], Result_16>,
-  'getProduct' : ActorMethod<[SlugId], Result_15>,
-  'getUserdetailsbycaller' : ActorMethod<[], Result_14>,
-  'getUserdetailsbyid' : ActorMethod<[Principal], Result_14>,
+  'getCategory' : ActorMethod<[SlugId], Result_17>,
+  'getContact' : ActorMethod<[ContactId], Result_16>,
+  'getOrder' : ActorMethod<[string], Result_15>,
+  'getProduct' : ActorMethod<[SlugId], Result_14>,
+  'getUserdetailsbycaller' : ActorMethod<[], Result_13>,
+  'getUserdetailsbyid' : ActorMethod<[Principal], Result_13>,
   'get_exchange_rates' : ActorMethod<[Asset, Asset], GetExchangeRateResult>,
-  'getpaymentstatus' : ActorMethod<[string], Result_13>,
+  'getpaymentstatus' : ActorMethod<[string], Result_12>,
   'getshippingamount' : ActorMethod<[], ShippingAmount>,
-  'getstatisticaldetailforadmin' : ActorMethod<[], Result_12>,
-  'getvariant' : ActorMethod<[SlugId], Result_11>,
+  'getstatisticaldetailforadmin' : ActorMethod<[], Result_11>,
+  'getvariant' : ActorMethod<[SlugId], Result_10>,
   'isAdmin' : ActorMethod<[Principal], boolean>,
   'listCategories' : ActorMethod<
     [bigint, bigint],
@@ -497,10 +502,9 @@ export interface _SERVICE {
       { 'icp' : null } |
         { 'ckbtc' : null },
     ],
-    Result_10
+    Result_9
   >,
-  'updateAddress' : ActorMethod<[Address, string, Principal], Result_9>,
-  'updateCartItems' : ActorMethod<[CartId, number, string, string], Result_8>,
+  'updateAddress' : ActorMethod<[Address, string, Principal], Result_8>,
   'updateCategory' : ActorMethod<
     [SlugId, string, string, boolean, boolean],
     Result_7

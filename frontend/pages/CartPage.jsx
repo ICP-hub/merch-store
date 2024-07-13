@@ -98,8 +98,7 @@ const Cart = () => {
       }));
 
       setSize(formatSize);
-     
-      
+
       const formatQuantity = item.data.map((item) => ({
         quantity: item.quantity,
       }));
@@ -177,9 +176,9 @@ const Cart = () => {
     });
   };
 
-  const deleteCart = async (id) => {
+  const deleteCart = async (id, color, size) => {
     try {
-      const remove = await backend.deleteCartItems(id);
+      const remove = await backend.deleteCartItems(id, color, size);
       if (remove) {
         getCartlist();
 
@@ -229,6 +228,7 @@ const Cart = () => {
         console.log(res);
 
         toast.success("All items are removed");
+        getCartlist();
       } else {
         console.log("error while deleting all the items", res);
       }
@@ -423,7 +423,13 @@ const Cart = () => {
                             <div className="flex items-center justify-end">
                               <Button
                                 className=""
-                                onClick={() => deleteCart(id[index].id)}
+                                onClick={() =>
+                                  deleteCart(
+                                    id[index].id,
+                                    color[index]?.color,
+                                    size[index]?.size
+                                  )
+                                }
                               >
                                 <HiOutlineTrash className="w-5 h-5 text-gray-400 m-1 xl:m-4" />
                               </Button>

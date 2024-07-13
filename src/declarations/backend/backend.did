@@ -1,6 +1,18 @@
+type wishlistItemobject = 
+ record {
+   userprincipal: principal;
+   wishlistItem: List;
+ };
+type cartItemobject = 
+ record {
+   cartItemlist: List_1;
+   userprincipal: principal;
+ };
 type WishlistItem = 
  record {
+   color: text;
    product_slug: text;
+   size: text;
    time_created: Time;
    time_updated: Time;
  };
@@ -120,13 +132,6 @@ type UpdateCategoryError =
    UserNotAdmin;
    UserNotAuthenticated;
  };
-type UpdateCartItemsError = 
- variant {
-   CartItemNotFound;
-   CartisEmpty;
-   UserNotAdmin;
-   UserNotAuthenticated;
- };
 type UpdateAddressError = 
  variant {
    AddressNotFound;
@@ -173,13 +178,16 @@ type Result__1 =
  };
 type Result_9 = 
  variant {
-   err: UpdateAddressError;
-   ok: Address;
+   err: OrderError;
+   ok: record {
+         Order;
+         Result__1;
+       };
  };
 type Result_8 = 
  variant {
-   err: UpdateCartItemsError;
-   ok: CartItem;
+   err: UpdateAddressError;
+   ok: Address;
  };
 type Result_7 = 
  variant {
@@ -207,23 +215,23 @@ type Result_4 =
          Index;
        };
  };
-type Result_34 = 
+type Result_33 = 
  variant {
    err: CreateCartItemsError;
    ok: record {
-         CartItem;
-         Index;
-       };
- };
-type Result_33 = 
- variant {
-   err: CreateWishlistItemError;
-   ok: record {
-         WishlistItem;
+         cartItemobject;
          Index;
        };
  };
 type Result_32 = 
+ variant {
+   err: CreateWishlistItemError;
+   ok: record {
+         wishlistItemobject;
+         Index;
+       };
+ };
+type Result_31 = 
  variant {
    err: CreateAddressError;
    ok: record {
@@ -231,18 +239,13 @@ type Result_32 =
          Index;
        };
  };
-type Result_31 = 
+type Result_30 = 
  variant {
    err: CreateCategoryError;
    ok: record {
          Category;
          Index;
        };
- };
-type Result_30 = 
- variant {
-   err: CreateContactError;
-   ok: Contact;
  };
 type Result_3 = 
  variant {
@@ -251,52 +254,52 @@ type Result_3 =
  };
 type Result_29 = 
  variant {
+   err: CreateContactError;
+   ok: Contact;
+ };
+type Result_28 = 
+ variant {
    err: CreateProductError;
    ok: Product;
  };
-type Result_28 = 
+type Result_27 = 
  variant {
    err: CreateVariantError;
    ok: Variants;
  };
-type Result_27 = 
+type Result_26 = 
  variant {
    err: DeleteCartItemsError;
    ok;
  };
-type Result_26 = 
+type Result_25 = 
  variant {
    err: DeleteCategoryError;
    ok;
  };
-type Result_25 = 
+type Result_24 = 
  variant {
    err: DeleteContactError;
    ok;
  };
-type Result_24 = 
+type Result_23 = 
  variant {
    err: DeleteOrderError;
    ok;
  };
-type Result_23 = 
+type Result_22 = 
  variant {
    err: DeleteProductError;
    ok;
  };
-type Result_22 = 
- variant {
-   err: DeleteWishlistItemError;
-   ok;
- };
 type Result_21 = 
  variant {
-   err: DeleteAddressError;
-   ok;
+   err: DeleteWishlistItemError;
+   ok: wishlistItemobject;
  };
 type Result_20 = 
  variant {
-   err: DeleteVariantError;
+   err: DeleteAddressError;
    ok;
  };
 type Result_2 = 
@@ -309,56 +312,53 @@ type Result_2 =
  };
 type Result_19 = 
  variant {
+   err: DeleteVariantError;
+   ok;
+ };
+type Result_18 = 
+ variant {
    err: GetAddressError;
    ok: Address;
  };
-type Result_18 = 
+type Result_17 = 
  variant {
    err: GetCategoryError;
    ok: Category;
  };
-type Result_17 = 
+type Result_16 = 
  variant {
    err: GetContactError;
    ok: Contact;
  };
-type Result_16 = 
+type Result_15 = 
  variant {
    err: OrderError;
    ok: Order;
  };
-type Result_15 = 
+type Result_14 = 
  variant {
    err: GetProductError;
    ok: Product;
  };
-type Result_14 = 
+type Result_13 = 
  variant {
    err: GetUserError;
    ok: User;
  };
-type Result_13 = 
+type Result_12 = 
  variant {
    err: GetPaymentStatusError;
    ok: text;
  };
-type Result_12 = 
+type Result_11 = 
  variant {
    err: GetStatisticalDetailError;
    ok: StatisticalDetail;
  };
-type Result_11 = 
+type Result_10 = 
  variant {
    err: GetVariantError;
    ok: Variants;
- };
-type Result_10 = 
- variant {
-   err: OrderError;
-   ok: record {
-         Order;
-         Result__1;
-       };
  };
 type Result_1 = 
  variant {
@@ -438,6 +438,16 @@ type NewOrder =
    totalAmount: float64;
    userid: principal;
  };
+type List_1 = 
+ opt record {
+       CartItem;
+       List_1;
+     };
+type List = 
+ opt record {
+       WishlistItem;
+       List;
+     };
 type Index = nat64;
 type GetVariantError = variant {VariantNotFound;};
 type GetUserError = variant {UserNotFound;};
@@ -632,7 +642,6 @@ type CartItem =
    time_created: Time;
    time_updated: Time;
  };
-type CartId = text;
 type AssetClass = 
  variant {
    Cryptocurrency;
@@ -659,41 +668,41 @@ type Address =
    state: text;
  };
 service : {
-  addtoCartItems: (text, text, text, nat8) -> (Result_34);
-  addtoWishlist: (text) -> (Result_33);
-  clearallcartitmesbyprincipal: () -> (Result_27);
-  createAddress: (UserAddress) -> (Result_32);
-  createCategory: (text, text, bool, bool) -> (Result_31);
-  createContact: (UserContact) -> (Result_30);
+  addtoCartItems: (text, text, text, nat8) -> (Result_33);
+  addtoWishlist: (text, text, text) -> (Result_32);
+  clearallcartitmesbyprincipal: () -> (Result_26);
+  createAddress: (UserAddress) -> (Result_31);
+  createCategory: (text, text, bool, bool) -> (Result_30);
+  createContact: (UserContact) -> (Result_29);
   createProduct: (UserProduct, vec VariantSize, vec VariantColor) ->
-   (Result_29);
-  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_28);
-  deleteCartItems: (text) -> (Result_27);
-  deleteCategory: (SlugId) -> (Result_26);
-  deleteContact: (ContactId) -> (Result_25);
-  deleteOrder: (OrderId) -> (Result_24);
-  deleteProduct: (SlugId) -> (Result_23);
-  deleteWishlistItems: (text) -> (Result_22);
-  deleteaddress: (text) -> (Result_21);
-  deletevariant: (SlugId) -> (Result_20);
-  getAddress: (text) -> (Result_19);
+   (Result_28);
+  createVariant: (SlugId, text, text, nat, float64, float64) -> (Result_27);
+  deleteCartItems: (text, text, text) -> (Result_26);
+  deleteCategory: (SlugId) -> (Result_25);
+  deleteContact: (ContactId) -> (Result_24);
+  deleteOrder: (OrderId) -> (Result_23);
+  deleteProduct: (SlugId) -> (Result_22);
+  deleteWishlistItems: (text, text, text) -> (Result_21);
+  deleteaddress: (text) -> (Result_20);
+  deletevariant: (SlugId) -> (Result_19);
+  getAddress: (text) -> (Result_18);
   getCallerCartItems: (nat, nat) ->
    (record {
       current_page: nat;
       data: vec CartItem;
       total_pages: nat;
     });
-  getCategory: (SlugId) -> (Result_18);
-  getContact: (ContactId) -> (Result_17);
-  getOrder: (text) -> (Result_16);
-  getProduct: (SlugId) -> (Result_15);
-  getUserdetailsbycaller: () -> (Result_14);
-  getUserdetailsbyid: (principal) -> (Result_14);
+  getCategory: (SlugId) -> (Result_17);
+  getContact: (ContactId) -> (Result_16);
+  getOrder: (text) -> (Result_15);
+  getProduct: (SlugId) -> (Result_14);
+  getUserdetailsbycaller: () -> (Result_13);
+  getUserdetailsbyid: (principal) -> (Result_13);
   get_exchange_rates: (Asset, Asset) -> (GetExchangeRateResult);
-  getpaymentstatus: (text) -> (Result_13);
+  getpaymentstatus: (text) -> (Result_12);
   getshippingamount: () -> (ShippingAmount) query;
-  getstatisticaldetailforadmin: () -> (Result_12);
-  getvariant: (SlugId) -> (Result_11);
+  getstatisticaldetailforadmin: () -> (Result_11);
+  getvariant: (SlugId) -> (Result_10);
   isAdmin: (principal) -> (bool);
   listCategories: (nat, nat) ->
    (record {
@@ -735,9 +744,8 @@ service : {
   place_order: (NewOrder, principal, principal, nat, variant {
                                                        ckbtc;
                                                        icp;
-                                                     }) -> (Result_10);
-  updateAddress: (Address, text, principal) -> (Result_9);
-  updateCartItems: (CartId, nat8, text, text) -> (Result_8);
+                                                     }) -> (Result_9);
+  updateAddress: (Address, text, principal) -> (Result_8);
   updateCategory: (SlugId, text, text, bool, bool) -> (Result_7);
   updateContact: (ContactId, bool) -> (Result_6);
   updateOrderStatus: (OrderId, text) -> (Result_3);
