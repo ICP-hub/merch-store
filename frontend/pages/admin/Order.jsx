@@ -18,6 +18,16 @@ const Order = () => {
   const [backend] = useCanister("backend");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
+  const handleprevious = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
   const columns = React.useMemo(
     () => [
       {
@@ -50,13 +60,13 @@ const Order = () => {
   );
   useEffect(() => {
     listAllOrders();
-  }, []);
+  }, [page]);
 
   const listAllOrders = async () => {
     try {
-      const items = await backend.listallOrders();
+      const items = await backend.listallOrders(1, page);
       console.log(items);
-      setOrders(items);
+      setOrders(items.data);
     } catch (error) {
       console.error("Error listing all Orders:", error);
     } finally {
@@ -64,9 +74,8 @@ const Order = () => {
     }
   };
 
-  const data = useMemo(() => orders, [orders]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => ({
+  const extractedData = orders.map((data) => ({
     userId: data.userid.toText(),
     paymentAddress: data.paymentAddress,
     paymentStatus: data.paymentStatus,
@@ -94,7 +103,13 @@ const Order = () => {
               />
             </div>
           ) : (
-            <Table columns={columns} data={extractedData} />
+            <Table
+              columns={columns}
+              data={extractedData}
+              handleNext={handleNext}
+              handleprevious={handleprevious}
+              page1={page}
+            />
           )}
         </div>
       </div>

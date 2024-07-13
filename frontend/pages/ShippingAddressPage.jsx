@@ -43,7 +43,7 @@ const AddressDetail = () => {
   const { getAddressList, userAddressList } = UserAddressApiHandler();
   const { getCallerCartItems, cartItems, getShippingAmount, shippingAmount } =
     CartApiHandler();
-  const { productList, getProductList } = ProductApiHandler();
+  const { productList, getProductList } = ProductApiHandler(1);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
@@ -52,7 +52,8 @@ const AddressDetail = () => {
   const { ShippingAddressPageLoader } = LoadingScreen();
 
   // Get cart item details
-  const cartItemDetails = getCartItemDetails(cartItems, productList);
+  const cartItemDetails = 
+  (cartItems, productList);
   // console.log("Cart Item Details", cartItemDetails);
   const totalPrice = totalCartSellPrice(cartItemDetails);
   // console.log(cartItemDetails);
@@ -85,7 +86,7 @@ const AddressDetail = () => {
     setSelectedAddress(address);
   };
   // console.log(selectedAddress);
-  const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
+  const addressDetails = userAddressList?.map((Address) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
     return Address;
   });

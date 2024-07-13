@@ -11,7 +11,7 @@ import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 /*  @ CategoriesVertical : Product Page.
 /* ----------------------------------------------------------------------------------------------------- */
 const CategoriesVertical = ({ searchProductByCategory, state }) => {
-  const { categoryList, getCategoryList } = ProductApiHandler();
+  const { categoryList, getCategoryList } = ProductApiHandler(1);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [initialRender, setInitialRender] = useState(true);
 
@@ -19,7 +19,7 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
 
   // Category name from category list:
   if (categoryList !== null) {
-    categoryList.map(([cateSlug, { name }]) => categories.push(name));
+    categoryList.map(({ name }) => categories.push(name));
   }
 
   // ApplyFilter based on category
@@ -70,7 +70,7 @@ const CategoriesVertical = ({ searchProductByCategory, state }) => {
 /*  @ CategoriesVertical : Home Page.
 /* ----------------------------------------------------------------------------------------------------- */
 const CategoriesHorizontal = ({ searchProductByCategory }) => {
-  const { categoryList, getCategoryList } = ProductApiHandler();
+  const { categoryList, getCategoryList } = ProductApiHandler(0);
   const [focusedIndex, setFocusedIndex] = useState(0);
   // Extract categories using a loop
   const categories = ["All"];
@@ -78,9 +78,9 @@ const CategoriesHorizontal = ({ searchProductByCategory }) => {
   if (categoryList !== null) {
     // categoryList.map(([cateSlug, { name }]) => categories.push(name));
     // Display only featured categories for HomePage ???
-    categoryList.forEach(([cateSlug, { name, featured }]) => {
-      if (featured) {
-        categories.push(name);
+    categoryList.forEach((item) => {
+      if (item.featured) {
+        categories.push(item.name);
       }
     });
   }

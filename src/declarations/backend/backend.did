@@ -695,6 +695,12 @@ service : {
   getstatisticaldetailforadmin: () -> (Result_12);
   getvariant: (SlugId) -> (Result_11);
   isAdmin: (principal) -> (bool);
+  listCategories: (nat, nat) ->
+   (record {
+      current_page: nat;
+      data: vec Category;
+      total_pages: nat;
+    });
   listContacts: (nat, nat) ->
    (record {
       current_page: nat;

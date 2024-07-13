@@ -9,7 +9,7 @@ import {
 import CountUp from "react-countup";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+ 
 import { TailSpin } from "react-loader-spinner";
 import { PiImagesSquareThin, PiUserThin } from "react-icons/pi";
 import { useAuth, useBackend } from "../../auth/useClient";

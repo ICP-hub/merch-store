@@ -21,7 +21,7 @@ import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 
 import NoImage from "../assets/product/p1-front.jpg";
-import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+import { useAuth, useBackend } from "../auth/useClient.jsx";
 import Total from "../components/common/Total.jsx";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import { LuTrash } from "react-icons/lu";
@@ -50,7 +50,7 @@ const CartPage = () => {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
   const [product, getProduct] = useState([]);
   const [id, setIds] = useState("");
   const [quantity, setQuantity] = useState();
@@ -69,7 +69,7 @@ const Cart = () => {
     setErrorImage(true);
   };
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   // States for modal : ClearAll
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successClearAll, setSuccessClearAll] = useState(true);
@@ -87,36 +87,35 @@ const Cart = () => {
 
   const getCartlist = async () => {
     try {
-      const item = await backend.getCallerCartItems();
-      const formatColor = item.map((item) => ({
-        color: item[1].color,
+      const item = await backend.getCallerCartItems(10, 0);
+      console.log(item.data);
+      const formatColor = item.data.map((item) => ({
+        color: item.color,
       }));
       setColor(formatColor);
-      const formatSize = item.map((item) => ({
-        size: item[1].size,
+      const formatSize = item.data.map((item) => ({
+        size: item.size,
       }));
 
       setSize(formatSize);
-      const formatIds = item.map((item) => ({
-        id: item[1].id,
-      }));
-      setIds(formatIds);
-      const formatQuantity = item.map((item) => ({
-        quantity: item[1].quantity,
+     
+      
+      const formatQuantity = item.data.map((item) => ({
+        quantity: item.quantity,
       }));
       setQuantity(formatQuantity);
 
-      const formattedItems = item.map((item) => ({
-        slug: item[1].product_slug,
+      const formattedItems = item.data.map((item) => ({
+        slug: item.product_slug,
       }));
 
       // Update state with the formatted items array
       setCartItems(formattedItems);
-      console.log(item);
+      console.log(item.data);
 
       if (item) {
-        setCarts(item.ok);
-        console.log(item);
+        setCarts(item.data);
+        console.log(item.data);
       }
     } catch (error) {
       console.error("Error listing cart:", error);
@@ -479,7 +478,8 @@ const Cart = () => {
                                         color="green"
                                         size={24}
                                         className="cursor-pointer"
-                                      />  */}Update Cart
+                                      />  */}
+                                        Update Cart
                                       </div>
                                     )}
                                   </button>

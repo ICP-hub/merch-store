@@ -180,16 +180,14 @@ const NewArrival = ({ newArrivalProd, isLoading }) => {
 
 //category new
 const ExpCategories = () => {
-  const { categoryList, getCategoryList } = ProductApiHandler();
+  const { categoryList, getCategoryList } = ProductApiHandler(0);
   // Call CategoryList
   useEffect(() => {
     getCategoryList();
   }, []);
 
   // Filter featured categories : Display only featured categories
-  const featuredCategories = categoryList?.filter(
-    ([_, { featured }]) => featured
-  );
+  const featuredCategories = categoryList?.filter(({ featured }) => featured);
 
   return (
     <div className="md:container md:mx-auto px-6 my-8 max-md:px-2 ">
@@ -209,15 +207,13 @@ const ExpCategories = () => {
       <SmoothList delay={200}>
         <div className="grid-category">
           {/* render 6 category card at max */}
-          {featuredCategories
-            ?.slice(0, 6)
-            .map(([cateSlug, { name, category_img }], index) => (
-              <CategoryCard
-                key={index}
-                name={name}
-                category_img={category_img}
-              />
-            ))}
+          {featuredCategories?.slice(0, 6).map((item, index) => (
+            <CategoryCard
+              key={index}
+              name={item.name}
+              category_img={item.category_img}
+            />
+          ))}
         </div>
       </SmoothList>
     </div>

@@ -23,6 +23,7 @@ const ProductCard = ({ product }) => {
   const [loading3, setLoading3] = useState(false);
   const [wishlist, setWishlist] = useState([]);
   const { backend } = useBackend();
+  console.log(principal, "principal", isConnected);
 
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
 
@@ -37,9 +38,9 @@ const ProductCard = ({ product }) => {
 
   const listCarts = async () => {
     try {
-      const cart = await backend.getCallerCartItems(1, 0);
+      const cart = await backend.getCallerCartItems(10, 0);
       setCarts(cart.data);
-      console.log(cart);
+      console.log(cart, "cart items");
     } catch (error) {
       console.error("Error listing carts:", error);
     } finally {
@@ -51,59 +52,57 @@ const ProductCard = ({ product }) => {
   }, [backend, product]);
 
   const AddToCart = async () => {
-    if (isConnected) {
-      try {
-        listCarts();
-        setLoading(true);
-        setAddedToCart(true);
+    try {
+      listCarts();
+      setLoading(true);
+      setAddedToCart(true);
 
-        let cartId;
-        let isProductInCart;
-        let quantity1;
+      let cartId;
+      let isProductInCart;
+      let quantity1;
 
-        carts.some((item) => {
-          if (item[1]?.product_slug === product.slug) {
-            isProductInCart = true;
-            cartId = item[1]?.id;
-            quantity1 = item[1]?.quantity;
-            return true; // Stop iterating once the item is found
-          }
-          return false;
-        });
-        quantity1 = quantity1 + 1;
+      carts?.some((item) => {
+        if (item?.product_slug === product?.slug) {
+          isProductInCart = true;
 
-        if (isProductInCart) {
-          const res = await backend.updateCartItems(
-            cartId,
-            quantity1,
-            product.variantSize[0].size,
-            product.variantColor[0].color
-          );
-          toast.success("item updated successfully");
-          console.log(res);
-        } else {
-          const res = await backend.addtoCartItems(
-            product.slug,
-            product.variantSize[0].size,
-            product.variantColor[0].color,
-            quantity
-          );
-
-          if ("ok" in res) {
-            toast.success("Item added to cart");
-          } else {
-            // Log an error if the response does not have "ok" property
-            console.error("Unexpected response from backend:", res);
-          }
+          quantity1 = item?.quantity;
+          console.log(quantity1, "befewb");
+          return true; // Stop iterating once the item is found
         }
-      } catch (error) {
-        // Log the error for debugging
-        console.error("An error occurred adding items to cart:", error);
-      } finally {
-        setLoading(false);
+        return false;
+      });
+      quantity1 = quantity1 + 1;
+      console.log(quantity1, "befssfsfwb");
+
+      if (isProductInCart) {
+        const res = await backend.updateCartItems(
+          product.slug,
+          quantity1,
+          product.variantSize[0].size,
+          product.variantColor[0].color
+        );
+        toast.success("item updated successfully");
+        console.log(res);
+      } else {
+        const res = await backend.addtoCartItems(
+          product.slug,
+          product.variantSize[0].size,
+          product.variantColor[0].color,
+          quantity
+        );
+
+        if ("ok" in res) {
+          toast.success("Item added to cart");
+        } else {
+          // Log an error if the response does not have "ok" property
+          console.error("Unexpected response from backend:", res);
+        }
       }
-    } else {
-      toast.error("Please login first");
+    } catch (error) {
+      // Log the error for debugging
+      console.error("An error occurred adding items to cart:", error);
+    } finally {
+      setLoading(false);
     }
   };
   const buyNowHandler = async () => {
@@ -142,7 +141,7 @@ const ProductCard = ({ product }) => {
     try {
       //setLoading4(true)
 
-      const wishlist2 = await backend.listWishlistItems(1, 0);
+      const wishlist2 = await backend.listWishlistItems(10, 0);
       setWishlist(wishlist2.data);
     } catch (error) {
       console.error("Error listing wishlist:", error);
@@ -154,8 +153,7 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     // Check if the product is in the local cart
     const isProductInWishlist = wishlist.some(
-      (item) =>
-        item.slug === product.slug && item[1].principal.toText() === principal
+      (item) => item.product_slug === product.slug
     );
     setProductInLocalWishlist(isProductInWishlist);
   }, [wishlist, product, principal]);

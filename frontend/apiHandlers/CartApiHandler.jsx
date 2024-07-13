@@ -3,12 +3,10 @@ import { Principal } from "@dfinity/principal";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth,useBackend } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
-const useBackend = () => {
-  return useCanister("backend");
-};
-
+ 
 // Payment Address
 const usePaymentTransfer = (totalAmount) => {
   // Receiver address will be in .env file : for now dev id
@@ -22,7 +20,7 @@ const usePaymentTransfer = (totalAmount) => {
 // CartApiHandler : main
 const CartApiHandler = () => {
   // Init backend
-  const [backend] = useBackend();
+  const {backend} = useBackend();
   const { principal } = useConnect();
   const [isLoading, setIsLoading] = useState(false);
   const [cartItems, setCartItems] = useState(null);
@@ -103,9 +101,9 @@ const CartApiHandler = () => {
   const getCallerCartItems = async () => {
     try {
       setIsLoading(true);
-      const response = await backend.getCallerCartItems();
+      const response = await backend.getCallerCartItems(10,0);
       console.log("getCallerCartItems response ", response);
-      setCartItems(response);
+      setCartItems(response.data);
     } catch (err) {
       console.error("Error Fetching Cart", err);
     } finally {

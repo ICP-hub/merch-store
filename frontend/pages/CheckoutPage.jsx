@@ -25,7 +25,7 @@ import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import toast from "react-hot-toast";
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../auth/useClient.jsx";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";

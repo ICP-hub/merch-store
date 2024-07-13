@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../../../auth/useClient";
 import { HiArrowDownLeft } from "react-icons/hi2";
 import { CiCircleCheck, CiCircleChevLeft } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
 const CreateCategory = () => {
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({

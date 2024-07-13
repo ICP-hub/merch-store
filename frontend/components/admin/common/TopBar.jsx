@@ -1,10 +1,10 @@
-import { useConnect } from "@connect2ic/react";
+ import { useAuth } from "../../../auth/useClient";
 import React from "react";
 import toast from "react-hot-toast"
 import { CiGrid41, CiLogout } from "react-icons/ci";
 
 const TopBar = ({ sidebar, setSidebar }) => {
-    const { disconnect } = useConnect()
+    const { disconnect } = useAuth()
     
 
     return (

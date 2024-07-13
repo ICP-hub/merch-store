@@ -455,6 +455,14 @@ export interface _SERVICE {
   'getstatisticaldetailforadmin' : ActorMethod<[], Result_12>,
   'getvariant' : ActorMethod<[SlugId], Result_11>,
   'isAdmin' : ActorMethod<[Principal], boolean>,
+  'listCategories' : ActorMethod<
+    [bigint, bigint],
+    {
+      'data' : Array<Category>,
+      'total_pages' : bigint,
+      'current_page' : bigint,
+    }
+  >,
   'listContacts' : ActorMethod<
     [bigint, bigint],
     { 'data' : Array<Contact>, 'total_pages' : bigint, 'current_page' : bigint }

@@ -268,8 +268,8 @@ const ProductDetail = () => {
   const listAllCategories = async () => {
     try {
       setLoading3(true);
-      const category = await backend.listCategories();
-      setCategories(category);
+      const category = await backend.listCategories(10, 0);
+      setCategories(category.data);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {
@@ -349,11 +349,11 @@ const ProductDetail = () => {
                 <option value="">Select Product Category</option>
                 {categories.map((item, index) => (
                   <option
-                    value={item[1].name}
+                    value={item.name}
                     key={index}
-                    selected={formData.category === item[1].name}
+                    selected={formData.category === item.name}
                   >
-                    {item[1].name}
+                    {item.name}
                   </option>
                 ))}
               </select>

@@ -11,7 +11,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import WAVES from "vanta/dist/vanta.waves.min";
 import { Menu, Transition } from "@headlessui/react";
-import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+
 import toast from "react-hot-toast";
 import {
   RiContactsFill,

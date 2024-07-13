@@ -40,15 +40,25 @@ const Message = () => {
   const { backend } = useBackend();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState();
+  const [page, setPage] = useState(0);
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
+  const handleprevious = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
 
   useEffect(() => {
     listAllMessage();
-  }, []);
+  }, [page]);
 
   const listAllMessage = async () => {
     try {
       setLoading(true);
-      const message = await backend.listContacts(1, 0);
+      const message = await backend.listContacts(1, page);
       console.log(message.data);
       setMessages(message.data);
     } catch (error) {
@@ -82,7 +92,13 @@ const Message = () => {
               />
             </div>
           ) : (
-            <Table columns={columns} data={extractedData} />
+            <Table
+              columns={columns}
+              data={extractedData}
+              handleNext={handleNext}
+              handleprevious={handleprevious}
+              page1={page}
+            />
           )}
         </div>
       </div>

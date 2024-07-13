@@ -22,15 +22,15 @@
 
 //   // Find the variant details based on color
 //   if (matchingProduct) {
-//     const [, productDetails] = matchingProduct;
-//     const matchingVariant = productDetails.variantColor.find(
+//     const [,  matchingProduct] = matchingProduct;
+//     const matchingVariant =  matchingProduct.variantColor.find(
 //       (variant) => variant.color === color
 //     );
 
 //     if (matchingVariant) {
 //       // If a matching variant found, return obj: product, orderId, size, color, variantPrice
 //       return {
-//         product: productDetails,
+//         product:  matchingProduct,
 //         orderId,
 //         size,
 //         color,
@@ -52,28 +52,29 @@
 
 // Refactoring code from above :
 export const getCartItemDetails = (cartItems, productList) => {
+  console.log(productList, "productlist");
   // console.log(cartItems, productList);
   return cartItems
-    ?.map(([orderId, { color, size, product_slug, quantity }]) => {
+    ?.map(({ color, size, product_slug, quantity }) => {
       const matchingProduct = productList?.find(
-        ([prodSlug]) => prodSlug === product_slug
+        ({ slug }) => slug === product_slug
       );
 
       if (matchingProduct) {
-        const [, productDetails] = matchingProduct;
+        console.log(matchingProduct, "matching");
 
         // Check if variantColor exists and has length
         if (
-          productDetails.variantColor &&
-          productDetails.variantColor.length > 0
+          matchingProduct.variantColor &&
+          matchingProduct.variantColor.length > 0
         ) {
-          const matchingVariant = productDetails.variantColor.find(
+          const matchingVariant = matchingProduct.variantColor.find(
             (variant) => variant.color === color
           );
           if (matchingVariant) {
             // If matching variant: return obj: product, orderId, size, color, variantPrice, variantSellPrice, variantSellPriceBasedOnQty
             return {
-              product: productDetails,
+              product: matchingProduct,
               orderId,
               quantity,
               size,
@@ -92,16 +93,16 @@ export const getCartItemDetails = (cartItems, productList) => {
 
         // // If there is no matching variant, return obj with basic details using sellingPrice and price
         // return {
-        //   product: productDetails,
+        //   product:  matchingProduct,
         //   orderId,
         //   quantity,
         //   size: null, // No size : null ? or default? fix later
         //   color: null, // No color : null ? or default? fix late
-        //   variantPrice: productDetails.price || 0, // Price : default 0
-        //   variantSellPrice: productDetails.sellingPrice || 0, // sellingPrice : default : 0
+        //   variantPrice:  matchingProduct.price || 0, // Price : default 0
+        //   variantSellPrice:  matchingProduct.sellingPrice || 0, // sellingPrice : default : 0
         //   variantSellPriceBasedOnQty:
-        //     (productDetails.sellingPrice || 0) * quantity,
-        //   variantPriceBasedOnQty: (productDetails.price || 0) * quantity,
+        //     ( matchingProduct.sellingPrice || 0) * quantity,
+        //   variantPriceBasedOnQty: ( matchingProduct.price || 0) * quantity,
         // };
       }
       return null;

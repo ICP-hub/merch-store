@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useCanister, useConnect } from "@connect2ic/react";
+ 
 import { isBrowser } from "react-device-detect";
 import TopBar from "../../components/admin/common/TopBar";
 import LeftSidebar from "../../components/admin/common/LeftSidebar";

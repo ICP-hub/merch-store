@@ -1,11 +1,10 @@
-import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
 import { useAuth, useBackend } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
 
 // API handler for product-related functionality
-const ProductApiHandler = () => {
+const ProductApiHandler = ({ currentPage = 0 }) => {
   // Init backend
   const { backend } = useBackend();
 
@@ -22,7 +21,7 @@ const ProductApiHandler = () => {
   const getProductList = async () => {
     try {
       setIsLoading(true);
-      const response = await backend.listallProducts(3, 0);
+      const response = await backend.listallProducts(8, currentPage);
       console.log(response);
       setProductList(response.data);
       setInitialProductList(response.data);
@@ -47,7 +46,7 @@ const ProductApiHandler = () => {
       // Enable case-insensitive search .toLowerCase()
       const searchTerm = searchInput.toLowerCase();
       // Filter products that contain the searchTerm in their name across all pages
-      const filteredProducts = initialProductList.filter(([prod, { title }]) =>
+      const filteredProducts = initialProductList.filter(({ title }) =>
         title.toLowerCase().includes(searchTerm)
       );
 
@@ -72,7 +71,9 @@ const ProductApiHandler = () => {
     }
     try {
       setIsLoading(true);
-      const productsFound = await backend.searchproductsbycategory(searchInput);
+      const productsFound = initialProductList.filter(({ category }) =>
+        category.toLowerCase().includes(searchInput.toLowerCase())
+      );
       setProductList(productsFound);
     } catch (err) {
       console.error("Error searching by category:", err);
@@ -85,8 +86,8 @@ const ProductApiHandler = () => {
   const getCategoryList = async () => {
     try {
       setIsLoading(true);
-      const categorylist = await backend.listCategories();
-      setCategoryList(categorylist);
+      const categorylist = await backend.listCategories(10, 0);
+      setCategoryList(categorylist.data);
     } catch (err) {
       console.error("Error Fetching Category List", err);
     } finally {

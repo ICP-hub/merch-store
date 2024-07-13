@@ -559,6 +559,17 @@ export const idlFactory = ({ IDL }) => {
     'getstatisticaldetailforadmin' : IDL.Func([], [Result_12], []),
     'getvariant' : IDL.Func([SlugId], [Result_11], []),
     'isAdmin' : IDL.Func([IDL.Principal], [IDL.Bool], []),
+    'listCategories' : IDL.Func(
+        [IDL.Nat, IDL.Nat],
+        [
+          IDL.Record({
+            'data' : IDL.Vec(Category),
+            'total_pages' : IDL.Nat,
+            'current_page' : IDL.Nat,
+          }),
+        ],
+        [],
+      ),
     'listContacts' : IDL.Func(
         [IDL.Nat, IDL.Nat],
         [

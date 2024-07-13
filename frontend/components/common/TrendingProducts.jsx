@@ -1,6 +1,6 @@
 import { useScroll, motion, useTransform } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { useCanister } from "@connect2ic/react";
+ 
 import TrendingProductCard from "./TrendingProductCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -12,7 +12,7 @@ import ProductApiHandler from "../../apiHandlers/ProductApiHandler";
 const TrendingProducts = () => {
   const { scrollYProgress } = useScroll();
   const x = useTransform(scrollYProgress, [0, 1], [0, 800]); // Adjust the range as needed
-  const { isLoading, productList, getProductList } = ProductApiHandler();
+  const { isLoading, productList, getProductList } = ProductApiHandler(1);
 
   // Filter trending products from productList
   const trendingProducts = productList?.filter((item) => {

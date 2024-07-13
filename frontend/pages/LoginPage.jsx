@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { ConnectDialog, useConnect, useDialog } from "@connect2ic/react";
+ 
 
 import { Navigate, useNavigate } from "react-router-dom";
 import WELCOME from "../assets/welcome.svg";

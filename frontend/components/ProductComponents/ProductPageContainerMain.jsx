@@ -12,6 +12,8 @@ import TrendingProductCardLoader from "../common/TrendingProductCardLoader";
 /*  @ ProductPageContainerMain 
 /* ----------------------------------------------------------------------------------------------------- */
 const ProductPageContainerMain = () => {
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
   // Retrieve data and methods from the ProductApiHandler
   const {
     productList,
@@ -19,11 +21,12 @@ const ProductPageContainerMain = () => {
     getProductList,
     searchProductByCategory,
     searchProductByName,
-  } = ProductApiHandler();
+  } = ProductApiHandler({ currentPage });
 
   // Extract category
   // State variables for pagination
-  const [initialLoad, setInitialLoad] = useState(true); // State to prevent continuous re-renders. Only load on mount
+
+  const [productsPerPage] = useState(8); // State to prevent continuous re-renders. Only load on mount
   // useEffect hook to fetch product list on initial load
 
   // useLocation for navigating to the current product category from homePageBottom: pass the state
@@ -41,7 +44,8 @@ const ProductPageContainerMain = () => {
       }
       setInitialLoad(false);
     }
-  }, [getProductList, initialLoad]);
+  }, [getProductList, initialLoad, currentPage]);
+  console.log(currentPage);
 
   return (
     <div className="container mx-auto p-6 rounded-2xl max-md:px-2">
@@ -53,6 +57,10 @@ const ProductPageContainerMain = () => {
         loading={isLoading}
         searchProductByCategory={searchProductByCategory}
         state={state}
+        currentPage={currentPage}
+        productsPerPage={productsPerPage}
+        setCurrentPage={setCurrentPage}
+        setInitialLoad={setInitialLoad}
       />
     </div>
   );
@@ -90,14 +98,18 @@ const ContainerMid = ({
   loading,
   searchProductByCategory,
   state,
+  currentPage,
+  productsPerPage,
+  setCurrentPage,
+  setInitialLoad
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(8); // Number of products to display per page
+  // Number of products to display per page
   // Calculate the start and end index for the current page
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = Math.min(startIndex + productsPerPage, productList?.length);
   const currentProducts = productList?.slice(startIndex, endIndex);
   // Function to handle pagination
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -141,14 +153,13 @@ const ContainerMid = ({
                   ))}
             </SmoothList>
 
-            {productList?.length > 8 && (
-              <Pagination
-                productsPerPage={productsPerPage}
-                totalProducts={productList?.length}
-                currentPage={currentPage}
-                paginate={paginate}
-              />
-            )}
+            <Pagination
+              productsPerPage={productsPerPage}
+              totalProducts={productList?.length}
+              currentPage={currentPage}
+              paginate={setCurrentPage}
+              setInitialLoad={setInitialLoad}
+            />
           </>
         )}
       </div>

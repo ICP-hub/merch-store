@@ -58,20 +58,31 @@ const Products = () => {
   const { backend } = useBackend();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     listAllProducts();
-  }, []);
+  }, [page]);
 
   const listAllProducts = async () => {
     try {
-      const items = await backend.listallProducts(1, 0);
+      const items = await backend.listallProducts(10, page);
       setProducts(items.data);
       console.log(items.data);
     } catch (error) {
-      console.error("Error listing all category:", error);
+      console.error("Error listing all product:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
+  const handleprevious = () => {
+    if (page > 0) {
+      setPage(page - 1);
     }
   };
 
@@ -144,7 +155,13 @@ const Products = () => {
               />
             </div>
           ) : (
-            <Table columns={columns} data={extractedData} />
+            <Table
+              columns={columns}
+              data={extractedData}
+              handleNext={handleNext}
+              handleprevious={handleprevious}
+              page1={page}
+            />
           )}
         </div>
       </div>

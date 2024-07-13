@@ -9,13 +9,7 @@ import { BsQrCodeScan } from "react-icons/bs";
 import Button from "../components/common/Button";
 import { useEffect, useState } from "react";
 
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
+ 
 import Avatar from "boring-avatars";
 import toast from "react-hot-toast";
 import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
@@ -167,7 +161,7 @@ const MyProAccount = () => {
           <div className="rounded-full w-[100px]">
             <Avatar
               size={100}
-              name={principal}
+              name={principal?.toText()}
               variant="beam"
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useCanister } from "@connect2ic/react";
+
 import Table, {
   DetailButton,
   SelectColumnFilter,
@@ -8,6 +8,7 @@ import Table, {
 import { InfinitySpin } from "react-loader-spinner";
 import { Principal } from "@dfinity/principal";
 import ShortText from "./ShortText";
+import { useBackend } from "../../auth/useClient";
 
 const UserDetails = () => {
   const textDecoder = new TextDecoder("utf-8"); // Specify the appropriate encoding
@@ -35,27 +36,35 @@ const UserDetails = () => {
     []
   );
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
   useEffect(() => {
     listusers();
-  }, [backend]);
+  }, [backend, page]);
 
   const listusers = async () => {
     try {
-      const userData = await backend.listUsers();
-      setUser(userData);
+      const userData = await backend.listUsers(1, page);
+      setUser(userData.data);
     } catch (error) {
       console.error("Error listing all Users:", error);
     } finally {
       setLoading(false);
     }
   };
+  const handleNext = () => {
+    setPage(page + 1);
+  };
 
-  const data = useMemo(() => user, [user]);
+  const handleprevious = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
 
-  const extractedData = data.map(([key, data]) => ({
+  const extractedData = user.map((data) => ({
     firstName: data.firstName,
     lastName: data.lastName,
     email: data.email,
@@ -83,7 +92,13 @@ const UserDetails = () => {
               />
             </div>
           ) : (
-            <Table columns={columns} data={extractedData} />
+            <Table
+              columns={columns}
+              data={extractedData}
+              handleNext={handleNext}
+              handleprevious={handleprevious}
+              page1={page}
+            />
           )}
         </div>
       </div>
