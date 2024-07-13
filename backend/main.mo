@@ -1111,7 +1111,7 @@ actor {
 
     //  -----------------------------------   Wishlist_Functions ---------------------------------------------------------------------------------------------------------
 
-    public shared (msg) func addtoWishlist(product_slug : Text) : async Result.Result<(Types.WishlistItem, Index), Types.CreateWishlistItemError> {
+    public shared (msg) func addtoWishlist(product_slug : Text, size : Text , color : Text) : async Result.Result<(Types.wishlistItemobject, Index), Types.CreateWishlistItemError> {
 
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
@@ -1121,49 +1121,53 @@ actor {
         let userP : Principal = msg.caller;
 
         let wishlistItem : Types.WishlistItem = {
+            size = size;
+            color = color;
             product_slug = product_slug;
             time_created = Time.now();
             time_updated = Time.now();
         };
         switch (wishlistItems.get(userP)) {
             case null {
-                let wishlistitems = [wishlistItem];
-                let wishlist_blob = to_candid(wishlistitems);
+                Debug.print("No wishlist items found for the user");
+                var wishlistitems : List.List<Types.WishlistItem> = List.nil<Types.WishlistItem>();
+                var wishlistitemobject : Types.wishlistItemobject = {
+                    userprincipal = userP;
+                    wishlistItem = List.push(wishlistItem, wishlistitems);
+                }; 
+                let wishlist_blob = to_candid(wishlistitemobject);
                 let wishlist_index = await stable_add(wishlist_blob, wishlist_state);
                 wishlistItems.put(userP, wishlist_index);
-                return #ok(wishlistItem, wishlist_index);
+                return #ok(wishlistitemobject, wishlist_index);
             };
             case (?v) {
+                Debug.print("wishlist items found for the user so we are adding the new one to the existing list !!!!");
                 let wishlist_blob = await stable_get(v, wishlist_state);
-                let wishlistitems : ?[Types.WishlistItem] = from_candid(wishlist_blob);
+                let wishlistitems : ?Types.wishlistItemobject = from_candid(wishlist_blob);
                 switch (wishlistitems) { 
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                        let newWishlistItems = List.fromArray(val);
-                        let result = List.find<Types.WishlistItem>(
-                        newWishlistItems,
-                        func(a : Types.WishlistItem) : Bool {
-                        return a.product_slug == product_slug;
-                    });
-                  switch (result) {
-                    case (null) {
-                        return #err(#WishlistItemAlreadyExists);
-                    };
-                    case (_) {
-                        ignore List.push(wishlistItem, newWishlistItems);
-                        let newWishlistBlob = to_candid(newWishlistItems);
+                        Debug.print("items are " # debug_show(val));
+                        var newWishlistItems = val.wishlistItem;
+
+                        Debug.print("cartlist before adding the new item is: " # debug_show(newWishlistItems));
+
+                        let updatedWishlistItems = List.push(wishlistItem, newWishlistItems);
+                        
+                        let newobject : Types.wishlistItemobject = {
+                            userprincipal = userP;
+                            wishlistItem = updatedWishlistItems;
+                        };
+                        let newWishlistBlob = to_candid(newobject);
                         let index = await update_stable(v, newWishlistBlob, wishlist_state);
-                        return #ok(wishlistItem, index);
+                        return #ok(newobject, index);
                     };
-                
                 };
             };
-            };
-            };
-            };
         };
+    };
 
     // public shared (msg) func updateWishlistItems(
     //     id : Types.WishlistId
@@ -1194,7 +1198,7 @@ actor {
     //     };
     // };
 
-    public shared (msg) func deleteWishlistItems(product_slug : Text) : async Result.Result<(), Types.DeleteWishlistItemError> {
+    public shared (msg) func deleteWishlistItems(product_slug : Text, size : Text , color : Text) : async Result.Result<Types.wishlistItemobject, Types.DeleteWishlistItemError> {
         if (Principal.isAnonymous(msg.caller)) {
             return #err(#UserNotAuthenticated);
         };
@@ -1205,17 +1209,18 @@ actor {
            };
            case (?v) {
                let wishlist_blob = await stable_get(v, wishlist_state);
-               let wishlistitems : ?[Types.WishlistItem] = from_candid(wishlist_blob);
+               let wishlistitems : ?Types.wishlistItemobject = from_candid(wishlist_blob);
                switch (wishlistitems) {
                    case null {
                        throw Error.reject("no blob found in stable memory for the caller");
                    };
                    case (?val) {
-                       let newWishlistItems = List.fromArray(val);
+                       let newWishlistItems = val.wishlistItem;
+                       Debug.print("newWishlistItems are " # debug_show(newWishlistItems));
                        let result = List.find<Types.WishlistItem>(
                            newWishlistItems,
                            func(a : Types.WishlistItem) : Bool {
-                               return a.product_slug == product_slug;
+                               return a.product_slug == product_slug and a.color == color and a.size == size;
                            },
                        );
                           switch (result) {
@@ -1226,12 +1231,20 @@ actor {
                                  let updatedWishlistItems = List.filter<Types.WishlistItem>(
                                       newWishlistItems,
                                       func(a : Types.WishlistItem) : Bool {
-                                        return a.product_slug != product_slug;
-                                    },
-                                 );
-                                let newWishlistBlob = to_candid(updatedWishlistItems);
+                                        return a.product_slug != product_slug and a.color != color and a.size != size;
+                                    }); 
+
+                                Debug.print("updatedWishlistItems are " # debug_show(updatedWishlistItems));
+
+
+                                let newobject : Types.wishlistItemobject = {
+                                    userprincipal = msg.caller;
+                                    wishlistItem = updatedWishlistItems;
+                                };
+
+                                let newWishlistBlob = to_candid(newobject);
                                 ignore await update_stable(v, newWishlistBlob, wishlist_state);
-                                return #ok(());
+                                return #ok(newobject);
                             };
                         };
                     };
@@ -1249,13 +1262,15 @@ actor {
             };
             case (?v) {
                 let items_blob = await stable_get(v, wishlist_state);
-                let items_data : ?[Types.WishlistItem] = from_candid(items_blob);
+                Debug.print("items_blob is " # debug_show(items_blob));
+                let items_data : ?Types.wishlistItemobject = from_candid(items_blob);
                 switch (items_data) {
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                        let pages = Utils.paginate<Types.WishlistItem>(val,chunkSize);
+                        Debug.print("items are " # debug_show(val));
+                        let pages = Utils.paginate<Types.WishlistItem>(List.toArray(val.wishlistItem),chunkSize);
         
                         if (pages.size() < pageNo) {
                             throw Error.reject("Page not found");
@@ -1263,10 +1278,12 @@ actor {
                         if (pages.size() == 0) {
                             throw Error.reject("No wishlist items found");
                         };
+                        
+                        Debug.print("pages are " # debug_show(pages));
                     return { data = pages[pageNo]; current_page = pageNo + 1; total_pages = pages.size();   
                     };
                 };
-            };
+            };  
             };
         };
     };  
@@ -1319,10 +1336,15 @@ actor {
                             Debug.print("cartlist before adding the new item is: " # debug_show(cartlist));
                             let newlist =  List.push(cartItem, cartlist);
                             Debug.print("cartlist after adding new item is " # debug_show(newlist));
+
                             let newcartobject = {userprincipal = userP ;cartItemlist = newlist};
+
                             Debug.print("new cart object after update is : " # debug_show(newcartobject));
+
                             let newCartBlob = to_candid(newcartobject);
+
                             let index = await update_stable(v, newCartBlob, cart_state);
+
                             return #ok(newcartobject, index);
                             };
                             case (_) {
@@ -1421,11 +1443,14 @@ actor {
                                         let updatedCartItems = List.filter<Types.CartItem>(
                                             newCartItemslist,
                                             func(a : Types.CartItem) : Bool {
-                                            return a.product_slug != product_slug;
+                                            return a.product_slug != product_slug and a.size != size and a.color != color;
                                             });
                                         Debug.print("items after deletion are " # debug_show(updatedCartItems));
+
                                         let newcartitemsobject : Types.cartItemobject = {userprincipal = msg.caller ;cartItemlist = updatedCartItems};
+
                                         let newCartBlob = to_candid(newcartitemsobject);
+
                                         ignore await update_stable(v, newCartBlob, cart_state);
                                         return #ok(());
                             };
