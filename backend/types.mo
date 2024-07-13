@@ -3,6 +3,7 @@ import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Nat64 "mo:base/Nat64";
+import List "mo:base/List";
 module {
     public type Index = Nat64;
 
@@ -10,7 +11,6 @@ module {
     // Slug is a unique identifier for a product
     public type SlugId = Text;
     public type WishlistId = Text;
-    public type CartId = Text;
     public type RId = Text;
 
     public type User = {
@@ -397,6 +397,8 @@ module {
         time_created : Time.Time;
         time_updated : Time.Time;
     };
+
+    public type cartItemobject = {userprincipal : Principal;cartItemlist : List.List<CartItem>;};
 
     public type CreateCartItemsError = {
         #UserNotAuthenticated;

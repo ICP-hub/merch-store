@@ -1227,17 +1227,17 @@ actor {
                                       newWishlistItems,
                                       func(a : Types.WishlistItem) : Bool {
                                         return a.product_slug != product_slug;
-                                      },
+                                    },
                                  );
-                                 let newWishlistBlob = to_candid(updatedWishlistItems);
-                                 ignore await update_stable(v, newWishlistBlob, wishlist_state);
-                                 return #ok(());
+                                let newWishlistBlob = to_candid(updatedWishlistItems);
+                                ignore await update_stable(v, newWishlistBlob, wishlist_state);
+                                return #ok(());
                             };
-                          };
-                     };
+                        };
+                    };
                 };
-              };
-    };
+            };
+        };
     };
 
     // 📍📍📍📍📍
@@ -1273,7 +1273,7 @@ actor {
 
     //  -----------------------------------   Cart_Functions -----------------------------------------------------------------------------------------------------------------
 
-    public shared (msg) func addtoCartItems(product_slug : Text, size : Text, color : Text, qty : Nat8) : async Result.Result<(Types.CartItem , Index), Types.CreateCartItemsError> {
+    public shared (msg) func addtoCartItems(product_slug : Text, size : Text, color : Text, qty : Nat8) : async Result.Result<(Types.cartItemobject , Index), Types.CreateCartItemsError> {
 
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated);
@@ -1291,36 +1291,39 @@ actor {
             time_created = Time.now();
             time_updated = Time.now();
         };
+
+        
         
         switch (cartItems.get(userP)) {
             case null {
-                var cartobject = {userprincipal : Principal  = userP ;cartItemarray : [Types.CartItem] = [cartItem]};
+                Debug.print("No cart items found for the user so we are adding the first one !!!!");
+                var cartlist : List.List<Types.CartItem> = List.nil<Types.CartItem>();
+                var cartobject : Types.cartItemobject = {userprincipal = userP ;cartItemlist = List.push(cartItem, cartlist)};
                 let cart_blob = to_candid(cartobject);
                 let cart_index = await stable_add(cart_blob, cart_state);
-                cartItems.put(userP, cart_index);
-                return #ok(cartItem, cart_index);
+                cartItems.put(userP, cart_index);   
+                return #ok(cartobject, cart_index);
             };
             case (?v) {
+                Debug.print("Cart items found for the user so we are adding the new one to the existing list !!!!");
                 let cart_blob = await stable_get(v, cart_state);
-                var cartitems : ?{userprincipal : Principal ;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
-                switch (cartitems) {
+                Debug.print("cart_blob is " # debug_show(cart_blob));
+                var cartitemsobject : ?Types.cartItemobject = from_candid(cart_blob);
+                switch (cartitemsobject) {
                     case null {
-                        throw Error.reject("no blob found in stable memory for the caller");
+                        throw Error.reject("No items forund in the stable memory for this one ");
                     };
                     case (?val) {
-                        let newCartItems = List.fromArray(val.cartItemarray);
-                        let result = List.find<Types.CartItem>(
-                        newCartItems,
-                        func(a : Types.CartItem) : Bool {
-                        return a.product_slug == product_slug;
-                        });
-                        switch (result) {
-                            case (null) {
-                                ignore List.push(cartItem, newCartItems);
-                                let newobject : {userprincipal : Principal ;cartItemarray: [Types.CartItem]} = {userprincipal = userP ;cartItemarray = List.toArray(newCartItems)};
-                                let newCartBlob = to_candid(newobject);
-                                let index = await update_stable(v, newCartBlob, cart_state);
-                                return #ok(cartItem, index);
+                        Debug.print("items are " # debug_show(val));
+                            var cartlist = val.cartItemlist;
+                            Debug.print("cartlist before adding the new item is: " # debug_show(cartlist));
+                            let newlist =  List.push(cartItem, cartlist);
+                            Debug.print("cartlist after adding new item is " # debug_show(newlist));
+                            let newcartobject = {userprincipal = userP ;cartItemlist = newlist};
+                            Debug.print("new cart object after update is : " # debug_show(newcartobject));
+                            let newCartBlob = to_candid(newcartobject);
+                            let index = await update_stable(v, newCartBlob, cart_state);
+                            return #ok(newcartobject, index);
                             };
                             case (_) {
                                 return #err(#CartItemAlreadyExists);
@@ -1329,70 +1332,68 @@ actor {
                     };
                 };
             };
-        };
-    };
 
-    public shared (msg) func updateCartItems(
-        id : Types.CartId,
-        qty : Nat8,
-        size : Text,
-        color : Text,
-    ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
-        // commented for local development
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated); // We require the user to be authenticated,
-        };
 
-        let result = cartItems.get(msg.caller);
-        switch (result) {
-            case null {
-                // If the result is null, we return a ProductNotFound error.
-                return #err(#CartisEmpty);
-            };
-            case (?v) {
-                let cart_blob = await stable_get(v, cart_state);
-                let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
-                switch (cartitems) {
-                    case null {
-                        throw Error.reject("no blob found in stable memory for the caller");
-                    };
-                    case (?val) {
-                        let cartitemslist = List.fromArray(val);
-                        let cartItem = List.find<Types.CartItem>(
-                            cartitemslist,
-                            func(a : Types.CartItem) : Bool {
-                                return a.product_slug == id;
-                            },
-                        );
-                        switch (cartItem) {
-                            case (null) {
-                                return #err(#CartItemNotFound);
-                            };
-                            case (?a) {
-                                let cartItem : Types.CartItem = {
-                                    product_slug = a.product_slug;
-                                    size = size;
-                                    color = color;
-                                    quantity = qty;
-                                    time_created = a.time_created;
-                                    time_updated = Time.now();
-                                };
-                                let cart_blob = to_candid(cartItem);
-                                ignore await update_stable(v, cart_blob, cart_state);
-                                return #ok(cartItem);
-                            };
-                        };
-                    };
-                };
-            };
-        };
-    };
+    // public shared (msg) func updateCartItems(
+    //     qty : Nat8,
+    //     size : Text,
+    //     color : Text,
+    // ) : async Result.Result<(Types.CartItem), Types.UpdateCartItemsError> {
+    //     // commented for local development
+    //     if (Principal.isAnonymous(msg.caller)) {
+    //         return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+    //     };
 
-    public shared (msg) func deleteCartItems(product_slug : Text) : async Result.Result<(), Types.DeleteCartItemsError> {
+    //     let result = cartItems.get(msg.caller);
+    //     switch (result) {
+    //         case null {
+    //             // If the result is null, we return a ProductNotFound error.
+    //             return #err(#CartisEmpty);
+    //         };
+    //         case (?v) {
+    //             let cart_blob = await stable_get(v, cart_state);
+    //             let cartitems : ?[Types.CartItem] = from_candid(cart_blob);
+    //             switch (cartitems) {
+    //                 case null {
+    //                     throw Error.reject("no blob found in stable memory for the caller");
+    //                 };
+    //                 case (?val) {
+    //                     let cartitemslist = List.fromArray(val);
+    //                     let cartItem = List.find<Types.CartItem>(
+    //                         cartitemslist,
+    //                         func(a : Types.CartItem) : Bool {
+    //                             return a.product_slug == id;
+    //                         },
+    //                     );
+    //                     switch (cartItem) {
+    //                         case (null) {
+    //                             return #err(#CartItemNotFound);
+    //                         };
+    //                         case (?a) {
+    //                             let cartItem : Types.CartItem = {
+    //                                 product_slug = a.product_slug;
+    //                                 size = size;
+    //                                 color = color;
+    //                                 quantity = qty;
+    //                                 time_created = a.time_created;
+    //                                 time_updated = Time.now();
+    //                             };
+    //                             let cart_blob = to_candid(cartItem);
+    //                             ignore await update_stable(v, cart_blob, cart_state);
+    //                             return #ok(cartItem);
+    //                         };
+    //                     };
+    //                 };
+    //             };
+    //         };
+    //     };
+    // };
 
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+    public shared (msg) func deleteCartItems(product_slug : Text , size : Text, color : Text  ) : async Result.Result<(), Types.DeleteCartItemsError> {
+
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
          let cart_index = cartItems.get(msg.caller);
             switch (cart_index) {
                 case null {
@@ -1400,41 +1401,41 @@ actor {
                 };
                 case (?v) {
                     let cart_blob = await stable_get(v, cart_state);
-                    var cartitemsobject : ?{userprincipal : Principal ;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
+                    var cartitemsobject : ?Types.cartItemobject = from_candid(cart_blob);
                     switch (cartitemsobject) {
                         case null {
                             throw Error.reject("no blob found in stable memory for the caller");
                         };
                         case (?val) {
-                            let newCartItems = List.fromArray(val.cartItemarray);
+                            var newCartItemslist = val.cartItemlist;
+                            Debug.print("items before deletion are " # debug_show(newCartItemslist));
                             let result = List.find<Types.CartItem>(
-                                newCartItems,
+                                newCartItemslist,
                                 func(a : Types.CartItem) : Bool {
-                                    return a.product_slug == product_slug;
-                                },
-                            );
+                                    return a.product_slug == product_slug and a.size == size and a.color == color;
+                                });
                                 switch (result) {
-                                case (null) {
-                                    return #err(#CartItemNotFound);
-                                };
-                                case (?a) {
-                                    let updatedCartItems = List.filter<Types.CartItem>(
-                                            newCartItems,
+                                    case (null) {
+                                        return #err(#CartItemNotFound);
+                                    };
+                                    case (?a) {
+                                        let updatedCartItems = List.filter<Types.CartItem>(
+                                            newCartItemslist,
                                             func(a : Types.CartItem) : Bool {
                                             return a.product_slug != product_slug;
-                                            },
-                                    );
-                                    let newcartitemsobject = {userprincipal = msg.caller ;cartItemarray = List.toArray(updatedCartItems)};
-                                    let newCartBlob = to_candid(newcartitemsobject);
-                                    ignore await update_stable(v, newCartBlob, cart_state);
-                                    return #ok(());
-                                };
-                                };
+                                            });
+                                        Debug.print("items after deletion are " # debug_show(updatedCartItems));
+                                        let newcartitemsobject : Types.cartItemobject = {userprincipal = msg.caller ;cartItemlist = updatedCartItems};
+                                        let newCartBlob = to_candid(newcartitemsobject);
+                                        ignore await update_stable(v, newCartBlob, cart_state);
+                                        return #ok(());
+                            };
                         };
                     };
-                        };
-                    };
-                    };
+                };
+            };
+        };
+    };
                     
 
     // 📍📍📍📍📍
@@ -1449,17 +1450,18 @@ actor {
             case (?v) {
                 let cart_blob = await stable_get(v, cart_state);
                 Debug.print("cart_blob is " # debug_show(cart_blob));
-                let cartitems : ?{userprincipal : Principal;cartItemarray: [Types.CartItem]} = from_candid(cart_blob);
+                let cartitems : ?Types.cartItemobject = from_candid(cart_blob);
                 switch (cartitems) {
                     case (?val) {
                         Debug.print("items are " # debug_show(val));
-                        let pages = Utils.paginate<Types.CartItem>(val.cartItemarray,chunkSize);
+                        let pages = Utils.paginate<Types.CartItem>(List.toArray(val.cartItemlist),chunkSize);
                         if (pages.size() < pageNo) {
                             throw Error.reject("Page not found");
                         };
                         if (pages.size() == 0) {
                             throw Error.reject("No cart items found");
                         };
+                        Debug.print("pages are " # debug_show(pages));
                         return { data = pages[pageNo]; current_page = pageNo + 1; total_pages = pages.size(); 
                     };
                 };
@@ -1468,7 +1470,7 @@ actor {
                 };
             };
         };
-        };
+    };
     };
     
 
