@@ -455,8 +455,15 @@ module {
 
     public type WishlistItem = {
         product_slug : Text;
+        size : Text;
+        color : Text;
         time_created : Time.Time;
         time_updated : Time.Time;
+    };
+
+    public type wishlistItemobject = {
+        userprincipal : Principal;
+        wishlistItem : List.List<WishlistItem>;
     };
 
     // Order
