@@ -21,6 +21,7 @@
     "country-state-city": "^3.2.1",
     "dotenv": "^16.4.1",
     "framer-motion": "^11.0.3",
+    "ic-auth": "^0.9.1",
     "intl-tel-input": "^19.2.16",
     "moment": "^2.30.1",
     "mops": "^3.0.2",

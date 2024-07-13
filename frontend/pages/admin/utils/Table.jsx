@@ -204,7 +204,7 @@ export function AvatarCell({ value, column, row }) {
   );
 }
 
-function Table({ columns, data }) {
+function Table({ columns, data, handleNext, handleprevious, page1 }) {
   //const data2 = data;
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -221,6 +221,7 @@ function Table({ columns, data }) {
     pageOptions,
     pageCount,
     gotoPage,
+
     nextPage,
     previousPage,
     setPageSize,
@@ -350,8 +351,7 @@ function Table({ columns, data }) {
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div className="flex gap-x-2 items-baseline">
             <span className="text-sm text-gray-700">
-              Page <span className="font-medium">{state.pageIndex + 1}</span> of{" "}
-              <span className="font-medium">{pageOptions.length}</span>
+              Page <span className="font-medium">{page1}</span>
             </span>
             <label>
               <span className="sr-only">Items Per Page</span>
@@ -377,8 +377,9 @@ function Table({ columns, data }) {
             >
               <PageButton
                 className="!rounded-l-lg !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
+                onClick={() => {
+                  handleprevious();
+                }}
               >
                 <span className="sr-only">First</span>
                 <HiChevronDoubleLeft
@@ -388,8 +389,9 @@ function Table({ columns, data }) {
               </PageButton>
               <PageButton
                 className="!bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
+                onClick={() => {
+                  handleprevious();
+                }}
               >
                 <span className="sr-only">Previous</span>
                 <HiChevronLeft
@@ -399,8 +401,7 @@ function Table({ columns, data }) {
               </PageButton>
               <PageButton
                 className=" !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
+                onClick={() => handleNext()}
               >
                 <span className="sr-only">Next</span>
                 <HiChevronRight
@@ -410,8 +411,7 @@ function Table({ columns, data }) {
               </PageButton>
               <PageButton
                 className="!rounded-r-lg !bg-[#F5EEF8] !hover:bg-[#F5EEF8] !border-[#512E5F]"
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
+                onClick={() => handleNext()}
               >
                 <span className="sr-only">Last</span>
                 <HiChevronDoubleRight

@@ -271,7 +271,7 @@ actor {
     private let adminPrincipals : [Text] = [
         "7yywi-leri6-n33rr-vskr6-yb4nd-dvj6j-xg2b4-reiw6-dljs7-slclz-2ae",
         "jkssc-r7bft-rhxnv-xskty-gwy2y-nabjd-asvau-ijwcf-nyvbq-dcazp-zae",
-        "h7yxq-n6yb2-6js2j-af5hk-h4inj-edrce-oevyj-kbs7a-76kft-vrqrw-nqe",
+        "ze4vy-q7dc7-tevo4-gi5h4-lqr4b-af3x6-vmiyl-3ya53-dbmc4-qbc6e-yqe",
         "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
         "mmi6f-vbi3x-r3ytg-dath5-qfi5s-rbq3r-75avw-q3ele-ajsft-llzwc-dae",
         "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe",
@@ -1332,7 +1332,6 @@ actor {
                     };
                 };
             };
-
 
     // public shared (msg) func updateCartItems(
     //     qty : Nat8,

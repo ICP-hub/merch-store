@@ -24,6 +24,7 @@ const Pagination = ({
   totalProducts,
   currentPage,
   paginate,
+  setInitialLoad,
 }) => {
   // Calculate the total number of pages needed
   const pageNumbers = [];
@@ -35,15 +36,18 @@ const Pagination = ({
     <div className="flex items-center justify-between max-w-full py-6">
       {/* Previous button */}
       <Button
-        onClick={() => paginate(currentPage - 1)}
+        onClick={() => {
+          paginate(currentPage - 1);
+          setInitialLoad(true);
+        }}
         className="font-semibold flex items-center gap-1"
-        disabled={currentPage === 1}
+        disabled={currentPage === 0}
       >
         <BsArrowLeft /> Previous
       </Button>
 
       {/* Page number buttons */}
-      <div className="flex items-center font-semibold gap-1">
+      {/* <div className="flex items-center font-semibold gap-1">
         {pageNumbers.map((pageNumber) => (
           <PaginationButton
             key={pageNumber}
@@ -53,13 +57,16 @@ const Pagination = ({
             {pageNumber}
           </PaginationButton>
         ))}
-      </div>
+      </div> */}
 
       {/* Next button */}
       <Button
-        onClick={() => paginate(currentPage + 1)}
+        onClick={() => {
+          paginate(currentPage + 1);
+          setInitialLoad(true);
+        }}
         className="font-semibold flex items-center gap-1"
-        disabled={currentPage === Math.ceil(totalProducts / productsPerPage)}
+        // disabled={currentPage === Math.ceil(totalProducts / productsPerPage)}
       >
         Next <BsArrowRight />
       </Button>

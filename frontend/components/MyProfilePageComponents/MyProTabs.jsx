@@ -13,8 +13,9 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import Button from "../common/Button";
 import Modal1 from "../common/Styles/Modal1";
 import { RiLogoutCircleLine } from "react-icons/ri";
-import { useConnect } from "@connect2ic/react";
+// import { useConnect } from "@connect2ic/react";
 import toast from "react-hot-toast";
+import { useAuth } from "../../auth/useClient";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ MyProfilePageContainerMain : MyProTabs > tabComponents are the arr of tabs
 /* ----------------------------------------------------------------------------------------------------- */
@@ -46,7 +47,8 @@ import toast from "react-hot-toast";
 
 const Tabs = () => {
   const location = useLocation();
-  const { disconnect } = useConnect();
+  // const { disconnect } = useConnect();
+  const { disconnect } = useAuth();
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);

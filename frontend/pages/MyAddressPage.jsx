@@ -10,7 +10,7 @@ import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import AddressForm from "../components/ContactPageComponents/AddressForm";
 import UserAddressApiHandler from "../apiHandlers/UserAddressApiHandler";
-import { useCanister } from "@connect2ic/react";
+import { useAuth, useBackend } from "../auth/useClient";
 import LoadingScreen from "../components/common/LoadingScreen";
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -53,9 +53,9 @@ const MyAddress = () => {
   const { MyAddressLoadingScreen } = LoadingScreen();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   const [finalIsLoadig, setFinalIsLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
 
-  const addressDetails = userAddressList?.map(([Principal, [...Address]]) => {
+  const addressDetails = userAddressList?.map((Address) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
     // Extract required props
     return Address;

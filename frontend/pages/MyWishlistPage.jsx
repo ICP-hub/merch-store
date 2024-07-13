@@ -19,13 +19,7 @@ import { useEffect, useState } from "react";
 import NoDataFound from "../components/common/NoDataFound";
 import { PiShirtFoldedFill } from "react-icons/pi";
 
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
+import { useAuth, useBackend } from "../auth/useClient";
 import IcpLogo from "../assets/IcpLogo";
 import EmptyWishlist from "../components/common/EmptyWishlist";
 
@@ -60,9 +54,9 @@ const MyWishListContainerMain = () => {
 /*  @ MyWishlist Page : <MyWishlistContainerMain /> : <MyWishlist Component />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyWishList = () => {
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [wishlists, setWishlists] = useState("");
   const [product, getProduct] = useState([]);
   const [id, setId] = useState("");
@@ -86,15 +80,18 @@ const MyWishList = () => {
   ];
   const getWishlist = async () => {
     try {
-      const item = await backend.listWishlistItems();
-      const ids = item
-        .filter((innerArray) => innerArray[1].principal.toText() === principal)
-        .map((innerArray) => innerArray[1].id);
-      setId(ids);
+      const item = await backend.listWishlistItems(10, 0);
+      console.log(item, "wishlist");
+      // const ids = item
+      //   .filter((innerArray) => innerArray[1].principal.toText() === principal)
+      //   .map((innerArray) => innerArray[1].id);
+      // setId(ids);
+      console.log(item.data);
 
-      const productSlugs = item
-        .filter((innerArray) => innerArray[1].principal.toText() === principal)
-        .map((innerArray) => innerArray[1].product_slug);
+      const productSlugs = item.data.map(
+        (innerArray) => innerArray.product_slug
+      );
+      // .filter((innerArray) => innerArray[1].principal.toText() === principal)
 
       // Set the state with all product_slugs as an array
       setWishlists(productSlugs);
@@ -118,7 +115,9 @@ const MyWishList = () => {
 
       if ("ok" in remove) {
         getWishlist();
-        getProduct((prevItems) => prevItems.filter((item) => item.id !== id));
+        getProduct((prevItems) =>
+          prevItems.filter((item) => item.product_slug !== id)
+        );
         toast.success("item removed successfully");
       }
       console.log(remove);
@@ -236,7 +235,7 @@ const MyWishList = () => {
                       <div className="flex gap-6">
                         <Button
                           className=" hover:text-red-500"
-                          onClick={() => deleteWishlist(id[index])}
+                          onClick={() => deleteWishlist(wishlists.product_slug)}
                         >
                           <BsTrash3 size={20} />
                         </Button>

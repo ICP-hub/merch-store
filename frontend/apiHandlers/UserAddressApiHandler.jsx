@@ -1,17 +1,14 @@
-import { useCanister, useConnect } from "@connect2ic/react";
-import { Principal } from "@dfinity/principal";
+ 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth, useBackend } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
-const useBackend = () => {
-  return useCanister("backend");
-};
 
 const UserAddressApiHandler = () => {
   // Init backend
-  const [backend] = useBackend();
-  const { principal } = useConnect();
+  const { backend } = useBackend();
+  const { principal } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [userAddressList, setUserAddressList] = useState(null);
   // {firstname:text; country:text; city:text; email:text; state:text; address_type:text; phone_number:text; pincode:text; lastname:text; addressline1:text; addressline2:text}
@@ -63,7 +60,7 @@ const UserAddressApiHandler = () => {
       const response = await backend.updateAddress(
         { ...address, address_type: "default" },
         address.id,
-        Principal.fromText(principal)
+        principal
       );
       console.log("updateAddressResponse ", response);
       if (response.ok) {

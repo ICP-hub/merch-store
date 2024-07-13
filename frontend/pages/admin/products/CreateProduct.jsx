@@ -3,14 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CiCircleCheck, CiCircleChevLeft } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../../../auth/useClient";
+
 import { WithContext as ReactTags } from "react-tag-input";
 import { TiDeleteOutline } from "react-icons/ti";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
 import IcpLogo from "../../../assets/IcpLogo";
 const CreateCategory = () => {
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [categorylist, setCategorylist] = useState([]);
@@ -48,8 +49,8 @@ const CreateCategory = () => {
   const listAllCategories = async () => {
     try {
       setLoading2(true);
-      const category = await backend.listCategories();
-      setCategorylist(category);
+      const category = await backend.listCategories(10, 0);
+      setCategorylist(category.data);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {
@@ -337,8 +338,8 @@ const CreateCategory = () => {
               >
                 <option value="">Select Product Category</option>
                 {categorylist.map((item, index) => (
-                  <option value={item[1].name} key={index}>
-                    {item[1].name}
+                  <option value={item.name} key={index}>
+                    {item.name}
                   </option>
                 ))}
               </select>

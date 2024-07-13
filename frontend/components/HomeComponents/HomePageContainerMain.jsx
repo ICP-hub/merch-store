@@ -27,7 +27,7 @@ const HomePageContainerMain = () => {
     isLoading,
     searchProductByName,
     initialProductList,
-  } = ProductApiHandler();
+  } = ProductApiHandler(1);
 
   useEffect(() => {
     getProductList();

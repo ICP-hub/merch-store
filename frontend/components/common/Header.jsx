@@ -11,7 +11,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import WAVES from "vanta/dist/vanta.waves.min";
 import { Menu, Transition } from "@headlessui/react";
-import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+
 import toast from "react-hot-toast";
 import {
   RiContactsFill,
@@ -44,6 +44,7 @@ import NoDataFound from "./NoDataFound";
 import TrendingProducts from "./TrendingProducts";
 import CartItemsSmallLoader from "../cart/CartItemsSmallLoader";
 import { Principal } from "@dfinity/principal";
+import { useAuth, useBackend } from "../../auth/useClient";
 
 const getRandomColor = () => {
   const minDarkness = 20; // Minimum darkness level (0-255)
@@ -71,12 +72,14 @@ const Header = ({ title }) => {
   const navigate = useNavigate();
   const [vantaEffect, setVantaEffect] = useState(null);
   const myRef = useRef(null);
-  const { isConnected, disconnect, principal } = useConnect();
+  // const { isConnected, disconnect, principal } = useConnect();
+  const { isConnected, disconnect, principal } = useAuth();
   const [carts, setCarts] = useState([]);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
   const maxInitialDisplay = 3;
-  const { open } = useDialog();
+  // const { open } = useDialog();
   const [isAdmin, setIsAdmin] = useState(false); // Add isAdmin state
 
   useEffect(() => {
@@ -351,7 +354,7 @@ const Header = ({ title }) => {
                             {/* <Avvvatars style={"shape"} value={principal} size={40}  /> */}
                             <Avatar
                               size={40}
-                              name={principal}
+                              name={principal?.toText()}
                               variant="beam"
                               colors={[
                                 "#92A1C6",

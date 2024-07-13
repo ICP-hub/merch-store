@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../../auth/useClient";
 import Table, {
   DetailButton,
   SelectColumnFilter,
@@ -31,21 +31,29 @@ const Categories = () => {
     []
   );
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
+  const handleprevious = () => {
+    setPage(page - 1);
+  };
 
   useEffect(() => {
     listAllCategories();
-  }, []);
+  }, [page]);
 
   const listAllCategories = async () => {
     try {
       setLoading(true);
-      const category = await backend.listCategories();
+      const category = await backend.listCategories(1, page);
       console.log(category, "hello from list categories");
 
-      setCategories(category);
+      setCategories(category.data);
     } catch (error) {
       console.error("Error listing all category:", error);
     } finally {
@@ -53,9 +61,8 @@ const Categories = () => {
     }
   };
 
-  const data = useMemo(() => categories, [categories]);
   // Get data from the second element of each sub-array
-  const extractedData = data.map(([key, data]) => ({
+  const extractedData = categories.map((data) => ({
     name: data.name,
     slug: data.slug,
     active: data.active ? "active" : "inactive",
@@ -89,7 +96,13 @@ const Categories = () => {
               />
             </div>
           ) : (
-            <Table columns={columns} data={extractedData} />
+            <Table
+              columns={columns}
+              data={extractedData}
+              handleNext={handleNext}
+              handleprevious={handleprevious}
+              page1={page}
+            />
           )}
         </div>
       </div>

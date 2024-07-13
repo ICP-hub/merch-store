@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+import { useBackend } from "../../../auth/useClient";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
 
 const CategoryDetail = () => {
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [category, setCategory] = useState([]); // Add state for email

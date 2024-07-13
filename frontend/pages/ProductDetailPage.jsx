@@ -22,8 +22,8 @@ import img1 from "../assets/product/p2-front.jpeg";
 import img2 from "../assets/product/p1-back.jpg";
 import img3 from "../assets/product/p2-back.jpeg";
 
-import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import IcpLogo from "../assets/IcpLogo.jsx";
+import { useAuth, useBackend } from "../auth/useClient.jsx";
 
 const ProductDetailPage = () => {
   return (
@@ -37,9 +37,9 @@ const ProductDetailPage = () => {
   );
 };
 const ProductDetail = () => {
-  const { principal, isConnected } = useConnect();
+  const { principal, isConnected } = useAuth();
 
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
 
   const [loading3, setLoading3] = useState(false);
@@ -51,7 +51,7 @@ const ProductDetail = () => {
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState();
-  const { open } = useDialog();
+
   const [sellingPrice, setSellingPrice] = useState();
   const { slug } = useParams();
   const [selectedColor, setSelectedColor] = useState();
@@ -167,8 +167,8 @@ const ProductDetail = () => {
     try {
       setLoading4(false);
 
-      const cart = await backend.getCallerCartItems();
-      setCarts(cart);
+      const cart = await backend.getCallerCartItems(10, 0);
+      setCarts(cart.data);
     } catch (error) {
       console.error("Error listing carts:", error);
     } finally {
@@ -184,9 +184,9 @@ const ProductDetail = () => {
     // Check if the product is in the local cart
     const isProductInCart = carts.some(
       (item) =>
-        item[1]?.product_slug === data?.slug &&
-        item[1]?.color === selectedColor &&
-        item[1]?.size === selectedSize
+        item?.product_slug === data?.slug &&
+        item?.color === selectedColor &&
+        item?.size === selectedSize
     );
     setProductInLocalCart(isProductInCart);
   }, [data, selectedColor, selectedSize, principal]);
@@ -238,8 +238,8 @@ const ProductDetail = () => {
     try {
       //setLoading4(true)
 
-      const wishlist2 = await backend.listWishlistItems();
-      setWishlist(wishlist2);
+      const wishlist2 = await backend.listWishlistItems(10, 0);
+      setWishlist(wishlist2.data);
     } catch (error) {
       console.error("Error listing wishlist:", error);
     } finally {
@@ -250,9 +250,7 @@ const ProductDetail = () => {
   useEffect(() => {
     // Check if the product is in the local cart
     const isProductInWishlist = wishlist.some(
-      (item) =>
-        item[1].product_slug === data.slug &&
-        item[1].principal.toText() === principal
+      (item) => item.product_slug === data.slug
     );
     setProductInLocalWishlist(isProductInWishlist);
   }, [wishlist, data, principal]);
@@ -280,7 +278,6 @@ const ProductDetail = () => {
       }
     } else {
       toast.error("please login first");
-      open();
     }
   };
 
