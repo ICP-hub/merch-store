@@ -74,7 +74,7 @@ const Checkout = () => {
     shippingAmount,
     getShippingAmount,
   } = CartApiHandler();
-  const { productList, getProductList } = ProductApiHandler();
+  const { productList, getProductList } = ProductApiHandler(0);
   const [paymentMethod, setPaymentMethod] = useState(pMethod[0]);
   const [finalCart, setFinalCart] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
@@ -83,7 +83,7 @@ const Checkout = () => {
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [successDelete, setSuccessDelete] = useState(true);
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
   const { CheckoutPageLoader } = LoadingScreen();
 
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -402,7 +402,7 @@ const CheckoutCard = ({
 const AddressSection = ({ setUserAddress, userAddress }) => {
   const { getAddressList, userAddressList, isLoading } =
     UserAddressApiHandler();
-  const [backend] = useCanister("backend");
+  const { backend } = useBackend();
 
   const addressConfig = () => {
     const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
@@ -411,7 +411,8 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
     }
 
     if (userAddressList && userAddressList.length > 0) {
-      const addresses = userAddressList.map(([, address]) => address[0]);
+      const addresses = userAddressList.map((address) => address[0]);
+      console.log(addresses, "enfwefn");
       setUserAddress(addresses[0]);
     }
   };
