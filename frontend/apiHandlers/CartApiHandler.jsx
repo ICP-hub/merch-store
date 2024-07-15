@@ -190,7 +190,7 @@ const CartApiHandler = () => {
     console.log("metadata ", formattedMetadata);
     const parsedBalance = parseInt(balance, 10);
     console.log("Balance:", parsedBalance);
-    transferApprove(parsedBalance, formattedMetadata, tokenActor);
+    transferApprove(parsedBalance, formattedMetadata, tokenActor, totalAmount);
   };
 
   // Trasnfer Approve flow ************************
@@ -251,14 +251,17 @@ const CartApiHandler = () => {
   const transferApprove = async (
     currentBalance,
     currentMetaData,
-    tokenActor
+    tokenActor,
+    totalAmount
   ) => {
     try {
       const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
-      const sendableAmount = parseInt(
-        ((price_share * quantity) / exchange) * Math.pow(10, decimals),
-        10
-      );
+      // const sendableAmount = parseInt(
+      //   ((price_share * quantity) / exchange) * Math.pow(10, decimals),
+      //   10
+      // );
+      const sendableAmount = parseInt(totalAmount * Math.pow(10, decimals), 10);
+
       console.log("sendable amount console ", sendableAmount);
       console.log("current balance console ", currentBalance);
       if (currentBalance > sendableAmount) {
@@ -284,11 +287,12 @@ const CartApiHandler = () => {
           toast.error(errorMessage);
           return;
         } else {
-          afterPaymentApprove(
-            parseInt(approveRes?.Ok).toString(),
-            sendableAmount,
-            currentBalance
-          );
+          // afterPaymentApprove(
+          //   parseInt(approveRes?.Ok).toString(),
+          //   sendableAmount,
+          //   currentBalance
+          // );
+          afterPaymentApprove();
         }
       } else {
         console.log("Insufficient Balance to purchase");
@@ -300,6 +304,11 @@ const CartApiHandler = () => {
       console.error("Error in transfer approve", err);
     } finally {
     }
+  };
+
+  // After payment approve
+  const afterPaymentApprove = () => {
+    console.log("Payment Approve done!!");
   };
 
   // Get Order List
