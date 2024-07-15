@@ -110,7 +110,7 @@ const Cart = () => {
 
       // Update state with the formatted items array
       setCartItems(formattedItems);
-      console.log(item.data);
+      console.log(formattedItems);
 
       if (item) {
         setCarts(item.data);
@@ -178,7 +178,8 @@ const Cart = () => {
 
   const deleteCart = async (id, color, size) => {
     try {
-      const remove = await backend.deleteCartItems(id, color, size);
+      console.log(id, size, color);
+      const remove = await backend.deleteCartItems(id, size, color);
       if (remove) {
         getCartlist();
 
@@ -227,8 +228,9 @@ const Cart = () => {
       if ("ok" in res) {
         console.log(res);
 
-        toast.success("All items are removed");
         getCartlist();
+        setLoading(true);
+        toast.success("All items are removed");
       } else {
         console.log("error while deleting all the items", res);
       }
@@ -238,6 +240,7 @@ const Cart = () => {
       setClearCartLoad(false);
       setSuccessClearAll(false);
       getCartlist();
+      setLoading(false);
     }
   };
 
@@ -425,7 +428,7 @@ const Cart = () => {
                                 className=""
                                 onClick={() =>
                                   deleteCart(
-                                    id[index].id,
+                                    cartItems[index].slug,
                                     color[index]?.color,
                                     size[index]?.size
                                   )
