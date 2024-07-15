@@ -171,21 +171,22 @@ const ProductCard = ({ product }) => {
         setLoading3(false);
       }
     } else {
-      toast.error("You need to login first");   
+      toast.error("You need to login first");
       // open();
     }
   };
 
   const removeToWishlist = async () => {
     try {
-      const wishlistItem = wishlist.filter(
-        (item) =>
-          item[1].product_slug === product.slug &&
-          item[1].principal.toText() === principal
-      );
+       
 
       setLoading3(true);
-      const res = await backend.deleteWishlistItems(wishlistItem[0][1].id);
+      console.log(product.slug);
+      const res = await backend.deleteWishlistItems(
+        product.slug,
+        product.variantSize[0].size,
+        product.variantColor[0].color
+      );
       console.log(res);
       if ("ok" in res) {
         toast.success("The product has been removed to your wishlist.");
