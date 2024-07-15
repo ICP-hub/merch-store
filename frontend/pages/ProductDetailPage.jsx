@@ -260,7 +260,11 @@ const ProductDetail = () => {
     if (isConnected) {
       try {
         setLoading3(true);
-        const res = await backend.addtoWishlist(slug);
+        const res = await backend.addtoWishlist(
+          data.slug,
+          data.variantSize[0].size,
+          data.variantColor[0].color
+        );
         setProductInLocalWishlist(true);
 
         if ("ok" in res) {
@@ -283,17 +287,17 @@ const ProductDetail = () => {
 
   const removeToWishlist = async () => {
     try {
-      const wishlistItem = wishlist.filter(
-        (item) =>
-          item[1].product_slug === data.slug &&
-          item[1].principal.toText() === principal
+      setLoading3(true);
+      const res = await backend.deleteWishlistItems(
+        data.slug,
+        data.variantSize[0].size,
+        data.variantColor[0].color
       );
 
-      setLoading3(true);
-      const res = await backend.deleteWishlistItems(wishlistItem[0][1].id);
-
       if ("ok" in res) {
-        toast.success("The product has been removed to your wishlist.");
+        toast.success("The product has been removed from your wishlist.");
+        setProductInLocalWishlist(false);
+
         listWishlists();
         //window.location.reload()
       }

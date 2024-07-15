@@ -1203,9 +1203,9 @@ actor {
     // };
 
     public shared (msg) func deleteWishlistItems(product_slug : Text, size : Text , color : Text) : async Result.Result<Types.wishlistItemobject, Types.DeleteWishlistItemError> {
-        if (Principal.isAnonymous(msg.caller)) {
-            return #err(#UserNotAuthenticated);
-        };
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
        let wishlist_index = wishlistItems.get(msg.caller);
        switch (wishlist_index) {
            case null {
