@@ -50,8 +50,12 @@ const CheckoutPage = () => {
 // Payment methods
 const pMethod = [
   {
-    name: "Plug Wallet",
-    value: "plug-wallet",
+    name: "ICP",
+    value: "icp",
+  },
+  {
+    name: "CKBTC",
+    value: "ckbtc",
   },
   /* {
     name: "Fiat Payment",
@@ -406,15 +410,15 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
 
   const addressConfig = () => {
     const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
-    if (localStorageAddress !== null && localStorageAddress !== undefined) {
+    if (localStorageAddress) {
       setUserAddress(localStorageAddress);
     }
 
-    if (userAddressList && userAddressList.length > 0) {
-      const addresses = userAddressList.map((address) => address);
-      console.log(addresses, "enfwefn");
-      setUserAddress(addresses[0]);
-    }
+    // if (userAddressList && userAddressList.length > 0) {
+    //   const addresses = userAddressList.map((address) => address);
+    //   console.log(addresses, "Address list");
+    //   // setUserAddress(addresses[0]);
+    // }
   };
 
   useEffect(() => {
@@ -423,7 +427,11 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
 
   useEffect(() => {
     addressConfig();
-  }, [userAddressList]);
+  }, [userAddressList, isLoading]);
+
+  useEffect(() => {
+    console.log("User address is", userAddress);
+  }, [userAddress]);
 
   return (
     <div className="p-6 border-2 rounded-2xl">
@@ -476,13 +484,13 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
       <RadioGroup.Label className="text-black xl:text-sm text-xs font-semibold uppercase tracking-wider">
         Payment Method
       </RadioGroup.Label>
-      <div className="grid xl:grid-cols-3 grid-cols-2 gap-4 py-4 max-sm:flex max-sm:flex-col font-medium">
+      <div className="grid xl:grid-cols-3 grid-cols-2 gap-4 py-4 max-sm:flex max-sm:flex-col font-medium cursor-pointer">
         {pMethod.map((plan) => (
           <RadioGroup.Option
             key={plan.name}
             value={plan}
             className={({ active, checked }) =>
-              `border-2 p-3 rounded-xl text-sm uppercase ${
+              `border p-3 rounded-xl text-sm uppercase border-gray-300 ${
                 checked ? "bg-black text-white border-black" : "bg-white"
               }`
             }
