@@ -208,7 +208,7 @@ const CartApiHandler = () => {
     try {
       const res = await backend?.get_exchange_rates(
         { class: paymentOpt, symbol: "icp" },
-        { class: paymentOpt1, symbol: "btc" }
+        { class: paymentOpt1, symbol: "ckBTC" }
       );
       console.log("First response for exchange rate ", res);
       if (res?.Ok) {
