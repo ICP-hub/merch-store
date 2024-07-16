@@ -50,7 +50,7 @@ const Categories = () => {
   const listAllCategories = async () => {
     try {
       setLoading(true);
-      const category = await backend.listCategories(1, page);
+      const category = await backend.listCategories(8, page);
       console.log(category, "hello from list categories");
 
       setCategories(category.data);
