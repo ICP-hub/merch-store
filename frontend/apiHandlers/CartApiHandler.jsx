@@ -200,15 +200,15 @@ const CartApiHandler = () => {
   const getExchangeRate = async () => {
     const getPaymentOpt = (method) => ({ [method]: null });
 
-    const paymentOpt = getPaymentOpt("FiatCurrency");
+    const paymentOpt = getPaymentOpt("Cryptocurrency");
     const paymentOpt1 = getPaymentOpt("Cryptocurrency");
 
     setExchangeLoad(true);
 
     try {
       const res = await backend?.get_exchange_rates(
-        { class: paymentOpt, symbol: "usd" },
-        { class: paymentOpt1, symbol: "icp" }
+        { class: paymentOpt, symbol: "icp" },
+        { class: paymentOpt1, symbol: "ckbtc" }
       );
 
       if (res?.Ok) {
