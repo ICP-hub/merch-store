@@ -198,8 +198,8 @@ const CartApiHandler = () => {
   // Trasnfer Approve flow ************************
   // Exchange rate
   const getExchangeRate = async () => {
+    console.log("Checking exchange rate..........");
     const getPaymentOpt = (method) => ({ [method]: null });
-
     const paymentOpt = getPaymentOpt("Cryptocurrency");
     const paymentOpt1 = getPaymentOpt("Cryptocurrency");
 
@@ -208,9 +208,9 @@ const CartApiHandler = () => {
     try {
       const res = await backend?.get_exchange_rates(
         { class: paymentOpt, symbol: "icp" },
-        { class: paymentOpt1, symbol: "ckbtc" }
+        { class: paymentOpt1, symbol: "ckBTC" }
       );
-
+      console.log("First response for exchange rate ", res);
       if (res?.Ok) {
         const exchangeRate =
           parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
@@ -218,7 +218,7 @@ const CartApiHandler = () => {
         setExchangeRate(exchangeRate);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching exchange rate ", error);
     } finally {
       setExchangeLoad(false);
     }
@@ -398,9 +398,9 @@ const CartApiHandler = () => {
   };
 
   // Effects
-  useEffect(() => {
-    getExchangeRate();
-  }, [backend]);
+  // useEffect(() => {
+  //   getExchangeRate();
+  // }, [backend]);
 
   // Returns
   return {
@@ -417,6 +417,7 @@ const CartApiHandler = () => {
     shippingAmount,
     getShippingAmount,
     updateCart,
+    getExchangeRate,
   };
 };
 

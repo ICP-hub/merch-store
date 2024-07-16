@@ -77,6 +77,7 @@ const Checkout = () => {
     cartItems,
     shippingAmount,
     getShippingAmount,
+    getExchangeRate,
   } = CartApiHandler();
   const { productList, getProductList } = ProductApiHandler(0);
   const [paymentMethod, setPaymentMethod] = useState(pMethod[0]);
@@ -212,6 +213,12 @@ const Checkout = () => {
   return (
     <div className="container mx-auto p-6 max-md:px-2">
       <TabChanges paths={pathsForTabChanges} />
+      <button
+        className="px-4 py-2 rounded-md bg-red-500 text-white"
+        onClick={getExchangeRate}
+      >
+        Get Exchange Rate
+      </button>
       {isFinalCartLoading ? (
         <CheckoutPageLoader />
       ) : (
@@ -429,9 +436,9 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
     addressConfig();
   }, [userAddressList, isLoading]);
 
-  useEffect(() => {
-    console.log("User address is", userAddress);
-  }, [userAddress]);
+  // useEffect(() => {
+  //   console.log("User address is", userAddress);
+  // }, [userAddress]);
 
   return (
     <div className="p-6 border-2 rounded-2xl">
