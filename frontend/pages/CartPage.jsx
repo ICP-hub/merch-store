@@ -195,7 +195,7 @@ const Cart = () => {
       getProductCartlist();
       setTimeout(() => {
         setLoading(false);
-      }, 3000);
+      }, 7000);
     }
   }, [backend, cartItems]);
 

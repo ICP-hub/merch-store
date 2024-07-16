@@ -233,7 +233,7 @@ const App = () => {
         reverseOrder={true}
       />
       <BackToTop />
-      <ConnectDialog />
+    
       <AnimatePresence mode="wait" initial={true}>
         <RouterProvider router={router} />
       </AnimatePresence>
@@ -241,19 +241,4 @@ const App = () => {
   );
 };
 
-const client = createClient({
-  canisters: {
-    backend,
-  },
-  providers: [new PlugWallet()],
-  //providers: defaultProviders,
-  globalProviderConfig: {
-    dev: import.meta.env.DEV,
-  },
-});
-
-export default () => (
-  <Connect2ICProvider client={client}>
-    <App />
-  </Connect2ICProvider>
-);
+export default () => <App />;
