@@ -7,8 +7,8 @@ import { createActor } from "../../.dfx/local/canisters/backend";
 
 const AuthContext = createContext();
 
-const canisterID = "frfij-baaaa-aaaak-afnva-cai";
-const whitelist = ["frfij-baaaa-aaaak-afnva-cai"];
+const canisterID = "bd3sg-teaaa-aaaaa-qaaba-cai";
+const whitelist = ["bd3sg-teaaa-aaaaa-qaaba-cai"];
 
 export const useAuthClient = () => {
   const [isConnected, setIsConnected] = useState(false);
