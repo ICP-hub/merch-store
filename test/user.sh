@@ -20,6 +20,11 @@ create_user() {
   dfx --identity user${user_index} canister call backend updateUser "(\"$email\", \"$firstName\", \"$lastName\")"
 }
 
+get_cartitems() {
+  local user_index=$1
+  dfx --identity user${user_index} canister call backend getCallerCartItems(10,0)
+}
+
 # Function to get user details
 # get_user_details() {
 #   local user_index=$1
