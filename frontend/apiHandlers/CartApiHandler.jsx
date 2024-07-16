@@ -199,7 +199,6 @@ const CartApiHandler = () => {
   // Exchange rate
   const getExchangeRate = async () => {
     const getPaymentOpt = (method) => ({ [method]: null });
-
     const paymentOpt = getPaymentOpt("Cryptocurrency");
     const paymentOpt1 = getPaymentOpt("Cryptocurrency");
 
@@ -218,7 +217,7 @@ const CartApiHandler = () => {
         setExchangeRate(exchangeRate);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching exchange rate ", error);
     } finally {
       setExchangeLoad(false);
     }
@@ -398,9 +397,9 @@ const CartApiHandler = () => {
   };
 
   // Effects
-  useEffect(() => {
-    getExchangeRate();
-  }, [backend]);
+  // useEffect(() => {
+  //   getExchangeRate();
+  // }, [backend]);
 
   // Returns
   return {
@@ -417,6 +416,7 @@ const CartApiHandler = () => {
     shippingAmount,
     getShippingAmount,
     updateCart,
+    getExchangeRate,
   };
 };
 
