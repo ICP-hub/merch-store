@@ -198,6 +198,7 @@ const CartApiHandler = () => {
   // Trasnfer Approve flow ************************
   // Exchange rate
   const getExchangeRate = async () => {
+    console.log("Checking exchange rate..........");
     const getPaymentOpt = (method) => ({ [method]: null });
     const paymentOpt = getPaymentOpt("Cryptocurrency");
     const paymentOpt1 = getPaymentOpt("Cryptocurrency");
@@ -209,7 +210,7 @@ const CartApiHandler = () => {
         { class: paymentOpt, symbol: "icp" },
         { class: paymentOpt1, symbol: "ckbtc" }
       );
-
+      console.log("First response for exchange rate ", res);
       if (res?.Ok) {
         const exchangeRate =
           parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);

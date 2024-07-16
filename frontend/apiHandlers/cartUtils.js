@@ -52,7 +52,7 @@
 
 // Refactoring code from above :
 export const getCartItemDetails = (cartItems, productList) => {
-  console.log(productList, "productlist");
+  // console.log(productList, "productlist");
   // console.log(cartItems, productList);
   return cartItems
     ?.map(({ color, size, product_slug, quantity }) => {
@@ -61,7 +61,7 @@ export const getCartItemDetails = (cartItems, productList) => {
       );
 
       if (matchingProduct) {
-        console.log(matchingProduct, "matching");
+        // console.log(matchingProduct, "matching");
 
         // Check if variantColor exists and has length
         if (

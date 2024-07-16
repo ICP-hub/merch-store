@@ -436,9 +436,9 @@ const AddressSection = ({ setUserAddress, userAddress }) => {
     addressConfig();
   }, [userAddressList, isLoading]);
 
-  useEffect(() => {
-    console.log("User address is", userAddress);
-  }, [userAddress]);
+  // useEffect(() => {
+  //   console.log("User address is", userAddress);
+  // }, [userAddress]);
 
   return (
     <div className="p-6 border-2 rounded-2xl">
