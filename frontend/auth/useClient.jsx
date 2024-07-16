@@ -52,7 +52,8 @@ export const useAuthClient = () => {
       //   } else if (provider === "Identity") {
       //     userObject = await IdentityLogin();
       //   }
-      userObject = await NFIDLogin();
+      userObject = await IdentityLogin();
+
       const identity = await userObject.agent._identity;
       const principal = Principal.fromText(userObject.principal);
       // const actor = createActor(canisterID, { agentOptions: { identity } });
