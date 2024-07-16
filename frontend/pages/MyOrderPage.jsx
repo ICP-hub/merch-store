@@ -14,9 +14,10 @@ import { Tabs } from "../components/MyProfilePageComponents/MyProTabs";
 import CartApiHandler from "../apiHandlers/CartApiHandler";
 import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { Link } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+ 
 import IcpLogo from "../assets/IcpLogo";
 import LoadingScreen from "../components/common/LoadingScreen";
+import { useBackend } from "../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Main: MyOrderPage.
@@ -62,7 +63,7 @@ const MyOrders = () => {
   const { getOrderList, orderList, isLoading } = CartApiHandler();
   const [myOrderList, setMyOrderList] = useState(null);
   const [finalIsLoading, setFinalIsLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  const {backend} = useBackend()
   const { OrderListLoader } = LoadingScreen();
 
   useEffect(() => {

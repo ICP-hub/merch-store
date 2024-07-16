@@ -16,13 +16,6 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { TailSpin } from "react-loader-spinner";
 
-import {
-  ConnectButton,
-  ConnectDialog,
-  useCanister,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import useClipboard from "react-use-clipboard";
 
@@ -323,13 +316,13 @@ const ProductDetail = () => {
     setMainImage("https://dummyimage.com/500x500/EF9A9A/fff");
   };
 
-  const [selectedColor2, setSelectedColor2] = useState('');
-  const [selectedSize2, setSelectedSize2] = useState('');
+  const [selectedColor2, setSelectedColor2] = useState("");
+  const [selectedSize2, setSelectedSize2] = useState("");
   const [salePrice, setSalePrice] = useState(null);
 
   const handleColorChange2 = (color, sale_price) => {
     setSelectedColor2(color);
-    setSalePrice(sale_price)
+    setSalePrice(sale_price);
   };
 
   const handleSizeChange2 = (size) => {
@@ -351,80 +344,93 @@ const ProductDetail = () => {
     return new Uint8Array(ab);
   };
 
-  const imageSource = import.meta.env.MODE === "development" ?
-    `http://127.0.0.1:4943/?canisterId=${import.meta.env.VITE_BACKEND_CANISTER_ID}&imgid=${slug}` :
-    `https://${import.meta.env.VITE_BACKEND_CANISTER_ID}.raw.ic0.app/?imgid=${slug}`;
+  const imageSource =
+    import.meta.env.MODE === "development"
+      ? `http://127.0.0.1:4943/?canisterId=${
+          import.meta.env.VITE_BACKEND_CANISTER_ID
+        }&imgid=${slug}`
+      : `https://${
+          import.meta.env.VITE_BACKEND_CANISTER_ID
+        }.raw.ic0.app/?imgid=${slug}`;
 
   const [isCopied, setCopied] = useClipboard(imgBlob);
-console.log(imageSource);
+  console.log(imageSource);
   return (
     <>
       <button onClick={setCopied}>
-      Was it copied? {isCopied ? "Yes! 👍" : "Nope! 👎"}
-    </button>
-    <div className="form-control w-full my-4">
-      <label htmlFor="image" className="label block text-sm font-medium text-gray-700">
-        <span className="label-text">Image:</span>
-      </label>
-      <input
-        type="file"
-        id="image"
-        className="file-input file-input-bordered w-full border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        onChange={handleChange}
-      />
-      <div className="text-xs my-2 text-slate-500">
-        Please try to avoid uploading huge images. Ideal size of image is 1000x500 px. If you don't want to create/update image, leave this empty.
+        Was it copied? {isCopied ? "Yes! 👍" : "Nope! 👎"}
+      </button>
+      <div className="form-control w-full my-4">
+        <label
+          htmlFor="image"
+          className="label block text-sm font-medium text-gray-700"
+        >
+          <span className="label-text">Image:</span>
+        </label>
+        <input
+          type="file"
+          id="image"
+          className="file-input file-input-bordered w-full border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          onChange={handleChange}
+        />
+        <div className="text-xs my-2 text-slate-500">
+          Please try to avoid uploading huge images. Ideal size of image is
+          1000x500 px. If you don't want to create/update image, leave this
+          empty.
+        </div>
+        <div>
+          <img
+            id="product-image"
+            alt="Product image"
+            src={imageSource}
+            className="my-4 w-48"
+            onError={(e) => (e.target.style.display = "none")}
+          />
+        </div>
       </div>
       <div>
-        <img
-          id="product-image"
-          alt="Product image"
-          src={imageSource}
-          className="my-4 w-48"
-          onError={(e) => e.target.style.display='none'}
-        /> 
+        <div>
+          <h3>Select Color:</h3>
+          {data?.variantColor?.map((colorOption, index) => (
+            <label key={index}>
+              <input
+                type="radio"
+                name="color"
+                value={colorOption.color}
+                checked={selectedColor2 === colorOption.color}
+                onChange={() =>
+                  handleColorChange2(
+                    colorOption.color,
+                    colorOption.variant_sale_price
+                  )
+                }
+              />
+              {colorOption.color}
+            </label>
+          ))}
+        </div>
+        <div>
+          <h3>Select Size:</h3>
+          {data?.variantSize?.map((sizeOption, index) => (
+            <label key={index}>
+              <input
+                type="radio"
+                name="size"
+                value={sizeOption.size}
+                checked={selectedSize2 === sizeOption.size}
+                onChange={() => handleSizeChange2(sizeOption.size)}
+              />
+              {sizeOption.size}
+            </label>
+          ))}
+        </div>
+        {selectedColor2 && selectedSize2 && (
+          <p>
+            Sale Price: ${salePrice}, color: {selectedColor2}, size:{" "}
+            {selectedSize2}
+          </p>
+        )}
       </div>
-    </div>
-    <div>
-      <div>
-        <h3>Select Color:</h3>
-        {data?.variantColor?.map((colorOption, index) => (
-          <label key={index}>
-            <input
-              type="radio"
-              name="color"
-              value={colorOption.color}
-              checked={selectedColor2 === colorOption.color}
-              onChange={() => handleColorChange2(colorOption.color, colorOption.variant_sale_price)}
-            />
-            {colorOption.color}
-          </label>
-        ))}
-      </div>
-      <div>
-        <h3>Select Size:</h3>
-        {data?.variantSize?.map((sizeOption, index) => (
-          <label key={index}>
-            <input
-              type="radio"
-              name="size"
-              value={sizeOption.size}
-              checked={selectedSize2 === sizeOption.size}
-              onChange={() => handleSizeChange2(sizeOption.size)}
-            />
-            {sizeOption.size}
-          </label>
-        ))}
-      </div>
-      {selectedColor2 && selectedSize2 && (
-        <p>
-          Sale Price: ${salePrice}, 
-          color: {selectedColor2}, 
-          size: {selectedSize2}
-        </p>
-
-      )}
-    </div>
       <div className="container mx-auto xl:mt-12 mt-6 px-6 flex items-center md:items-start justify-between md:flex-col flex-col">
         <div className="flex flex-col   max-w-full  xl:ml-0  lg:flex-row">
           <div className="lg:w-2/5 xl:pr-6 relative">
