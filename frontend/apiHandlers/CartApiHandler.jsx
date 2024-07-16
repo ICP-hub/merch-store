@@ -35,6 +35,8 @@ const CartApiHandler = () => {
   // const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
   const [orderPlacementData, setOrderPlacementData] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
+  const [exchangeRate, setExchangeRate] = useState(1);
+  const [exchangeLoad, setExchangeLoad] = useState(true);
 
   // const navigate = useNavigate();
 
@@ -194,6 +196,34 @@ const CartApiHandler = () => {
   };
 
   // Trasnfer Approve flow ************************
+  // Exchange rate
+  const getExchangeRate = async () => {
+    const getPaymentOpt = (method) => ({ [method]: null });
+
+    const paymentOpt = getPaymentOpt("Cryptocurrency");
+    const paymentOpt1 = getPaymentOpt("Cryptocurrency");
+
+    setExchangeLoad(true);
+
+    try {
+      const res = await backend?.get_exchange_rates(
+        { class: paymentOpt, symbol: "icp" },
+        { class: paymentOpt1, symbol: "ckbtc" }
+      );
+
+      if (res?.Ok) {
+        const exchangeRate =
+          parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
+        console.log("exchange Rate :", exchangeRate);
+        setExchangeRate(exchangeRate);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setExchangeLoad(false);
+    }
+  };
+
   const getPaymentCanisterId = (tokenType) => {
     switch (tokenType) {
       case "icp":
@@ -366,6 +396,11 @@ const CartApiHandler = () => {
       setIsLoading(false);
     }
   };
+
+  // Effects
+  useEffect(() => {
+    getExchangeRate();
+  }, [backend]);
 
   // Returns
   return {
