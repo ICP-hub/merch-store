@@ -233,7 +233,7 @@ const App = () => {
         reverseOrder={true}
       />
       <BackToTop />
-    
+
       <AnimatePresence mode="wait" initial={true}>
         <RouterProvider router={router} />
       </AnimatePresence>

@@ -1,20 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { PlugLogin, StoicLogin, NFIDLogin, IdentityLogin } from "ic-auth";
-
+import { createActor } from "../../.dfx/local/canisters/backend";
 import { Principal } from "@dfinity/principal";
 import { AuthClient } from "@dfinity/auth-client";
-import { createActor } from "../../.dfx/local/canisters/backend";
 
 const AuthContext = createContext();
 
-const canisterID = "frfij-baaaa-aaaak-afnva-cai";
-const whitelist = ["frfij-baaaa-aaaak-afnva-cai"];
+const canisterID = "bd3sg-teaaa-aaaaa-qaaba-cai";
+const whitelist = ["bd3sg-teaaa-aaaaa-qaaba-cai"];
 
 export const useAuthClient = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [principal, setPrincipal] = useState(null);
+  const [backendActor, setBackendActor] = useState(createActor(canisterID));
   const [identity, setIdentity] = useState(null);
   const [authClient, setAuthClient] = useState(null);
+
+  // console.log(backendActor, "backend actor");
 
   useEffect(() => {
     const initializeAuthClient = async () => {
@@ -35,7 +37,6 @@ export const useAuthClient = () => {
     initializeAuthClient();
   }, []);
 
-  //   const login = async (provider) => {
   const login = async () => {
     if (authClient) {
       let userObject = {
@@ -43,21 +44,22 @@ export const useAuthClient = () => {
         agent: undefined,
         provider: "N/A",
       };
-      //   if (provider === "Plug") {
-      //     userObject = await PlugLogin(whitelist);
-      //   } else if (provider === "Stoic") {
-      //     userObject = await StoicLogin();
-      //   } else if (provider === "NFID") {
-      //     userObject = await NFIDLogin();
-      //   } else if (provider === "Identity") {
-      //     userObject = await IdentityLogin();
-      //   }
+      /* if (provider === "Plug") {
+        userObject = await PlugLogin(whitelist);
+      } else if (provider === "Stoic") {
+        userObject = await StoicLogin();
+      } else if (provider === "NFID") {
+        userObject = await NFIDLogin();
+      } else if (provider === "Identity") { */
+      //userObject = await IdentityLogin();
+      //}
       userObject = await IdentityLogin();
+      console.log("User Object:", userObject);
 
       const identity = await userObject.agent._identity;
       const principal = Principal.fromText(userObject.principal);
       // const actor = createActor(canisterID, { agentOptions: { identity } });
-
+      console.log(identity, "identity");
       setIsConnected(true);
       setPrincipal(principal);
       setIdentity(identity);
@@ -87,7 +89,7 @@ export const useAuthClient = () => {
     login,
     disconnect,
     principal,
-    // backendActor,
+    backendActor,
     identity,
   };
 };

@@ -9,14 +9,13 @@ import { BsQrCodeScan } from "react-icons/bs";
 import Button from "../components/common/Button";
 import { useEffect, useState } from "react";
 
- 
 import Avatar from "boring-avatars";
 import toast from "react-hot-toast";
 import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
 import useClipboard from "react-use-clipboard";
 import { TailSpin } from "react-loader-spinner";
 import { CommonInput } from "../components/common/InputFields";
-import { useAuth, useBackend } from "../auth/useClient";
+import { useAuth } from "../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components: MyProfilePage.
@@ -51,8 +50,8 @@ const MyProAccount = () => {
   // const { principal, isConnected } = useConnect();
 
   // const [backend] = useCanister("backend");
-  const { backend } = useBackend();
-  const { principal, isConnected } = useAuth();
+  // const { backend } = useBackend();
+  const { principal, isConnected, backendActor } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [email, setEmail] = useState(""); // Add state for email
@@ -84,7 +83,7 @@ const MyProAccount = () => {
     try {
       setLoading2(true);
       setInputsDisabled(false);
-      const item = await backend.getUserdetailsbycaller();
+      const item = await backendActor.getUserdetailsbycaller();
 
       if (item.ok) {
         setEmail(item.ok.email);
@@ -108,7 +107,7 @@ const MyProAccount = () => {
     }, 2000);
 
     return () => clearTimeout(timeoutId);
-  }, [backend]);
+  }, [backendActor]);
 
   const updateProfileHandler = async () => {
     try {
@@ -120,10 +119,10 @@ const MyProAccount = () => {
       // Log input values for debugging
       //console.log("Updating profile with:", email, firstName, lastName)
 
-      const res = await backend.updateUser(email, firstName, lastName);
+      const res = await backendActor.updateUser(email, firstName, lastName);
 
       // Log the entire response for debugging
-      console.log("Response from backend:", res);
+      console.log("Response from backendActor:", res);
 
       if ("ok" in res) {
         toast.success("Profile Successfully Updated.");
@@ -132,7 +131,7 @@ const MyProAccount = () => {
       } else {
         // Display error message
         toast.error("Profile update failed. Please try again.");
-        console.error("Unexpected response from backend:", res);
+        console.error("Unexpected response from backendActor:", res);
       }
     } catch (error) {
       // Log and display error message
