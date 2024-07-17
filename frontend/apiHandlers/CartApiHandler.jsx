@@ -35,8 +35,6 @@ const CartApiHandler = () => {
   // const paymentAddressForTransfer = usePaymentTransfer(totalAmountForTransfer);
   const [orderPlacementData, setOrderPlacementData] = useState(null);
   const [orderPlacementLoad, setOrderPlaceMentLoad] = useState(false);
-  const [exchangeRate, setExchangeRate] = useState(1);
-  const [exchangeLoad, setExchangeLoad] = useState(true);
 
   // const navigate = useNavigate();
 
@@ -193,35 +191,6 @@ const CartApiHandler = () => {
     const parsedBalance = parseInt(balance, 10);
     console.log("Balance:", parsedBalance);
     transferApprove(parsedBalance, formattedMetadata, tokenActor, totalAmount);
-  };
-
-  // Trasnfer Approve flow ************************
-  // Exchange rate
-  const getExchangeRate = async () => {
-    console.log("Checking exchange rate..........");
-    const getPaymentOpt = (method) => ({ [method]: null });
-    const paymentOpt = getPaymentOpt("Cryptocurrency");
-    const paymentOpt1 = getPaymentOpt("Cryptocurrency");
-
-    setExchangeLoad(true);
-
-    try {
-      const res = await backend?.get_exchange_rates(
-        { class: paymentOpt, symbol: "icp" },
-        { class: paymentOpt1, symbol: "ckBTC" }
-      );
-      console.log("First response for exchange rate ", res);
-      if (res?.Ok) {
-        const exchangeRate =
-          parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
-        console.log("exchange Rate :", exchangeRate);
-        setExchangeRate(exchangeRate);
-      }
-    } catch (error) {
-      console.log("Error fetching exchange rate ", error);
-    } finally {
-      setExchangeLoad(false);
-    }
   };
 
   const getPaymentCanisterId = (tokenType) => {
@@ -417,7 +386,6 @@ const CartApiHandler = () => {
     shippingAmount,
     getShippingAmount,
     updateCart,
-    getExchangeRate,
   };
 };
 

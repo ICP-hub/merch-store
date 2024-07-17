@@ -25,7 +25,7 @@ import NoImage from "../assets/placeholderImg-Small.jpeg";
 import { TailSpin } from "react-loader-spinner";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
 import toast from "react-hot-toast";
-import { useBackend } from "../auth/useClient.jsx";
+import { useAuth, useBackend } from "../auth/useClient.jsx";
 import Modal1 from "../components/common/Styles/Modal1.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";
@@ -52,10 +52,12 @@ const pMethod = [
   {
     name: "ICP",
     value: "icp",
+    currency: "icp",
   },
   {
     name: "CKBTC",
     value: "ckbtc",
+    currency: "btc",
   },
   /* {
     name: "Fiat Payment",
@@ -77,7 +79,6 @@ const Checkout = () => {
     cartItems,
     shippingAmount,
     getShippingAmount,
-    getExchangeRate,
   } = CartApiHandler();
   const { productList, getProductList } = ProductApiHandler(0);
   const [paymentMethod, setPaymentMethod] = useState(pMethod[0]);
@@ -213,12 +214,6 @@ const Checkout = () => {
   return (
     <div className="container mx-auto p-6 max-md:px-2">
       <TabChanges paths={pathsForTabChanges} />
-      <button
-        className="px-4 py-2 rounded-md bg-red-500 text-white"
-        onClick={getExchangeRate}
-      >
-        Get Exchange Rate
-      </button>
       {isFinalCartLoading ? (
         <CheckoutPageLoader />
       ) : (
@@ -257,6 +252,7 @@ const Checkout = () => {
                   updatedPriceNQty={updatedPriceNQty}
                   proceed={proceed}
                   shippingAmount={shippingAmount}
+                  paymentMethod={paymentMethod}
                 />
               </div>
             </div>
@@ -503,7 +499,7 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
             }
           >
             {({ checked }) => (
-              <RadioGroup.Label className="flex justify-between w-full items-center">
+              <RadioGroup.Label className="flex justify-between w-full items-center cursor-pointer">
                 <p>{plan.name}</p>
                 {checked && (
                   <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
@@ -529,9 +525,46 @@ const PaymentSection = ({ paymentMethod, setPaymentMethod, pMethod }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <Checkout /> : <BillSection />
 /* ----------------------------------------------------------------------------------------------------- */
-const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
+const BillSection = ({
+  updatedPriceNQty,
+  proceed,
+  shippingAmount,
+  paymentMethod,
+}) => {
   const { orderPlacementLoad } = CartApiHandler();
-  const priceWithShippingAmount = updatedPriceNQty.totalPrice + shippingAmount; // Price with shipping Amount
+  const { backend } = useBackend();
+  const [exchange, setExchange] = useState(1);
+  const [currencyLoad, setCurrencyLoad] = useState(true);
+  const priceWithShippingAmount = updatedPriceNQty.totalPrice + shippingAmount;
+
+  const getExchangeRate = async () => {
+    const paymentOpt = { Cryptocurrency: null };
+    // const paymentOpt1 = { Cryptocurrency: null };
+    try {
+      setCurrencyLoad(true);
+      const res = await backend.get_exchange_rates(
+        { class: paymentOpt, symbol: "icp" },
+        { class: paymentOpt, symbol: paymentMethod.currency }
+      );
+      console.log("Exchange rate first Response ", res);
+      const exchangeRate =
+        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
+      console.log("Exchange rate ", exchangeRate);
+      setExchange(exchangeRate);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // Loading
+      setCurrencyLoad(false);
+    }
+  };
+
+  // console.log("exchange state ", exchange);
+  console.log("total Price will be ", priceWithShippingAmount / exchange);
+
+  useEffect(() => {
+    getExchangeRate();
+  }, [paymentMethod]);
 
   return (
     <div className="flex flex-col">
@@ -552,6 +585,7 @@ const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
           <span className="font-bold flex items-center gap-1">
             <IcpLogo />
             {updatedPriceNQty.totalPrice?.toFixed(2)}
+            {/* (2.500 USD) */}
           </span>
         </div>
         <div className="flex justify-between px-6 gap-2 font-medium">
@@ -564,6 +598,7 @@ const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
                 <span className="flex items-center gap-1">
                   <IcpLogo />
                   {shippingAmount?.toFixed(2)}
+                  {/* (2.500 USD) */}
                 </span>
               )}
             </p>
@@ -576,6 +611,7 @@ const BillSection = ({ updatedPriceNQty, proceed, shippingAmount }) => {
           <span className="flex items-center gap-1">
             <IcpLogo />
             {priceWithShippingAmount?.toFixed(2)}
+            {/* (2.500 USD) */}
           </span>
         </div>
       </div>
