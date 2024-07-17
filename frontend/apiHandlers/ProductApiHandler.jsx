@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useAuth, useBackend } from "../auth/useClient";
+import { useAuth } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
 
 // API handler for product-related functionality
 const ProductApiHandler = ({ currentPage = 0 }) => {
   // Init backend
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
 
   // State variables for product list, loading status, and category list
   const [productList, setProductList] = useState(null);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
- 
+
 import { isBrowser } from "react-device-detect";
 import TopBar from "../../components/admin/common/TopBar";
 import LeftSidebar from "../../components/admin/common/LeftSidebar";
@@ -9,8 +9,8 @@ import { Principal } from "@dfinity/principal";
 import { useAuth, useBackend } from "../../auth/useClient";
 
 function ProtectedAdmin({ children }) {
-  const { backend } = useBackend();
-  const { principal, isConnected } = useAuth();
+  // const { backend } = useBackend();
+  const { principal, isConnected, backend } = useAuth();
   const [loading, setLoading] = useState(true);
   const [sidebar, setSidebar] = useState(isBrowser ? true : false);
   const [isAdmin, setIsAdmin] = useState(false); // Add isAdmin state

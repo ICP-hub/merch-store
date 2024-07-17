@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useBackend } from "../../../auth/useClient";
+import { useBackend, useAuth } from "../../../auth/useClient";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
 
 const MessageDetail = () => {
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [messages, setMessages] = useState([]);

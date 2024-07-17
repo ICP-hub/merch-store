@@ -19,10 +19,10 @@ import IcpLogo from "../../assets/IcpLogo";
 /*  @ Component ProductCard.
 /* ----------------------------------------------------------------------------------------------------- */
 const ProductCard = ({ product }) => {
-  const { principal, isConnected } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
   const [loading3, setLoading3] = useState(false);
   const [wishlist, setWishlist] = useState([]);
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   console.log(principal, "principal", isConnected);
 
   const [isProductInLocalWishlist, setProductInLocalWishlist] = useState(false);
@@ -178,8 +178,6 @@ const ProductCard = ({ product }) => {
 
   const removeToWishlist = async () => {
     try {
-       
-
       setLoading3(true);
       console.log(product.slug);
       const res = await backend.deleteWishlistItems(

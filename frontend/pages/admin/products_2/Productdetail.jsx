@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { CiCircleCheck, CiCircleChevLeft, CiTrash } from "react-icons/ci";
@@ -13,7 +13,6 @@ const ProductDetail = () => {
   const [product, setProduct] = useState([]);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  ;
   const param = useParams();
 
   const [formData, setFormData] = useState({

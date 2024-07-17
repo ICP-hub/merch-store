@@ -12,7 +12,7 @@ const whitelist = ["bd3sg-teaaa-aaaaa-qaaba-cai"];
 export const useAuthClient = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [principal, setPrincipal] = useState(null);
-  const [backendActor, setBackendActor] = useState(createActor(canisterID));
+  const [backend, setBackend] = useState(createActor(canisterID));
   const [identity, setIdentity] = useState(null);
   const [authClient, setAuthClient] = useState(null);
 
@@ -89,7 +89,7 @@ export const useAuthClient = () => {
     login,
     disconnect,
     principal,
-    backendActor,
+    backend,
     identity,
   };
 };
@@ -99,9 +99,6 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
-export const useBackend = () => {
-  const [backend, setBackend] = useState(createActor(canisterID));
-  return { backend };
-};
+export const useBackend = () => {};
 
 export const useAuth = () => useContext(AuthContext);

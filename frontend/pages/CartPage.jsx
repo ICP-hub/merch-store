@@ -50,7 +50,7 @@ const CartPage = () => {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const { principal, isConnected } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
   const [product, getProduct] = useState([]);
   const [id, setIds] = useState("");
   const [quantity, setQuantity] = useState();
@@ -69,7 +69,7 @@ const Cart = () => {
     setErrorImage(true);
   };
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   // States for modal : ClearAll
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successClearAll, setSuccessClearAll] = useState(true);

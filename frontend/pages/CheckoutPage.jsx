@@ -89,7 +89,8 @@ const Checkout = () => {
   const [totalPriceNQty, setTotalPriceNQty] = useState(null);
   const [updatedPriceNQty, setUpdatedPriceNQty] = useState(null);
   const [successDelete, setSuccessDelete] = useState(true);
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const { CheckoutPageLoader } = LoadingScreen();
 
   const cartItemDetails = getCartItemDetails(cartItems, productList);
@@ -409,7 +410,8 @@ const CheckoutCard = ({
 const AddressSection = ({ setUserAddress, userAddress }) => {
   const { getAddressList, userAddressList, isLoading } =
     UserAddressApiHandler();
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
 
   const addressConfig = () => {
     const localStorageAddress = JSON.parse(localStorage.getItem("CurrAddress"));
@@ -532,7 +534,8 @@ const BillSection = ({
   paymentMethod,
 }) => {
   const { orderPlacementLoad } = CartApiHandler();
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [exchange, setExchange] = useState(1);
   const [currencyLoad, setCurrencyLoad] = useState(true);
   const priceWithShippingAmount = updatedPriceNQty.totalPrice + shippingAmount;

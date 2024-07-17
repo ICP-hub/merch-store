@@ -17,11 +17,11 @@ import {
   totalCartSellPrice,
 } from "../apiHandlers/cartUtils.js";
 import EmptyCart from "../components/ProductComponents/EmptyCart.jsx";
- 
+
 import LoadingScreen from "../components/common/LoadingScreen.jsx";
 import TabChanges from "../components/Tabchanges.jsx";
 import IcpLogo from "../assets/IcpLogo.jsx";
-import { useAuth,useBackend } from "../auth/useClient.jsx";
+import { useAuth } from "../auth/useClient.jsx";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Base Components.
@@ -49,7 +49,8 @@ const AddressDetail = () => {
   const [showForm, setShowForm] = useState(false);
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   const [finalIsLoading, setFinalIsLoading] = useState(true);
-  const {backend} = useBackend();
+  // const {backend} = useBackend();
+  const { backend } = useAuth();
   const { ShippingAddressPageLoader } = LoadingScreen();
 
   // Get cart item details

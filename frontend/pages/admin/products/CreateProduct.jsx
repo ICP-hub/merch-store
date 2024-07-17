@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CiCircleCheck, CiCircleChevLeft } from "react-icons/ci";
 import { TailSpin } from "react-loader-spinner";
-import { useBackend } from "../../../auth/useClient";
+import { useBackend, useAuth } from "../../../auth/useClient";
 
 import { WithContext as ReactTags } from "react-tag-input";
 import { TiDeleteOutline } from "react-icons/ti";
@@ -11,7 +11,8 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
 import IcpLogo from "../../../assets/IcpLogo";
 const CreateCategory = () => {
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [categorylist, setCategorylist] = useState([]);

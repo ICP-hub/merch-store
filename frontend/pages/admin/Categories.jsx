@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useBackend } from "../../auth/useClient";
+import { useAuth, useBackend } from "../../auth/useClient";
 import Table, {
   DetailButton,
   SelectColumnFilter,
@@ -31,7 +31,8 @@ const Categories = () => {
     []
   );
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);

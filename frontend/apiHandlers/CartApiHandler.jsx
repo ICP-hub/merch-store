@@ -4,7 +4,7 @@ import { Actor, HttpAgent } from "@dfinity/agent";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useBackend } from "../auth/useClient";
+import { useAuth } from "../auth/useClient";
 import { idlFactory } from "../wallet/ledger.did";
 import { host, ids } from "../DevConfig";
 
@@ -23,9 +23,9 @@ import { host, ids } from "../DevConfig";
 // CartApiHandler : main
 const CartApiHandler = () => {
   // Init backend
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   // const { principal } = useConnect();
-  const { principal, identity } = useAuth();
+  const { principal, identity, backend } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [cartItems, setCartItems] = useState(null);
   const [orderList, setOrderList] = useState(null);

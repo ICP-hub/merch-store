@@ -37,9 +37,9 @@ const ProductDetailPage = () => {
   );
 };
 const ProductDetail = () => {
-  const { principal, isConnected } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
 
   const [loading3, setLoading3] = useState(false);

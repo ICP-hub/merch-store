@@ -9,13 +9,14 @@ import {
 import CountUp from "react-countup";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
- 
+
 import { TailSpin } from "react-loader-spinner";
 import { PiImagesSquareThin, PiUserThin } from "react-icons/pi";
 import { useAuth, useBackend } from "../../auth/useClient";
 
 const AdminHome = () => {
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [statistics, setStatistics] = useState([]);

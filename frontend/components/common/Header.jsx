@@ -73,10 +73,10 @@ const Header = ({ title }) => {
   const [vantaEffect, setVantaEffect] = useState(null);
   const myRef = useRef(null);
   // const { isConnected, disconnect, principal } = useConnect();
-  const { isConnected, disconnect, principal } = useAuth();
+  const { isConnected, disconnect, principal, backend } = useAuth();
   const [carts, setCarts] = useState([]);
   // const [backend] = useCanister("backend");
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   const [loading, setLoading] = useState(false);
   const maxInitialDisplay = 3;
   // const { open } = useDialog();

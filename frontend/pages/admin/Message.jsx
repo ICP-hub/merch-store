@@ -37,7 +37,8 @@ const Message = () => {
     []
   );
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState();
   const [page, setPage] = useState(0);

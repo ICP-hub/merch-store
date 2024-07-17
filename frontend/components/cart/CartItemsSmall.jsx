@@ -8,11 +8,11 @@ import { TailSpin } from "react-loader-spinner";
 import CartItemsSmallLoader from "./CartItemsSmallLoader";
 import { useConnect } from "@connect2ic/react";
 import IcpLogo from "../../assets/IcpLogo";
-import { useAuth,useBackend } from "../../auth/useClient";
+import { useAuth } from "../../auth/useClient";
 
 const CartItemsSmall = () => {
   const [cartItems, setCartItems] = useState([]);
-  const { principal, isConnected } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
   const [product, getProduct] = useState([]);
   const [quantity, setQuantity] = useState();
   const [id, setIds] = useState("");
@@ -27,12 +27,11 @@ const CartItemsSmall = () => {
     setErrorImage(true);
   };
 
-  const {backend}=useBackend()
-
+  // const {backend}=useBackend()
 
   const getCartlist = async () => {
     try {
-      const item = await backend.getCallerCartItems(10,0);
+      const item = await backend.getCallerCartItems(10, 0);
       console.log(item, "Hello");
       const formatColor = item.data.map((item) => ({
         color: item.color,

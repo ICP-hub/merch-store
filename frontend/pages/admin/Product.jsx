@@ -7,7 +7,7 @@ import Table, {
   StatusPill,
 } from "./utils/Table"; // Update the import
 /* import item1 from "../../assets/merchandise1.png";
- */ import { useBackend } from "../../auth/useClient";
+ */ import { useAuth, useBackend } from "../../auth/useClient";
 import { CiCirclePlus } from "react-icons/ci";
 import { InfinitySpin } from "react-loader-spinner";
 import IcpLogo from "../../assets/IcpLogo";
@@ -55,7 +55,8 @@ const Products = () => {
     []
   );
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);

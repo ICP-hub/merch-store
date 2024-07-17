@@ -1,13 +1,13 @@
- 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useAuth, useBackend } from "../auth/useClient";
+import { useAuth } from "../auth/useClient";
 
 // Custom hook : initialize the backend Canister
 
 const UserAddressApiHandler = () => {
   // Init backend
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const { principal } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [userAddressList, setUserAddressList] = useState(null);

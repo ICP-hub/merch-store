@@ -54,9 +54,9 @@ const MyWishListContainerMain = () => {
 /*  @ MyWishlist Page : <MyWishlistContainerMain /> : <MyWishlist Component />.
 /* ----------------------------------------------------------------------------------------------------- */
 const MyWishList = () => {
-  const { principal, isConnected } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
   const [wishlists, setWishlists] = useState("");
   const [product, getProduct] = useState([]);
   const [id, setId] = useState("");

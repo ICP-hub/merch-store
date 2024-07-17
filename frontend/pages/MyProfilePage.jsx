@@ -51,7 +51,7 @@ const MyProAccount = () => {
 
   // const [backend] = useCanister("backend");
   // const { backend } = useBackend();
-  const { principal, isConnected, backendActor } = useAuth();
+  const { principal, isConnected, backend } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [email, setEmail] = useState(""); // Add state for email
@@ -83,7 +83,7 @@ const MyProAccount = () => {
     try {
       setLoading2(true);
       setInputsDisabled(false);
-      const item = await backendActor.getUserdetailsbycaller();
+      const item = await backend.getUserdetailsbycaller();
 
       if (item.ok) {
         setEmail(item.ok.email);
@@ -107,7 +107,7 @@ const MyProAccount = () => {
     }, 2000);
 
     return () => clearTimeout(timeoutId);
-  }, [backendActor]);
+  }, [backend]);
 
   const updateProfileHandler = async () => {
     try {
@@ -119,10 +119,10 @@ const MyProAccount = () => {
       // Log input values for debugging
       //console.log("Updating profile with:", email, firstName, lastName)
 
-      const res = await backendActor.updateUser(email, firstName, lastName);
+      const res = await backend.updateUser(email, firstName, lastName);
 
       // Log the entire response for debugging
-      console.log("Response from backendActor:", res);
+      console.log("Response from backend:", res);
 
       if ("ok" in res) {
         toast.success("Profile Successfully Updated.");
@@ -131,7 +131,7 @@ const MyProAccount = () => {
       } else {
         // Display error message
         toast.error("Profile update failed. Please try again.");
-        console.error("Unexpected response from backendActor:", res);
+        console.error("Unexpected response from backend:", res);
       }
     } catch (error) {
       // Log and display error message

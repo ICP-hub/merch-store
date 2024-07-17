@@ -8,7 +8,7 @@ import Table, {
 import { InfinitySpin } from "react-loader-spinner";
 import { Principal } from "@dfinity/principal";
 import ShortText from "./ShortText";
-import { useBackend } from "../../auth/useClient";
+import { useAuth, useBackend } from "../../auth/useClient";
 
 const UserDetails = () => {
   const textDecoder = new TextDecoder("utf-8"); // Specify the appropriate encoding
@@ -36,7 +36,8 @@ const UserDetails = () => {
     []
   );
 
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);

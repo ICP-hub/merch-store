@@ -89,9 +89,10 @@ const ProductDetailPage = () => {
   );
 };
 const ProductDetail = () => {
-  const { principal, isConnected } = useConnect();
+  // const { principal, isConnected } = useConnect();
 
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
@@ -130,9 +131,9 @@ const ProductDetail = () => {
     "GRAY",
   ];
 
-  const useBackend = () => {
-    return useCanister("backend");
-  };
+  // const useBackend = () => {
+  //   return useCanister("backend");
+  // };
 
   // get product detail function
 

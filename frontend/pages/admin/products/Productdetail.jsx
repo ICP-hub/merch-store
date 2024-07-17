@@ -10,7 +10,8 @@ import toast from "react-hot-toast";
 import IcpLogo from "../../../assets/IcpLogo";
 
 const ProductDetail = () => {
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [loading3, setLoading3] = useState(true);

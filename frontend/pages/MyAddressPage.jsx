@@ -53,7 +53,8 @@ const MyAddress = () => {
   const { MyAddressLoadingScreen } = LoadingScreen();
   const [successfulSubmit, setSuccessfulSubmit] = useState(false);
   const [finalIsLoadig, setFinalIsLoading] = useState(true);
-  const { backend } = useBackend();
+  // const { backend } = useBackend();
+  const { backend } = useAuth();
 
   const addressDetails = userAddressList?.map((Address) => {
     // console.log(Address); //Op : [Array(3)] [{…}]
