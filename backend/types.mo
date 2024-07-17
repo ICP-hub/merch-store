@@ -140,6 +140,11 @@ module {
         id : Text;
     };
 
+    public type addressobject = {
+        userprincipal : Principal;
+        addresslist : List.List<Address>;
+    };
+
     public type CreateAddressError = {
         #UserNotAuthenticated;
         #EmptyFirstName;
@@ -151,6 +156,7 @@ module {
         #EmptyPincode;
         #EmptyState;
         #EmptyCountry;
+        #AddressAlreadyExists;
     };
 
     public type UpdateAddressError = {

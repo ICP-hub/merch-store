@@ -43,6 +43,8 @@ actor {
     };
 
     private stable var nextProduct : Types.ProductId = 1;
+
+    private stable var payment_address : Principal = Principal.fromText("aewlj-xenv5-gnrhk-y3di4-gojd3-xl63e-6ritn-ehvzi-pl2zw-2sbbb-wae");
     
     stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
@@ -64,7 +66,7 @@ actor {
     stable var product_state = {
         bytes = Region.new();
         var bytes_count : Nat64 = 0;
-        elems = Region.new ();
+        elems = Region.new();
         var elems_count : Nat64 = 0;
     };
 
@@ -438,19 +440,54 @@ actor {
         let usersAddresses = usersaddresslist.get(userP);
         switch (usersAddresses) {
             case null {
-                let addressblob = to_candid([address]);
-                // let newAddresses = [address];
+                Debug.print("No addresses found for the user");
+                var addressitems : List.List<Types.Address> = List.nil<Types.Address>();
+                
+                var address_object : Types.addressobject = {
+                    userprincipal = userP;
+                    addresslist = List.push(address,addressitems);
+                };
+                let addressblob = to_candid(address_object);
                 let address_index = await stable_add(addressblob, address_state);
-                usersaddresslist.put(userP, address_index);
                 usersaddresslist.put(userP, address_index);
                 return #ok(address , address_index);
             };
-            case (?existingAddresses) {
-                
-                return #ok(address, existingAddresses);
+            case (?v) {
+                Debug.print("Some Addresses found for the user");
+                let wishlist_blob = await stable_get(v, address_state);
+                let address_object : ?Types.addressobject = from_candid(wishlist_blob);
+                switch(address_object){
+                    case null {
+                        throw Error.reject("no blob found in stable memory for the caller");
+                    };
+                    case(?val){
+                        let addresslist = val.addresslist;
+                        let templist = List.find<Types.Address>(
+                            addresslist,
+                            func(a : Types.Address) : Bool {
+                                return a.id == address.id;
+                            },
+                        );
+                        switch(templist){
+                        case null{
+                            let newaddresslist = List.push(address, addresslist);
+                            let newaddressobject : Types.addressobject = {
+                                userprincipal = userP;
+                                addresslist = newaddresslist;
+                            };
+                            let newaddressblob = to_candid(newaddressobject);
+                            let newaddress_index = await update_stable(v, newaddressblob, address_state);
+                            return #ok(address, newaddress_index);
+                        };
+                        case (?value){
+                            return #err(#AddressAlreadyExists);
+                        };
+                    };
+                };
             };
         };
     };
+};
 
     public shared ({ caller }) func updateAddress(address : Types.Address, id : Text, callerP : Principal) : async Result.Result<(Types.Address), Types.UpdateAddressError> {
         if (Principal.isAnonymous(caller)) {
@@ -461,17 +498,17 @@ actor {
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
             case null {
-                return #err(#AddressNotFound);
+                throw Error.reject("No addresses found");
             };
             case (?existingAddresses) {
                 let address_blob = await stable_get(existingAddresses, address_state);
-                let addresses : ?[Types.Address] = from_candid(address_blob);
+                let addresses : ?Types.addressobject = from_candid(address_blob);
                 switch(addresses){
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case(?val){
-                    let tempaddresslist = List.fromArray(val);
+                    let tempaddresslist = val.addresslist;
                     var oldaddress = List.find<Types.Address>(
                     tempaddresslist,
                     func(a : Types.Address) : Bool {
@@ -506,7 +543,11 @@ actor {
                         );
                         // add new address to the list and then pushing it to the hashmap
                         let newAddresses = List.push(newaddress, updatedAddresses);
-                        let newaddressblob = to_candid(newAddresses);
+                        let newaddressobject : Types.addressobject = {
+                            userprincipal = userP;
+                            addresslist = newAddresses;
+                        };
+                        let newaddressblob = to_candid(newaddressobject);
                         ignore await update_stable(existingAddresses, newaddressblob, address_state);
                         return #ok(newaddress);
                     };
@@ -522,17 +563,17 @@ actor {
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
             case null {
-                return #err(#AddressNotFound);
+                throw Error.reject("No addresses found");
             };
             case (?existingAddresses) {
                 let address_blob = await stable_get(existingAddresses, address_state);
-                let addresses : ?[Types.Address] = from_candid(address_blob);
+                let addresses : ?Types.addressobject = from_candid(address_blob);
                 switch (addresses) {
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                    let tempaddresslist = List.fromArray(val);
+                    let tempaddresslist = val.addresslist;
                     var address = List.find<Types.Address>(
                     tempaddresslist,
                     func(a : Types.Address) : Bool {
@@ -561,24 +602,28 @@ actor {
         let userAddresses = usersaddresslist.get(userP);
         switch (userAddresses) {
             case null {
-                return #err(#AddressNotFound);
+                throw Error.reject("No addresses found");
             };
             case (?existingAddresses) {
                 let address_blob = await stable_get(existingAddresses, address_state);
-                let addresses : ?[Types.Address] = from_candid(address_blob);
+                let addresses : ?Types.addressobject= from_candid(address_blob);
                 switch (addresses) {
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                let tempaddresslist = List.fromArray(val);
+                let tempaddresslist = val.addresslist;
                 let updatedAddresses = List.filter<Types.Address>(
                     tempaddresslist,
                     func(a : Types.Address) : Bool {
                         return a.address_type != address_type;
                     },
                 );
-                let newaddressblob = to_candid(updatedAddresses);
+                let newobj : Types.addressobject = {
+                    userprincipal = userP;
+                    addresslist = updatedAddresses;
+                };
+                let newaddressblob = to_candid(newobj);
                 ignore await update_stable(existingAddresses, newaddressblob, address_state);
                 return #ok(());
             };
@@ -598,16 +643,15 @@ actor {
             };
             case (?existingAddresses) {
                 let address_blob = await stable_get(existingAddresses, address_state);
-                let addresses : ?[Types.Address] = from_candid(address_blob);
+                let addresses : ?Types.addressobject = from_candid(address_blob);
                 switch (addresses) {
                     case null {
                         throw Error.reject("no blob found in stable memory for the caller");
                     };
                     case (?val) {
-                        return val;
+                        return List.toArray(val.addresslist);
                     };
                 };
-            
             };
         };
     };
@@ -1313,8 +1357,6 @@ actor {
             time_updated = Time.now();
         };
 
-        
-        
         switch (cartItems.get(userP)) {
             case null {
                 Debug.print("No cart items found for the user so we are adding the first one !!!!");
@@ -1566,13 +1608,13 @@ actor {
         };
     };
 
-    public shared (msg) func place_order(neworder : Types.NewOrder , from : Principal , to : Principal , amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
+    public shared (msg) func place_order(neworder : Types.NewOrder , from : Principal, amount : Nat , paymentOption : { #icp; #ckbtc }) : async  Result.Result<(Types.Order , ICRC.Result), Types.OrderError> {
         // if (Principal.isAnonymous(msg.caller)) {
         //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
         // };
         switch (paymentOption){
             case (#icp) {
-                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, payment_address, amount);
                 switch (response) {
                     case (#Err(index)) {
                         throw Error.reject(debug_show (index));
@@ -1605,7 +1647,7 @@ actor {
                 }; 
             };
             case (#ckbtc) {
-                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, payment_address, amount);
                 switch (response) {
                     case (#Err(index)) {
                         throw Error.reject(debug_show (index));
